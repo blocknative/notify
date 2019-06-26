@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <title>Svelte app</title>
+
+    <link rel="icon" type="image/png" href="/favicon.png" />
+  </head>
+
+  <body>
+    <script src="/bundle.js"></script>
+    <script src="/demo/ethers-v4.js"></script>
+    <script src="/demo/index.js"></script>
+    <button
+      onclick="window.notify = window.Notify.init({dappId: '12153f55-f29e-4f11-aa07-90f10da5d778', networkId: 4}); this.disabled = true; document.getElementById('send-transaction').disabled = false"
+    >
+      INITIALIZE NOTIFY
+    </button>
+    <button
+      id="send-transaction"
+      onclick="window.sendEthersTransaction();"
+      disabled
+    >
+      SEND TRANSACTION
+    </button>
+  </body>
+</html>

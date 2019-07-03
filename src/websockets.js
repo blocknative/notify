@@ -106,10 +106,15 @@ export function logEvent(eventObj) {
 
 // // Handle incoming socket messages
 export function handleSocketMessage(msg) {
-  const { status, reason, event, connectionId } = JSON.parse(msg.data)
+  const { status, reason, event, connectionId, watchedAccounts } = JSON.parse(
+    msg.data
+  )
   if (connectionId) {
-    console.log('connectionId received in message:', connectionId)
     storeItem('connectionId', connectionId)
+  }
+
+  if (watchedAccounts) {
+    app.update(store => ({ ...store, watchedAccounts }))
   }
 
   // handle any errors from the server
@@ -131,9 +136,9 @@ export function handleSocketMessage(msg) {
 
   if (event && event.transaction) {
     const { transaction, eventCode } = event
-    console.log({transaction})
+    console.log(transaction)
     // remove old notification
-    removeTransactionNotification(transaction.id)
+    removeTransactionNotification(transaction.id || transaction.hash)
 
     // update transaction in store
     updateTransaction(transaction, eventCode)

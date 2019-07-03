@@ -3,7 +3,7 @@
   import { fly } from "svelte/transition";
   import { quintOut } from "svelte/easing";
   import { timeString, formatTime } from "./utilities";
-  import { removeTransactionNotification } from "./stores";
+  import { removeTransactionNotification, transactions } from "./stores";
   export let notification;
 
   let currentTime = Date.now();
@@ -18,7 +18,7 @@
 
   $: if (notification.autoDismiss) {
     setTimeout(() => {
-      removeTransactionNotification(notification.id);
+      removeTransactionNotification(notification.id || notification.hash);
     }, notification.autoDismiss);
   }
 
@@ -203,7 +203,7 @@
   transition:fly={{ duration: 500, x: 400, easing: quintOut }}>
   <span
     class="bn-status-icon"
-    on:click={() => removeTransactionNotification(notification.id)}>
+    on:click={() => removeTransactionNotification(notification.id || notification.hash)}>
     {#if notification.type === 'pending'}
       <div class="progress-tooltip">
         <div class="progress-tooltip-inner">

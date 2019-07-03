@@ -54,7 +54,7 @@ export function eventToType(eventCode) {
   }
 }
 
-const eventToMessage = {
+const transactionMessages = {
   txRequest: 'Your transaction is waiting for you to confirm',
   txPool: 'Your transaction has started',
   txSent: 'Your transaction has been sent to the network',
@@ -72,6 +72,32 @@ const eventToMessage = {
   txCancel: 'Your transaction is being canceled'
 }
 
+const eventToMessage = (eventCode, direction, counterparty) => {
+  if (!direction || !counterparty) {
+    return transactionMessages[eventCode]
+  }
+
+  const counterpartyShort =
+    counterparty.substring(0, 4) +
+    '...' +
+    counterparty.substring(counterparty.length - 4)
+
+  switch (eventCode) {
+    case 'txPool':
+      return `Your account is ${
+        direction === 'incoming' ? 'receiving' : 'sending'
+      } a transaction ${
+        direction === 'incoming' ? 'from' : 'to'
+      } ${counterpartyShort}`
+    case 'txConfirmed':
+      return `Your account successfully ${
+        direction === 'incoming' ? 'received' : 'sent'
+      } a transaction ${
+        direction === 'incoming' ? 'from' : 'to'
+      } ${counterpartyShort}`
+  }
+}
+
 export function eventToDismissTimeout(eventCode) {
   switch (eventCode) {
     case 'txSent':
@@ -83,12 +109,19 @@ export function eventToDismissTimeout(eventCode) {
   }
 }
 
-export function createDefaultNotification({ id, timestamp, eventCode }) {
+export function createDefaultNotification({
+  id,
+  timestamp,
+  eventCode,
+  hash,
+  direction,
+  counterparty
+}) {
   return {
-    id,
+    id: id || hash,
     type: eventToType(eventCode),
     timestamp,
-    message: eventToMessage[eventCode],
+    message: eventToMessage(eventCode, direction, counterparty),
     autoDismiss: eventToDismissTimeout(eventCode)
   }
 }
@@ -116,4 +149,8 @@ export function formatTime(number) {
     minute: 'numeric',
     hour12: true
   })
+}
+
+export function createTimestamp() {
+  return Date.now()
 }

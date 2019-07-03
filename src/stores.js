@@ -1,10 +1,15 @@
 import { writable, derived } from 'svelte/store'
-import { createDefaultNotification, withoutProps } from './utilities'
+import {
+  createDefaultNotification,
+  withoutProps,
+  createTimestamp
+} from './utilities'
 
 export const app = writable({
   version: null,
   dappId: null,
-  networkId: null
+  networkId: null,
+  watchedAccounts: null
 })
 export const accounts = writable([])
 export const contracts = writable([])
@@ -33,24 +38,38 @@ export const styles = writable({
 })
 
 export const removeTransactionNotification = id =>
-  transactions.update(store =>
-    store.map(t => {
-      if (t.id === id) {
-        t.notification = null
-      }
-
-      return t
-    })
+  transactions.update(
+    store => console.log({ store }) || store.filter(t => t.id || t.hash !== id)
   )
 
 export const updateTransaction = (transaction, eventCode) => {
   setTimeout(() => {
-    transactions.update(store =>
-      store.map(t => {
-        if (t.id === transaction.id) {
+    transactions.update(store => {
+      const existingTransaction = store.find(
+        t => t.id === transaction.id || transaction.hash
+      )
+
+      if (!existingTransaction) {
+        const newState = {
+          ...transaction,
+          eventCode,
+          timestamp: createTimestamp()
+        }
+        return [
+          ...store,
+          {
+            ...newState,
+            notification: createDefaultNotification(newState)
+          }
+        ]
+      }
+
+      return store.map(t => {
+        if (t.id === transaction.id || transaction.hash) {
           const newState = { ...t, ...transaction, eventCode }
 
           const listener =
+            t.emitter &&
             t.emitter.listeners[eventCode] &&
             typeof t.emitter.listeners[eventCode] === 'function'
 
@@ -78,6 +97,6 @@ export const updateTransaction = (transaction, eventCode) => {
 
         return t
       })
-    )
+    })
   }, 300)
 }

@@ -38,9 +38,7 @@ export const styles = writable({
 })
 
 export const removeTransactionNotification = id =>
-  transactions.update(
-    store => console.log({ store }) || store.filter(t => t.id || t.hash !== id)
-  )
+  transactions.update(store => store.filter(t => t.id || t.hash !== id))
 
 export const updateTransaction = (transaction, eventCode) => {
   setTimeout(() => {

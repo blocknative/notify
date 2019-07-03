@@ -136,7 +136,7 @@ export function handleSocketMessage(msg) {
 
   if (event && event.transaction) {
     const { transaction, eventCode } = event
-    console.log(transaction)
+
     // remove old notification
     removeTransactionNotification(transaction.id || transaction.hash)
 

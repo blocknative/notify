@@ -13,7 +13,7 @@ export function openWebSocketConnection() {
 
     let socket
     try {
-      socket = new WebSocket('wss://api.blocknative.com/v0')
+      socket = new WebSocket('ws://localhost:54100/v0')
     } catch (errorObj) {
       socketState.pendingSocketConnection = false
       reject(false)
@@ -38,10 +38,12 @@ export function openWebSocketConnection() {
         pendingSocketConnection: false
       }
 
+      const connectionId = getItem('connectionId')
+
       logEvent({
         categoryCode: 'initialize',
         eventCode: 'checkDappId',
-        connectionId: getItem('connectionId')
+        connectionId
       })
 
       resolve(true)
@@ -68,7 +70,6 @@ export function retryLogEvent(logFunc) {
 
 let eventBoilerPlate = {
   dappId: null,
-  networkId: null,
   version: null,
   blockchain: {
     system: 'ethereum',
@@ -76,13 +77,17 @@ let eventBoilerPlate = {
   }
 }
 
-app.subscribe(store => {
-  eventBoilerPlate = { ...eventBoilerPlate, ...store }
-  eventBoilerPlate.blockchain.network = networkName(store.networkId)
+app.subscribe(({ version, dappId, networkId }) => {
+  eventBoilerPlate = { ...eventBoilerPlate, version, dappId }
+  eventBoilerPlate.blockchain.network = networkName(networkId)
 })
 
 function createEventLog(eventObj) {
-  return JSON.stringify({ ...eventBoilerPlate, ...eventObj })
+  return JSON.stringify({
+    ...eventBoilerPlate,
+    ...eventObj,
+    timeStamp: new Date()
+  })
 }
 
 // Log events to server
@@ -102,8 +107,8 @@ export function logEvent(eventObj) {
 // // Handle incoming socket messages
 export function handleSocketMessage(msg) {
   const { status, reason, event, connectionId } = JSON.parse(msg.data)
-
   if (connectionId) {
+    console.log('connectionId received in message:', connectionId)
     storeItem('connectionId', connectionId)
   }
 
@@ -126,6 +131,7 @@ export function handleSocketMessage(msg) {
 
   if (event && event.transaction) {
     const { transaction, eventCode } = event
+    console.log({transaction})
     // remove old notification
     removeTransactionNotification(transaction.id)
 

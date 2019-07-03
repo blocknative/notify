@@ -68,9 +68,12 @@ function init(config) {
 
     // logEvent to server
     logEvent({
-      eventCode: 'watchAccountAddress',
-      id,
-      address
+      categoryCode: 'watch',
+      eventCode: 'accountAddress',
+      account: {
+        id,
+        address
+      }
     })
 
     return emitter

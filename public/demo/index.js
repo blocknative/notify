@@ -62,7 +62,24 @@ window.sendEthersTransaction = async () => {
     value: 100000000000000
   })
 
-  const emitter = window.notify.transaction(hash)
+  console.log({ hash })
+
+  // fetch('http://localhost:54100/transaction', {
+  //   method: 'POST',
+  //   headers: {
+  //     Accept: 'application/json',
+  //     'Content-Type': 'application/json',
+  //     'Access-Control-Allow-Origin': '*'
+  //   },
+  //   body: JSON.stringify({
+  //     apikey: '100',
+  //     hash,
+  //     blockchain: 'ethereum',
+  //     networks: ['rinkeby']
+  //   })
+  // })
+
+  // const emitter = window.notify.transaction(hash)
 
   // emitter.on('txSent', console.log)
   // emitter.on('txPool', console.log)

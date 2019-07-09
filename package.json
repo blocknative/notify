@@ -12,6 +12,7 @@
     "svelte": "^3.5.4"
   },
   "dependencies": {
+    "ethers": "^4.0.32",
     "sirv-cli": "^0.4.4",
     "uuid": "^3.3.2"
   },

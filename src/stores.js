@@ -38,14 +38,20 @@ export const styles = writable({
 })
 
 export const removeTransactionNotification = id =>
-  transactions.update(store => store.filter(t => t.id || t.hash !== id))
+  transactions.update(store =>
+    store.map(transaction => {
+      if (transaction.id === id) {
+        transaction.notification = null
+      }
+
+      return transaction
+    })
+  )
 
 export const updateTransaction = (transaction, eventCode) => {
   setTimeout(() => {
     transactions.update(store => {
-      const existingTransaction = store.find(
-        t => t.id === transaction.id || transaction.hash
-      )
+      const existingTransaction = store.find(t => t.id === transaction.id)
 
       if (!existingTransaction) {
         const newState = {
@@ -63,7 +69,7 @@ export const updateTransaction = (transaction, eventCode) => {
       }
 
       return store.map(t => {
-        if (t.id === transaction.id || transaction.hash) {
+        if (t.id === transaction.id) {
           const newState = { ...t, ...transaction, eventCode }
 
           const listener =

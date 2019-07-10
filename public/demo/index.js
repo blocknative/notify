@@ -79,7 +79,7 @@ window.sendEthersTransaction = async () => {
   //   })
   // })
 
-  // const emitter = window.notify.transaction(hash)
+  const emitter = window.notify.transaction(hash)
 
   // emitter.on('txSent', console.log)
   // emitter.on('txPool', console.log)

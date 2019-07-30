@@ -221,7 +221,7 @@
           -
           <i class="bn-clock" />
           <span class="bn-duration-time">
-             {timeString(currentTime - notification.timestamp)}
+            {timeString(currentTime - notification.timestamp)}
           </span>
         </span>
       {/if}

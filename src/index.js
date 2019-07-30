@@ -1,6 +1,6 @@
-import uuid from 'uuid/v4'
+import uuid from "uuid/v4"
 
-import Notify from './Notify.svelte'
+import Notify from "./Notify.svelte"
 
 import {
   app,
@@ -9,12 +9,12 @@ import {
   transactions,
   customNotifications,
   styles
-} from './stores'
+} from "./stores"
 
-import { createEmitter } from './utilities'
-import { openWebSocketConnection, logEvent } from './websockets'
+import { createEmitter } from "./utilities"
+import { openWebSocketConnection, logEvent } from "./websockets"
 
-const version = '0.0.1'
+const version = "0.0.1"
 
 function init(config) {
   // validate config
@@ -45,7 +45,7 @@ function init(config) {
 
     // logEvent to server
     logEvent({
-      eventCode: 'watchContractAddress',
+      eventCode: "watchContractAddress",
       id,
       address
     })
@@ -68,8 +68,8 @@ function init(config) {
 
     // logEvent to server
     logEvent({
-      categoryCode: 'watch',
-      eventCode: 'accountAddress',
+      categoryCode: "watch",
+      eventCode: "accountAddress",
       account: {
         id,
         address
@@ -90,7 +90,7 @@ function init(config) {
     const emitter = createEmitter(id)
 
     // create eventCode for transaction
-    const eventCode = 'txSent'
+    const eventCode = "txSent"
 
     // add transaction to transactions store
     transactions.update(store => [
@@ -101,7 +101,7 @@ function init(config) {
     // logEvent to server
     logEvent({
       eventCode,
-      categoryCode: 'activeTransaction',
+      categoryCode: "activeTransaction",
       transaction: {
         hash,
         id
@@ -126,7 +126,7 @@ function init(config) {
 
     // logEvent to server
     logEvent({
-      eventCode: 'customNotification',
+      eventCode: "customNotification",
       id,
       notification
     })

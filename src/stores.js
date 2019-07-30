@@ -1,9 +1,9 @@
-import { writable, derived } from 'svelte/store'
+import { writable, derived } from "svelte/store"
 import {
   createDefaultNotification,
   withoutProps,
   createTimestamp
-} from './utilities'
+} from "./utilities"
 
 export const app = writable({
   version: null,
@@ -38,14 +38,20 @@ export const styles = writable({
 })
 
 export const removeTransactionNotification = id =>
-  transactions.update(store => store.filter(t => t.id || t.hash !== id))
+  transactions.update(store =>
+    store.map(transaction => {
+      if (transaction.id === id) {
+        transaction.notification = null
+      }
+
+      return transaction
+    })
+  )
 
 export const updateTransaction = (transaction, eventCode) => {
   setTimeout(() => {
     transactions.update(store => {
-      const existingTransaction = store.find(
-        t => t.id === transaction.id || transaction.hash
-      )
+      const existingTransaction = store.find(t => t.id === transaction.id)
 
       if (!existingTransaction) {
         const newState = {
@@ -63,13 +69,13 @@ export const updateTransaction = (transaction, eventCode) => {
       }
 
       return store.map(t => {
-        if (t.id === transaction.id || transaction.hash) {
+        if (t.id === transaction.id) {
           const newState = { ...t, ...transaction, eventCode }
 
           const listener =
             t.emitter &&
             t.emitter.listeners[eventCode] &&
-            typeof t.emitter.listeners[eventCode] === 'function'
+            typeof t.emitter.listeners[eventCode] === "function"
 
           const defaultNotification = createDefaultNotification(newState)
 
@@ -77,13 +83,13 @@ export const updateTransaction = (transaction, eventCode) => {
 
           const result = listener
             ? t.emitter.listeners[eventCode](
-                withoutProps(['emitter', 'notification'], newState)
+                withoutProps(["emitter", "notification"], newState)
               )
             : undefined
 
           if (result === false) {
             notification = null
-          } else if (typeof result === 'object') {
+          } else if (typeof result === "object") {
             notification = { ...defaultNotification, ...result }
           } else {
             notification = defaultNotification
@@ -96,5 +102,5 @@ export const updateTransaction = (transaction, eventCode) => {
         return t
       })
     })
-  }, 300)
+  }, 350)
 }

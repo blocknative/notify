@@ -1,3 +1,5 @@
+import ethers from 'ethers'
+
 export const createEmitter = id => ({
   id,
   listeners: {},
@@ -72,10 +74,13 @@ const transactionMessages = {
   txCancel: 'Your transaction is being canceled'
 }
 
-const eventToMessage = (eventCode, direction, counterparty) => {
+const eventToMessage = (eventCode, direction, counterparty, value) => {
   if (!direction || !counterparty) {
     return transactionMessages[eventCode]
   }
+
+  const formattedValue =
+    value && value.length > 7 ? value.substring(0, 7) : value
 
   const counterpartyShort =
     counterparty.substring(0, 4) +
@@ -86,13 +91,13 @@ const eventToMessage = (eventCode, direction, counterparty) => {
     case 'txPool':
       return `Your account is ${
         direction === 'incoming' ? 'receiving' : 'sending'
-      } a transaction ${
+      } ${formattedValue ? formattedValue + ' ether' : 'a transaction'} ${
         direction === 'incoming' ? 'from' : 'to'
       } ${counterpartyShort}`
     case 'txConfirmed':
       return `Your account successfully ${
         direction === 'incoming' ? 'received' : 'sent'
-      } a transaction ${
+      } ${formattedValue ? formattedValue + ' ether' : 'a transaction'} ${
         direction === 'incoming' ? 'from' : 'to'
       } ${counterpartyShort}`
   }
@@ -113,15 +118,20 @@ export function createDefaultNotification({
   id,
   timestamp,
   eventCode,
-  hash,
   direction,
-  counterparty
+  counterparty,
+  value
 }) {
   return {
-    id: id || hash,
+    id,
     type: eventToType(eventCode),
     timestamp,
-    message: eventToMessage(eventCode, direction, counterparty),
+    message: eventToMessage(
+      eventCode,
+      direction,
+      counterparty,
+      value && ethers.utils.formatEther(value)
+    ),
     autoDismiss: eventToDismissTimeout(eventCode)
   }
 }

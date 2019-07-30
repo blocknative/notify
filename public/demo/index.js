@@ -2,14 +2,14 @@ let provider
 
 const getEthersProvider = () => {
   if (!provider) {
-    if (typeof window.ethereum !== 'undefined') {
+    if (typeof window.ethereum !== "undefined") {
       provider = new window.ethers.providers.Web3Provider(window.ethereum)
-    } else if (typeof window.web3 !== 'undefined') {
+    } else if (typeof window.web3 !== "undefined") {
       provider = new window.ethers.providers.Web3Provider(
         window.web3.currentProvider
       )
     } else {
-      provider = window.ethers.getDefaultProvider('rinkeby')
+      provider = window.ethers.getDefaultProvider("rinkeby")
     }
   }
 
@@ -24,8 +24,8 @@ const getUncheckedSigner = () => {
     class UncheckedJsonRpcSigner extends ethers.Signer {
       constructor(signer) {
         super()
-        window.ethers.utils.defineReadOnly(this, 'signer', signer)
-        window.ethers.utils.defineReadOnly(this, 'provider', signer.provider)
+        window.ethers.utils.defineReadOnly(this, "signer", signer)
+        window.ethers.utils.defineReadOnly(this, "provider", signer.provider)
       }
 
       getAddress() {
@@ -58,13 +58,13 @@ const getUncheckedSigner = () => {
 window.sendEthersTransaction = async () => {
   await window.ethereum.enable()
   const { hash } = await getUncheckedSigner().sendTransaction({
-    to: '0x6A4C1Fc1137C47707a931934c76d884454Ed2915',
+    to: "0x6A4C1Fc1137C47707a931934c76d884454Ed2915",
     value: 100000000000000
   })
 
   const emitter = window.notify.transaction(hash)
 
-  // emitter.on('txSent', console.log)
-  // emitter.on('txPool', console.log)
-  // emitter.on('txConfirmed', console.log)
+  emitter.on("txSent", console.log)
+  emitter.on("txPool", console.log)
+  emitter.on("txConfirmed", console.log)
 }

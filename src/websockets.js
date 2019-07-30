@@ -1,5 +1,5 @@
-import { app, removeTransactionNotification, updateTransaction } from './stores'
-import { networkName, getItem, storeItem } from './utilities'
+import { app, removeTransactionNotification, updateTransaction } from "./stores"
+import { networkName, getItem, storeItem } from "./utilities"
 
 let socketState = {
   pendingSocketConnection: false,
@@ -13,36 +13,36 @@ export function openWebSocketConnection() {
 
     let socket
     try {
-      socket = new WebSocket('ws://localhost:54100/v0')
+      socket = new WebSocket("wss://api.blocknative.com/v0")
     } catch (errorObj) {
       socketState.pendingSocketConnection = false
       reject(false)
     }
 
-    socket.addEventListener('message', handleSocketMessage)
+    socket.addEventListener("message", handleSocketMessage)
 
     socket.addEventListener(
-      'close',
+      "close",
       () => (socketState.socketConnection = false)
     )
 
-    socket.addEventListener('error', () => {
+    socket.addEventListener("error", () => {
       socketState.pendingSocketConnection = false
       reject(false)
     })
 
-    socket.addEventListener('open', () => {
+    socket.addEventListener("open", () => {
       socketState = {
         socket,
         socketConnection: true,
         pendingSocketConnection: false
       }
 
-      const connectionId = getItem('connectionId')
+      const connectionId = getItem("connectionId")
 
       logEvent({
-        categoryCode: 'initialize',
-        eventCode: 'checkDappId',
+        categoryCode: "initialize",
+        eventCode: "checkDappId",
         connectionId
       })
 
@@ -72,7 +72,7 @@ let eventBoilerPlate = {
   dappId: null,
   version: null,
   blockchain: {
-    system: 'ethereum',
+    system: "ethereum",
     network: null
   }
 }
@@ -110,7 +110,7 @@ export function handleSocketMessage(msg) {
     msg.data
   )
   if (connectionId) {
-    storeItem('connectionId', connectionId)
+    storeItem("connectionId", connectionId)
   }
 
   if (watchedAccounts) {
@@ -118,17 +118,17 @@ export function handleSocketMessage(msg) {
   }
 
   // handle any errors from the server
-  if (status === 'error') {
+  if (status === "error") {
     if (
-      reason.includes('not a valid API key') &&
-      event.eventCode !== 'initFail'
+      reason.includes("not a valid API key") &&
+      event.eventCode !== "initFail"
     ) {
       throw new Error(reason)
     }
 
     if (
-      reason.includes('network not supported') &&
-      event.eventCode !== 'initFail'
+      reason.includes("network not supported") &&
+      event.eventCode !== "initFail"
     ) {
       throw new Error(reason)
     }
@@ -137,8 +137,10 @@ export function handleSocketMessage(msg) {
   if (event && event.transaction) {
     const { transaction, eventCode } = event
 
+    transaction.id = transaction.id.toLowerCase()
+
     // remove old notification
-    removeTransactionNotification(transaction.id || transaction.hash)
+    removeTransactionNotification(transaction.id)
 
     // update transaction in store
     updateTransaction(transaction, eventCode)

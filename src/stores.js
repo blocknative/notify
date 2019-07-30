@@ -87,7 +87,7 @@ export const updateTransaction = (transaction, eventCode) => {
               )
             : undefined
 
-          if (result === false) {
+          if (!result) {
             notification = null
           } else if (typeof result === "object") {
             notification = { ...defaultNotification, ...result }

@@ -62,7 +62,7 @@ window.sendEthersTransaction = async () => {
     value: 100000000000000
   })
 
-  console.log({ hash })
+  // console.log({ hash })
 
   // fetch('http://localhost:54100/transaction', {
   //   method: 'POST',

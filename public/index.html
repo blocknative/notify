@@ -14,7 +14,7 @@
     <script src="/demo/ethers-v4.js"></script>
     <script src="/demo/index.js"></script>
     <button
-      onclick="window.notify = window.Notify.init({dappId: '100', networkId: 4}); this.disabled = true; document.getElementById('send-transaction').disabled = false; document.getElementById('watch-address').disabled = false;"
+      onclick="window.notify = window.Notify.init({dappId: '12153f55-f29e-4f11-aa07-90f10da5d778', networkId: 4}); this.disabled = true; document.getElementById('send-transaction').disabled = false; document.getElementById('watch-address').disabled = false;"
     >
       INITIALIZE NOTIFY
     </button>
@@ -25,6 +25,12 @@
     >
       SEND TRANSACTION
     </button>
-    <button id="watch-address" onclick="window.ethereum.enable().then(accounts => window.notify.account(accounts[0]));" disabled>WATCH ADDRESS</button>
+    <button
+      id="watch-address"
+      onclick="window.ethereum.enable().then(accounts => window.notify.account(accounts[0]));"
+      disabled
+    >
+      WATCH ADDRESS
+    </button>
   </body>
 </html>

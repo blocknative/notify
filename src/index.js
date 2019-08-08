@@ -1,6 +1,8 @@
 import uuid from "uuid/v4"
-
+import Blocknative from "@flexdapps/blocknative-api"
 import Notify from "./Notify.svelte"
+import { updateTransaction } from "./stores"
+import { getItem } from "./utilities"
 
 import {
   app,
@@ -12,18 +14,22 @@ import {
 } from "./stores"
 
 import { createEmitter } from "./utilities"
-import { openWebSocketConnection, logEvent } from "./websockets"
 
 const version = "0.0.1"
 
 function init(config) {
   // validate config
+  const { dappId, networkId } = config
+
+  const blocknative = Blocknative({
+    dappId,
+    networkId,
+    connectionId: getItem("connectionId") || undefined,
+    transactionCallback: updateTransaction
+  })
 
   // save config to app store
   app.update(store => ({ ...store, ...config, version }))
-
-  // open websocket connection
-  openWebSocketConnection()
 
   // initialize App
   new Notify({
@@ -80,34 +86,18 @@ function init(config) {
   }
 
   function transaction(hash) {
-    // create id for transaction
-    const id = uuid()
-
-    // create timestamp for transaction
+    // create timestamp
     const timestamp = Date.now()
+    const transaction = blocknative.transaction(hash)
+    const { emitter, details } = transaction
+    console.log({ emitter })
 
-    // create emitter for transaction
-    const emitter = createEmitter(id)
-
-    // create eventCode for transaction
-    const eventCode = "txSent"
-
+    emitter.on("txPool", transaction => console.log("EMITTER", transaction))
     // add transaction to transactions store
     transactions.update(store => [
       ...store,
-      { id, hash, timestamp, eventCode, emitter, notification: null }
+      { ...details, emitter, notification: null, timestamp }
     ])
-
-    // logEvent to server
-    logEvent({
-      eventCode,
-      categoryCode: "activeTransaction",
-      transaction: {
-        hash,
-        id
-      }
-    })
-
     return emitter
   }
 

@@ -27,7 +27,9 @@
     </button>
     <button
       id="watch-address"
-      onclick="window.ethereum.enable().then(accounts => window.notify.account(accounts[0]));"
+      onclick="window.ethereum.enable().then(accounts => {
+      const emitter = window.notify.account(accounts[0])
+      });"
       disabled
     >
       WATCH ADDRESS

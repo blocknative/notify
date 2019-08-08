@@ -38,14 +38,3 @@
     </div>
   </div>
 {/if}
-
-{#if $app.watchedAccounts && $app.watchedAccounts.length > 0}
-  <div>
-    <h2>Watched Addresses</h2>
-    <ul>
-      {#each $app.watchedAccounts as account, i (account)}
-        <li>{account}</li>
-      {/each}
-    </ul>
-  </div>
-{/if}

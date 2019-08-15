@@ -10,7 +10,7 @@ export function eventToType(eventCode) {
   switch (eventCode) {
     case "txSent":
     case "txPool":
-    case "txSpeedup":
+    case "txSpeedUp":
     case "txCancel":
       return "pending"
     case "txFail":

@@ -39,10 +39,25 @@ transactions.subscribe(store => {
 
 export function handleTransaction({ transaction, emitterResult }) {
   const knownTransaction = currentTransactions.find(
-    tx => tx.hash === transaction.hash
+    tx => tx.hash === transaction.originalHash || tx.hash === transaction.hash
   )
 
   if (knownTransaction) {
+    // update transaction in queue to new hash if speedUp or cancel
+    if (
+      transaction.eventCode === "txSpeedUp" ||
+      transaction.eventCode === "txCancel"
+    ) {
+      transactions.update(store => {
+        return store.map(tx => {
+          if (tx.hash === transaction.originalHash) {
+            tx.hash = transaction.hash
+          }
+          return tx
+        })
+      })
+    }
+
     updateTransaction({ transaction, emitterResult })
   } else {
     createTransaction({ transaction, emitterResult })
@@ -92,12 +107,15 @@ export function createTransaction({ transaction, emitterResult }) {
 }
 
 export const updateTransaction = ({ transaction, emitterResult }) => {
-  removeTransactionNotification(transaction.hash)
+  removeTransactionNotification(transaction.originalHash || transaction.hash)
 
   setTimeout(() => {
     transactions.update(store => {
       return store.map(t => {
-        if (t.hash === transaction.hash) {
+        if (
+          t.hash === transaction.originalHash ||
+          t.hash === transaction.hash
+        ) {
           transaction = { ...t, ...transaction }
           const defaultNotification = createDefaultNotification(transaction)
 

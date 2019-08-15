@@ -1,15 +1,10 @@
 import { writable, derived } from "svelte/store"
-import {
-  createDefaultNotification,
-  withoutProps,
-  createTimestamp
-} from "./utilities"
+import { createDefaultNotification, createTimestamp } from "./utilities"
 
 export const app = writable({
   version: null,
   dappId: null,
-  networkId: null,
-  watchedAccounts: null
+  networkId: null
 })
 export const accounts = writable([])
 export const contracts = writable([])
@@ -37,12 +32,24 @@ export const styles = writable({
   css: null
 })
 
-let watchedAccounts
-accounts.subscribe(store => {
-  watchedAccounts = store
+let currentTransactions
+transactions.subscribe(store => {
+  currentTransactions = store
 })
 
-export const removeTransactionNotification = hash =>
+export function handleTransaction({ transaction, emitterResult }) {
+  const knownTransaction = currentTransactions.find(
+    tx => tx.hash === transaction.hash
+  )
+
+  if (knownTransaction) {
+    updateTransaction({ transaction, emitterResult })
+  } else {
+    createTransaction({ transaction, emitterResult })
+  }
+}
+
+export function removeTransactionNotification(hash) {
   transactions.update(store =>
     store.map(transaction => {
       if (transaction.hash === hash) {
@@ -52,41 +59,22 @@ export const removeTransactionNotification = hash =>
       return transaction
     })
   )
+}
 
-export const createTransaction = (transaction, eventCode) => {
+export function createTransaction({ transaction, emitterResult }) {
   const newState = {
     ...transaction,
-    eventCode,
     timestamp: createTimestamp()
   }
-
-  const activeAccount = watchedAccounts.find(
-    acc =>
-      acc.address.toLowerCase() === transaction.to.toLowerCase() ||
-      acc.address.toLowerCase() === transaction.from.toLowerCase()
-  )
-
-  const emitter = activeAccount && activeAccount.emitter
-
-  const listener =
-    emitter &&
-    emitter.listeners[eventCode] &&
-    typeof emitter.listeners[eventCode] === "function"
 
   const defaultNotification = createDefaultNotification(newState)
 
   let notification
 
-  const result = listener
-    ? emitter.listeners[eventCode](
-        withoutProps(["emitter", "notification"], newState)
-      )
-    : undefined
-
-  if (!result) {
+  if (emitterResult === "false") {
     notification = null
-  } else if (typeof result === "object") {
-    notification = { ...defaultNotification, ...result }
+  } else if (typeof emitterResult === "object") {
+    notification = { ...defaultNotification, ...emitterResult }
   } else {
     notification = defaultNotification
   }
@@ -97,8 +85,7 @@ export const createTransaction = (transaction, eventCode) => {
       ...store,
       {
         ...newState,
-        notification,
-        emitter
+        notification
       }
     ]
   })

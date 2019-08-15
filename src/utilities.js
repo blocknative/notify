@@ -10,6 +10,8 @@ export function eventToType(eventCode) {
   switch (eventCode) {
     case "txSent":
     case "txPool":
+    case "txSpeedup":
+    case "txCancel":
       return "pending"
     case "txFail":
       return "error"
@@ -51,6 +53,8 @@ const eventToMessage = (eventCode, direction, counterparty, value) => {
 
   switch (eventCode) {
     case "txPool":
+    case "txSpeedUp":
+    case "txCancel":
       return `Your account is ${
         direction === "incoming" ? "receiving" : "sending"
       } ${formattedValue ? formattedValue + " ether" : "a transaction"} ${
@@ -67,12 +71,10 @@ const eventToMessage = (eventCode, direction, counterparty, value) => {
 
 export function eventToDismissTimeout(eventCode) {
   switch (eventCode) {
-    case "txSent":
-    case "txPool":
-    case "txFail":
-      return false
     case "txConfirmed":
       return 4000
+    default:
+      return false
   }
 }
 

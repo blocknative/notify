@@ -18,7 +18,7 @@
 
   $: if (notification.autoDismiss) {
     setTimeout(() => {
-      removeTransactionNotification(notification.id || notification.hash);
+      removeTransactionNotification(notification.id);
     }, notification.autoDismiss);
   }
 
@@ -203,7 +203,7 @@
   transition:fly={{ duration: 500, x: 400, easing: quintOut }}>
   <span
     class="bn-status-icon"
-    on:click={() => removeTransactionNotification(notification.id || notification.hash)}>
+    on:click={() => removeTransactionNotification(notification.id)}>
     {#if notification.type === 'pending'}
       <div class="progress-tooltip">
         <div class="progress-tooltip-inner">

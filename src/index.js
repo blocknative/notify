@@ -1,170 +1,115 @@
-import uuid from "uuid/v4"
-
+import blocknativeApi from "./bn-api-client"
 import Notify from "./Notify.svelte"
+import { handleTransaction } from "./stores"
 
-import {
-  app,
-  accounts,
-  contracts,
-  transactions,
-  customNotifications,
-  styles
-} from "./stores"
-
-import { createEmitter } from "./utilities"
-import { openWebSocketConnection, logEvent } from "./websockets"
+import { app } from "./stores"
 
 const version = "0.0.1"
 
 function init(config) {
   // validate config
+  const { dappId, networkId } = config
+
+  const blocknative = blocknativeApi({
+    dappId,
+    networkId,
+    transactionCallback: handleTransaction
+  })
 
   // save config to app store
   app.update(store => ({ ...store, ...config, version }))
-
-  // open websocket connection
-  openWebSocketConnection()
 
   // initialize App
   new Notify({
     target: document.body
   })
 
-  function contract(address) {
-    // create id for contract
-    const id = uuid()
-
-    // create timestamp
-    const timestamp = Date.now()
-
-    // create emitter for contract
-    const emitter = createEmitter(id)
-
-    // add contract address to contracts store
-    contracts.update(store => [...store, { id, address, timestamp, emitter }])
-
-    // logEvent to server
-    logEvent({
-      eventCode: "watchContractAddress",
-      id,
-      address
-    })
-
-    return emitter
+  return {
+    account,
+    transaction
   }
 
   function account(address) {
-    // create id for account
-    const id = uuid()
-
-    // create timestamp
-    const timestamp = Date.now()
-
-    // create emitter for contract
-    const emitter = createEmitter(id)
-
-    // add contract address to contracts store
-    accounts.update(store => [...store, { id, address, timestamp, emitter }])
-
-    // logEvent to server
-    logEvent({
-      categoryCode: "watch",
-      eventCode: "accountAddress",
-      account: {
-        id,
-        address
-      }
-    })
-
+    const { emitter } = blocknative.account(address)
     return emitter
   }
 
   function transaction(hash) {
-    // create id for transaction
-    const id = uuid()
-
-    // create timestamp for transaction
-    const timestamp = Date.now()
-
-    // create emitter for transaction
-    const emitter = createEmitter(id)
-
-    // create eventCode for transaction
-    const eventCode = "txSent"
-
-    // add transaction to transactions store
-    transactions.update(store => [
-      ...store,
-      { id, hash, timestamp, eventCode, emitter, notification: null }
-    ])
-
-    // logEvent to server
-    logEvent({
-      eventCode,
-      categoryCode: "activeTransaction",
-      transaction: {
-        hash,
-        id
-      }
-    })
+    const transaction = blocknative.transaction(hash)
+    const { emitter } = transaction
 
     return emitter
   }
 
-  function custom(notification) {
-    // create id for transaction
-    const id = uuid()
+  // function contract(address) {
+  //   // create id for contract
+  //   const id = uuid()
 
-    // create timestamp for transaction
-    const timestamp = Date.now()
+  //   // create timestamp
+  //   const timestamp = Date.now()
 
-    // add transaction to transactions store
-    customNotifications.update(store => [
-      ...store,
-      { id, timestamp, ...notification }
-    ])
+  //   // create emitter for contract
+  //   const emitter = createEmitter(id)
 
-    // logEvent to server
-    logEvent({
-      eventCode: "customNotification",
-      id,
-      notification
-    })
+  //   // add contract address to contracts store
+  //   contracts.update(store => [...store, { id, address, timestamp, emitter }])
 
-    const dismiss = customNotifications.update(store =>
-      store.filter(n => n.id !== id)
-    )
+  //   // logEvent to server
+  //   logEvent({
+  //     eventCode: "watchContractAddress",
+  //     id,
+  //     address
+  //   })
 
-    const update = notification =>
-      customNotifications.update(store =>
-        store.map(n => {
-          if (n.id === id) {
-            return {
-              ...n,
-              ...notification
-            }
-          }
-          return n
-        })
-      )
+  //   return emitter
+  // }
 
-    return {
-      dismiss,
-      update
-    }
-  }
+  // function custom(notification) {
+  //   // create id for transaction
+  //   const id = uuid()
 
-  function style(config) {
-    styles.update(store => ({ ...store, ...config }))
-  }
+  //   // create timestamp for transaction
+  //   const timestamp = Date.now()
 
-  return {
-    contract,
-    account,
-    transaction,
-    custom,
-    style
-  }
+  //   // add transaction to transactions store
+  //   customNotifications.update(store => [
+  //     ...store,
+  //     { id, timestamp, ...notification }
+  //   ])
+
+  //   // logEvent to server
+  //   logEvent({
+  //     eventCode: "customNotification",
+  //     id,
+  //     notification
+  //   })
+
+  //   const dismiss = customNotifications.update(store =>
+  //     store.filter(n => n.id !== id)
+  //   )
+
+  //   const update = notification =>
+  //     customNotifications.update(store =>
+  //       store.map(n => {
+  //         if (n.id === id) {
+  //           return {
+  //             ...n,
+  //             ...notification
+  //           }
+  //         }
+  //         return n
+  //       })
+  //     )
+
+  //   return {
+  //     dismiss,
+  //     update
+  //   }
+  // }
+
+  // function style(config) {
+  //   styles.update(store => ({ ...store, ...config }))
+  // }
 }
 
 export default { init }

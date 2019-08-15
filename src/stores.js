@@ -1,15 +1,10 @@
 import { writable, derived } from "svelte/store"
-import {
-  createDefaultNotification,
-  withoutProps,
-  createTimestamp
-} from "./utilities"
+import { createDefaultNotification, createTimestamp } from "./utilities"
 
 export const app = writable({
   version: null,
   dappId: null,
-  networkId: null,
-  watchedAccounts: null
+  networkId: null
 })
 export const accounts = writable([])
 export const contracts = writable([])
@@ -37,66 +32,87 @@ export const styles = writable({
   css: null
 })
 
-export const removeTransactionNotification = id =>
+let currentTransactions
+transactions.subscribe(store => {
+  currentTransactions = store
+})
+
+export function handleTransaction({ transaction, emitterResult }) {
+  const knownTransaction = currentTransactions.find(
+    tx => tx.hash === transaction.hash
+  )
+
+  if (knownTransaction) {
+    updateTransaction({ transaction, emitterResult })
+  } else {
+    createTransaction({ transaction, emitterResult })
+  }
+}
+
+export function removeTransactionNotification(hash) {
   transactions.update(store =>
     store.map(transaction => {
-      if (transaction.id === id) {
+      if (transaction.hash === hash) {
         transaction.notification = null
       }
 
       return transaction
     })
   )
+}
 
-export const updateTransaction = (transaction, eventCode) => {
+export function createTransaction({ transaction, emitterResult }) {
+  const newState = {
+    ...transaction,
+    timestamp: createTimestamp()
+  }
+
+  const defaultNotification = createDefaultNotification(newState)
+
+  let notification
+
+  if (emitterResult === "false") {
+    notification = null
+  } else if (typeof emitterResult === "object") {
+    notification = { ...defaultNotification, ...emitterResult }
+  } else {
+    notification = defaultNotification
+  }
+
+  // update transactions store
+  transactions.update(store => {
+    return [
+      ...store,
+      {
+        ...newState,
+        notification
+      }
+    ]
+  })
+}
+
+export const updateTransaction = ({ transaction, emitterResult }) => {
+  removeTransactionNotification(transaction.hash)
+
   setTimeout(() => {
     transactions.update(store => {
-      const existingTransaction = store.find(t => t.id === transaction.id)
-
-      if (!existingTransaction) {
-        const newState = {
-          ...transaction,
-          eventCode,
-          timestamp: createTimestamp()
-        }
-        return [
-          ...store,
-          {
-            ...newState,
-            notification: createDefaultNotification(newState)
-          }
-        ]
-      }
-
       return store.map(t => {
-        if (t.id === transaction.id) {
-          const newState = { ...t, ...transaction, eventCode }
-
-          const listener =
-            t.emitter &&
-            t.emitter.listeners[eventCode] &&
-            typeof t.emitter.listeners[eventCode] === "function"
-
-          const defaultNotification = createDefaultNotification(newState)
+        if (t.hash === transaction.hash) {
+          transaction = { ...t, ...transaction }
+          const defaultNotification = createDefaultNotification(transaction)
 
           let notification
 
-          const result = listener
-            ? t.emitter.listeners[eventCode](
-                withoutProps(["emitter", "notification"], newState)
-              )
-            : undefined
-
-          if (result === false) {
+          if (emitterResult === "false") {
             notification = null
-          } else if (typeof result === "object") {
-            notification = { ...defaultNotification, ...result }
+          } else if (typeof emitterResult === "object") {
+            notification = { ...defaultNotification, ...emitterResult }
           } else {
             notification = defaultNotification
           }
 
           // update state
-          return { ...newState, notification }
+          return { ...transaction, notification }
         }
 
         return t

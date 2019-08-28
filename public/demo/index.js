@@ -16,11 +16,11 @@ const getEthersProvider = () => {
   return provider
 }
 
-let UncheckedSigner
+let signer
 
 const getUncheckedSigner = () => {
-  if (!UncheckedSigner) {
-    const provider = getEthersProvider()
+  if (!signer) {
+    provider = getEthersProvider()
     class UncheckedJsonRpcSigner extends ethers.Signer {
       constructor(signer) {
         super()
@@ -49,18 +49,53 @@ const getUncheckedSigner = () => {
       }
     }
 
-    UncheckedSigner = new UncheckedJsonRpcSigner(provider.getSigner())
+    signer = new UncheckedJsonRpcSigner(provider.getSigner())
   }
 
-  return UncheckedSigner
+  return signer
 }
 
-window.sendEthersTransaction = async () => {
+window.sendHash = async () => {
   await window.ethereum.enable()
-  const { hash } = await getUncheckedSigner().sendTransaction({
+  const signer = getUncheckedSigner()
+  const { hash } = await signer.sendTransaction({
     to: "0x6A4C1Fc1137C47707a931934c76d884454Ed2915",
     value: 100000000000000
   })
 
-  const emitter = window.notify.transaction(hash)
+  const emitter = window.notify.hash(hash)
+}
+
+window.sendTransaction = async () => {
+  const accounts = await window.ethereum.enable()
+  const signer = getUncheckedSigner()
+  const balance = await provider
+    .getBalance(accounts[0])
+    .then(res => res.toString())
+  const txDetails = {
+    to: "0x6A4C1Fc1137C47707a931934c76d884454Ed2915",
+    // value: 9000000000000000
+    value: 10000
+  }
+  const sendTransaction = () => signer.sendTransaction(txDetails)
+  const estimateGas = () =>
+    provider.estimateGas(txDetails).then(res => res.toString())
+  const gasPrice = () => provider.getGasPrice().then(res => res.toString())
+  const listeners = {
+    txRequest: tx => console.log(tx.eventCode),
+    nsfFail: tx => console.log(tx.eventCode),
+    txRepeat: tx => console.log(tx.eventCode),
+    txAwaitingApproval: tx => console.log(tx.eventCode),
+    txConfirmReminder: tx => console.log(tx.eventCode),
+    txSendFail: tx => console.log(tx.eventCode)
+  }
+
+  const result = window.notify.transaction({
+    sendTransaction,
+    estimateGas,
+    gasPrice,
+    balance,
+    txDetails,
+    listeners
+  })
 }

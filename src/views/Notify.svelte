@@ -1,7 +1,7 @@
 <script>
-  import { notifications, app } from "./stores";
-  import Notification from "./Notification.svelte";
   import { fade } from "svelte/transition";
+  import Notification from "./Notification.svelte";
+  import { notifications, app } from "../stores";
 </script>
 
 <style>
@@ -31,7 +31,7 @@
   <div id="blocknative-notifications" transition:fade={{ duration: 150 }}>
     <div class="bn-notifications-scroll">
       <ul class="bn-notifications">
-        {#each $notifications as notification, i (notification.id)}
+        {#each $notifications as notification, i}
           <Notification {notification} />
         {/each}
       </ul>

@@ -1,11 +1,13 @@
 <script>
   import { onDestroy } from "svelte";
-  import { fly } from "svelte/transition";
+  import { fly, fade } from "svelte/transition";
+  import { flip } from "svelte/animate";
   import { quintOut } from "svelte/easing";
-  import { timeString, formatTime } from "./utilities";
-  import { removeTransactionNotification, transactions } from "./stores";
+  import { timeString, formatTime } from "../utilities";
+  import { notifications } from "../stores";
   export let notification;
 
+  let updating;
   let currentTime = Date.now();
 
   if (notification.type === "pending") {
@@ -18,8 +20,15 @@
 
   $: if (notification.autoDismiss) {
     setTimeout(() => {
-      removeTransactionNotification(notification.id);
+      notifications.remove(notification.id, notification.type);
     }, notification.autoDismiss);
+  }
+
+  $: if (notification.message) {
+    updating = true;
+    setTimeout(() => {
+      updating = false;
+    }, 500);
   }
 
   const notificationTime = formatTime(currentTime);
@@ -73,6 +82,11 @@
   }
   .bn-notification.bn-error {
     border-color: #ff3f4a;
+    border-width: 0px 0px 0px 2px;
+    border-style: solid;
+  }
+  .bn-notification.bn-hint {
+    border-color: #4a90e2;
     border-width: 0px 0px 0px 2px;
     border-style: solid;
   }
@@ -200,10 +214,10 @@
 
 <li
   class="bn-notification bn-{notification.type}"
-  transition:fly={{ duration: 500, x: 400, easing: quintOut }}>
+  transition:fly={{ duration: 400, x: 380, easing: quintOut }}>
   <span
     class="bn-status-icon"
-    on:click={() => removeTransactionNotification(notification.id)}>
+    on:click={() => notifications.remove(notification.id, notification.type)}>
     {#if notification.type === 'pending'}
       <div class="progress-tooltip">
         <div class="progress-tooltip-inner">
@@ -216,12 +230,12 @@
     <p>{notification.message}</p>
     <p class="bn-notification-meta">
       <span class="bn-timestamp">{notificationTime}</span>
-      {#if notification.type === 'pending'}
+      {#if notification.type === 'pending' && notification.startTime}
         <span class="bn-duration">
           -
           <i class="bn-clock" />
           <span class="bn-duration-time">
-            {timeString(currentTime - notification.timestamp)}
+            {timeString(currentTime - notification.startTime)}
           </span>
         </span>
       {/if}

@@ -7,32 +7,60 @@
     <title>Svelte app</title>
 
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <style>
+      body {
+        max-width: 100vw;
+        overflow-x: hidden;
+        font-family: "Helvetica Neue";
+      }
+
+      .bn-demo-button {
+        background: #ffffff;
+        font-size: 0.889rem;
+        border: 1px solid #eeeeee;
+        border-radius: 40px;
+        padding: 0.55rem 1.4rem;
+        color: #4a90e2;
+      }
+
+      .bn-demo-button:hover {
+        cursor: pointer;
+      }
+    </style>
   </head>
 
   <body>
     <script src="/bundle.js"></script>
     <script src="/demo/ethers-v4.js"></script>
     <script src="/demo/index.js"></script>
+    <script>
+      window.notify = window.Notify.init({
+        dappId: "12153f55-f29e-4f11-aa07-90f10da5d778",
+        networkId: 4
+      })
+    </script>
     <button
-      onclick="window.notify = window.Notify.init({dappId: '12153f55-f29e-4f11-aa07-90f10da5d778', networkId: 4}); this.disabled = true; document.getElementById('send-transaction').disabled = false; document.getElementById('watch-address').disabled = false;"
+      class="bn-demo-button"
+      id="send-hash"
+      onclick="if (window.ethereum && window.ethereum.networkVersion == 4) {window.sendHash();} else {alert('please switch to the rinkeby network')}"
     >
-      INITIALIZE NOTIFY
+      <code>notify.hash()</code>
     </button>
     <button
+      class="bn-demo-button"
       id="send-transaction"
-      onclick="window.sendEthersTransaction();"
-      disabled
+      onclick="if (window.ethereum && window.ethereum.networkVersion == 4) {window.sendTransaction();} else {alert('please switch to the rinkeby network')}"
     >
-      SEND TRANSACTION
+      <code>notify.transaction()</code>
     </button>
     <button
+      class="bn-demo-button"
       id="watch-address"
       onclick="window.ethereum.enable().then(accounts => {
       const emitter = window.notify.account(accounts[0])
       });"
-      disabled
     >
-      WATCH ADDRESS
+      <code>notify.account()</code>
     </button>
   </body>
 </html>

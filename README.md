@@ -23,7 +23,7 @@
 ### Importing with JS Bundler
 
 - Drag the built `bundle.js` file in to your src folder
-- Import it into the file you would like to use it in: `import Notify from './notify`
+- Import it into the file you would like to use it in: `import Notify from './bundle.js`
 
 ### Usage
 

@@ -18,6 +18,7 @@ export function createNotification(details, customization = {}) {
     id: id || hash,
     type,
     startTime,
+    eventCode,
     message: eventToMessage(
       eventCode,
       direction,

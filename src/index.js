@@ -44,8 +44,8 @@ function init(config) {
     return emitter
   }
 
-  function hash(hash) {
-    const { emitter } = blocknative.transaction(hash)
+  function hash(hash, id) {
+    const { emitter } = blocknative.transaction(hash, id)
     return emitter
   }
 
@@ -209,7 +209,7 @@ function init(config) {
 
       if (result && result.hash) {
         // call blocknative.transaction with hash
-        const { emitter } = blocknative.transaction(result.hash, id)
+        const { emitter } = hash(result.hash, id)
 
         // Check for pending stall status
         setTimeout(() => {

@@ -40,41 +40,62 @@ function createTransactionStore(initialState) {
 function createNotificationStore(initialState) {
   const { subscribe, update } = writable(initialState)
 
+  let notificationQueue = {}
+  let waiting = {}
+
   let currentNotifications
-  subscribe(store => (currentNotifications = store))
+  subscribe(store => {
+    currentNotifications = store
+  })
 
   function add(notification) {
+    if (waiting[notification.id]) {
+      const currentQueue = notificationQueue[notification.id] || []
+
+      notificationQueue[notification.id] = [...currentQueue, notification]
+      return
+    }
+
     const existingNotification = currentNotifications.find(
       n => n.id === notification.id
     )
 
-    // if hint type then don't want to remove existing notification
-    if (
-      existingNotification &&
-      existingNotification.type !== "hint" &&
-      notification.type !== "hint"
-    ) {
-      remove(existingNotification.id, existingNotification.type)
-      setTimeout(() => {
-        update(store => [...store, notification])
-      }, 410)
-    } else {
+    if (notification.type === "hint" || !existingNotification) {
       update(store => [...store, notification])
+      return
     }
+
+    waiting[notification.id] = true
+
+    removeAll(notification.id)
+
+    setTimeout(() => {
+      update(() => [...currentNotifications, notification])
+      setTimeout(() => {
+        waiting[notification.id] = false
+        notificationQueue[notification.id] &&
+          notificationQueue[notification.id][0] &&
+          add(notificationQueue[notification.id].shift())
+        setTimeout(() => {
+          if (
+            !waiting[notification.id] &&
+            (!notificationQueue[notification.id] ||
+              !notificationQueue[notification.id].length)
+          ) {
+            delete waiting[notification.id]
+            delete notificationQueue[notification.id]
+          }
+        }, 2500)
+      }, 2000)
+    }, 410)
   }
 
-  function remove(id, type) {
-    update(store =>
-      store.filter(n => {
-        if (n.id === id) {
-          if (type !== "hint" || n.type === "hint") {
-            return false
-          }
-        }
+  function removeAll(id) {
+    update(store => store.filter(n => n.id !== id))
+  }
 
-        return true
-      })
-    )
+  function remove({ id, eventCode }) {
+    update(store => store.filter(n => n.id !== id || n.eventCode !== eventCode))
   }
 
   return {

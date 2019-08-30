@@ -31,7 +31,7 @@
   <div id="blocknative-notifications" transition:fade={{ duration: 150 }}>
     <div class="bn-notifications-scroll">
       <ul class="bn-notifications">
-        {#each $notifications as notification, i}
+        {#each $notifications as notification}
           <Notification {notification} />
         {/each}
       </ul>

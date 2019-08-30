@@ -11,7 +11,7 @@ export default {
   input: "src/index.js",
   output: {
     sourcemap: true,
-    format: "iife",
+    format: "umd",
     name: "Notify",
     file: "public/bundle.js"
   },

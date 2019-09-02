@@ -7,7 +7,7 @@ export const transactionMessages = {
   txAwaitingApproval:
     "You have a previous transaction waiting for you to confirm",
   txConfirmReminder:
-    "Please confirm your transaction to continue (hint: the transaction window may be behind your browser)",
+    "Please confirm your transaction to continue, the transaction window may be behind your browser",
   txSendFail: "You rejected the transaction",
   txSent: "Your transaction has been sent to the network",
   txStallPending:
@@ -45,7 +45,7 @@ export function eventToType(eventCode) {
     case "txConfirmed":
       return "success"
     default:
-      return undefined
+      return "hint"
   }
 }
 

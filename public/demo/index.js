@@ -90,7 +90,7 @@ window.sendTransaction = async () => {
     txSendFail: tx => console.log(tx.eventCode)
   }
 
-  const result = window.notify.transaction({
+  const { emitter } = await window.notify.transaction({
     sendTransaction,
     estimateGas,
     gasPrice,
@@ -98,4 +98,9 @@ window.sendTransaction = async () => {
     txDetails,
     listeners
   })
+
+  emitter &&
+    emitter.on("txConfirmed", () => ({
+      message: "Congratulations on a successful transaction!"
+    }))
 }

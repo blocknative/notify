@@ -3,12 +3,13 @@ import uuid from "uuid/v4"
 import blocknativeApi from "./bn-api-client"
 import Notify from "./views/Notify.svelte"
 
-import { app, transactions } from "./stores"
+import { app, transactions, notifications, styles } from "./stores"
 import {
   handlePreFlightEvent,
   handleTransactionEvent,
   duplicateTransactionCandidate
 } from "./transactions"
+import { createNotification } from "./notifications"
 
 const version = "0.0.1"
 
@@ -17,6 +18,8 @@ transactions.subscribe(store => (transactionQueue = store))
 
 function init(config) {
   // validate config
+  // validateConfig(config)
+
   const { dappId, networkId } = config
 
   const blocknative = blocknativeApi({
@@ -36,7 +39,9 @@ function init(config) {
   return {
     account,
     hash,
-    transaction
+    transaction,
+    notification,
+    style
   }
 
   function account(address) {
@@ -88,6 +93,7 @@ function init(config) {
 
       const txObject = {
         ...txDetails,
+        value: String(txDetails.value),
         gas: gasLimit && gasLimit.toString(),
         gasPrice: price && price.toString(),
         id
@@ -209,7 +215,7 @@ function init(config) {
 
       if (result && result.hash) {
         // call blocknative.transaction with hash
-        const { emitter } = hash(result.hash, id)
+        const emitter = hash(result.hash, id)
 
         // Check for pending stall status
         setTimeout(() => {
@@ -261,16 +267,40 @@ function init(config) {
     })
   }
 
-  // function custom(notification) {
-  //   return {
-  //     dismiss,
-  //     update
-  //   }
-  // }
+  function notification(eventCode, notificationObject) {
+    // validate notification
+    // validateNotificationObject(notification)
 
-  // function style(config) {
-  //   styles.update(store => ({ ...store, ...config }))
-  // }
+    const id = uuid()
+    const startTime = Date.now()
+
+    const dismiss = () => notifications.remove({ id, eventCode })
+
+    function update(eventCode, notificationUpdate) {
+      // validate update object
+
+      createNotification({ id, startTime, eventCode }, notificationUpdate)
+
+      return {
+        dismiss,
+        update
+      }
+    }
+
+    // create notification
+    createNotification({ id, startTime, eventCode }, notificationObject)
+
+    return {
+      dismiss,
+      update
+    }
+  }
+
+  function style(config) {
+    // validate style config
+    // validateStyles(config)
+    styles.update(store => ({ ...store, ...config }))
+  }
 }
 
 export default { init }

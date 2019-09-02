@@ -3,11 +3,12 @@
 </script>
 
 <style>
+  /* .bn-notify-notification-close-icon */
   div {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0.3rem;
+    padding: 0.2rem;
     border-radius: 40px;
     transition: background 150ms ease-in-out;
   }
@@ -18,6 +19,7 @@
 </style>
 
 <div
+  class="bn-notify-custom bn-notify-notification-close-icon"
   on:mouseenter={() => (hovered = true)}
   on:mouseleave={() => (hovered = false)}>
   <svg

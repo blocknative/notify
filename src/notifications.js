@@ -13,10 +13,12 @@ export function createNotification(details, customization = {}) {
   } = details
 
   const type = eventToType(eventCode)
+  const key = `${id}-${customization.eventCode || eventCode}`
 
   const notificationObject = {
     id: id || hash,
     type,
+    key,
     startTime,
     eventCode,
     message: eventToMessage(
@@ -28,6 +30,8 @@ export function createNotification(details, customization = {}) {
     autoDismiss: typeToDismissTimeout(type),
     ...customization
   }
+
+  console.log({ notificationObject })
 
   notifications.add(notificationObject)
 }

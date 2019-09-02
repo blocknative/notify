@@ -21,6 +21,7 @@
         border-radius: 40px;
         padding: 0.55rem 1.4rem;
         color: #4a90e2;
+        margin: 0.5rem;
       }
 
       .bn-demo-button:hover {
@@ -39,28 +40,54 @@
         networkId: 4
       })
     </script>
-    <button
-      class="bn-demo-button"
-      id="send-hash"
-      onclick="if (window.ethereum && window.ethereum.networkVersion == 4) {window.sendHash();} else {alert('please switch to the rinkeby network')}"
-    >
-      <code>notify.hash()</code>
-    </button>
-    <button
-      class="bn-demo-button"
-      id="send-transaction"
-      onclick="if (window.ethereum && window.ethereum.networkVersion == 4) {window.sendTransaction();} else {alert('please switch to the rinkeby network')}"
-    >
-      <code>notify.transaction()</code>
-    </button>
-    <button
-      class="bn-demo-button"
-      id="watch-address"
-      onclick="window.ethereum.enable().then(accounts => {
-      const emitter = window.notify.account(accounts[0])
-      });"
-    >
-      <code>notify.account()</code>
-    </button>
+    <div style="display: flex; flex-flow: row wrap; width: 30vw;">
+      <button
+        class="bn-demo-button"
+        id="send-hash"
+        onclick="if (window.ethereum && window.ethereum.networkVersion == 4) {window.sendHash();} else {alert('please switch to the rinkeby network')}"
+      >
+        <code>notify.hash()</code>
+      </button>
+      <button
+        class="bn-demo-button"
+        id="send-transaction"
+        onclick="if (window.ethereum && window.ethereum.networkVersion == 4) {window.sendTransaction();} else {alert('please switch to the rinkeby network')}"
+      >
+        <code>notify.transaction()</code>
+      </button>
+      <button
+        class="bn-demo-button"
+        id="watch-address"
+        onclick="window.ethereum.enable().then(accounts => {
+        const emitter = window.notify.account(accounts[0])
+        });"
+      >
+        <code>notify.account()</code>
+      </button>
+      <button
+        class="bn-demo-button"
+        id="custom-notification"
+        onclick="const {update} = window.notify.notification('customNotification', {
+          type: 'pending',
+          message: 'This is a custom notification triggered by the dapp'
+        });
+        setTimeout(() => update('customNotificationUpdate', {message: 'Updated status for custom message', type: 'success'}), 4000)"
+      >
+        <code>notify.notification()</code>
+      </button>
+
+      <button
+        class="bn-demo-button"
+        onclick="window.notify.style({ darkMode: true })"
+      >
+        Dark Mode
+      </button>
+      <button
+        class="bn-demo-button"
+        onclick="window.notify.style({ darkMode: false })"
+      >
+        Light Mode
+      </button>
+    </div>
   </body>
 </html>

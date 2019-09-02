@@ -4,7 +4,7 @@
   import { elasticInOut } from "svelte/easing";
   import { timeString, formatTime } from "../utilities";
   import CloseIcon from "../components/CloseIcon.svelte";
-  import { notifications } from "../stores";
+  import { notifications, styles } from "../stores";
   export let notification;
 
   let currentTime = Date.now();
@@ -45,19 +45,15 @@
     background: #ffffff;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
     margin-top: 0.75rem;
+    color: inherit;
+    transition: background 300ms ease-in-out, color 300ms ease-in-out;
   }
 
   /* .bn-notify-notification-status-icon */
   div:nth-child(1) {
     height: 100%;
-    width: 1.4rem;
+    width: 1.5rem;
   }
-
-  /* .bn-notify-notification-status-icon img */
-  /* div:nth-child(1) img {
-    width: 100%;
-    height: auto;
-  } */
 
   /* .bn-notify-notification-info */
   div:nth-child(2) {
@@ -71,13 +67,12 @@
   /* .bn-notify-notification-info-meta */
   div:nth-child(2) p:nth-child(1) {
     margin: 0;
-    color: #4a4a4a;
   }
 
   /* .bn-notify-notification-info-meta */
   div:nth-child(2) p:nth-child(2) {
     margin: 0.75rem 0 0 0;
-    color: #aeaeae;
+    opacity: 0.7;
     font-size: 0.79rem;
   }
 
@@ -91,6 +86,7 @@
     vertical-align: sub;
   }
 
+  /* .bn-notify-notification-close */
   div:nth-child(3) {
     position: absolute;
     top: 0.75rem;
@@ -99,29 +95,35 @@
 </style>
 
 <li
-  class="bn-notify-notification"
-  transition:fly={{ duration: 600, x: 40, easing: elasticInOut }}>
-  <div class="bn-notify-notification-status-icon">
+  class:bn-notify-dark-mode={$styles.darkMode}
+  class="bn-notify-custom bn-notify-notification"
+  transition:fly={{ duration: 800, x: 40, easing: elasticInOut }}>
+  <div class="bn-notify-custom bn-notify-notification-status-icon">
     <img src={icons[notification.type]} alt="status" />
   </div>
-  <div class="bn-notify-notification-info">
+  <div class="bn-notify-custom bn-notify-notification-info">
     <p>{notification.message}</p>
-    <p class="bn-notify-notification-info-meta">
-      <span class="bn-notify-notification-info-meta-timestamp">
+    <p class="bn-notify-custom bn-notify-notification-info-meta">
+      <span class="bn-notify-custom bn-notify-notification-info-meta-timestamp">
         {formattedTime}
       </span>
       {#if notification.type === 'pending' && notification.startTime}
-        <span class="bn-notify-notification-info-meta-duration">
+        <span
+          class="bn-notify-custom bn-notify-notification-info-meta-duration">
           -
-          <i class="bn-notify-notification-info-meta-clock" />
-          <span class="bn-notify-notification-info-meta-duration-time">
+          <i class="bn-notify-custom bn-notify-notification-info-meta-clock" />
+          <span
+            class="bn-notify-custom
+            bn-notify-notification-info-meta-duration-time">
             {timeString(currentTime - notification.startTime)}
           </span>
         </span>
       {/if}
     </p>
   </div>
-  <div on:click={() => notifications.remove(notification)}>
+  <div
+    class="bn-notify-custom bn-notify-notification-close"
+    on:click={() => notifications.remove(notification)}>
     <CloseIcon />
   </div>
 </li>

@@ -5,6 +5,7 @@
 </script>
 
 <style>
+  /* .bn-notify-notifications */
   ul {
     display: flex;
     flex-flow: column nowrap;
@@ -21,14 +22,23 @@
     overflow-x: hidden;
   }
 
+  :global(.bn-notify-custom.bn-notify-dark-mode) {
+    background: #283944;
+    color: #ffffff;
+  }
+
+  :global(ul) {
+    color: #4a4a4a;
+  }
+
   ::-webkit-scrollbar {
     display: none;
   }
 </style>
 
 {#if $notifications.length > 0}
-  <ul class="bn-notify-notifications">
-    {#each $notifications as notification}
+  <ul class="bn-notify-custom bn-notify-notifications">
+    {#each $notifications as notification, i (notification.key)}
       <Notification {notification} />
     {/each}
   </ul>

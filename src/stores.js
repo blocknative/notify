@@ -1,5 +1,5 @@
 import { writable } from "svelte/store"
-import { waitForUi, updateOrAdd } from "./utilities"
+import { updateOrAdd } from "./utilities"
 
 export const app = writable({
   version: null,
@@ -31,67 +31,32 @@ function createTransactionStore(initialState) {
     })
   }
 
+  function add(transaction) {
+    update(store => [...store, transaction])
+  }
+
   return {
     subscribe,
-    updateQueue
+    updateQueue,
+    add
   }
 }
 
 function createNotificationStore(initialState) {
   const { subscribe, update } = writable(initialState)
 
-  let notificationQueue = {}
-  let waiting = {}
-
-  let currentNotifications
-  subscribe(store => {
-    currentNotifications = store
-  })
-
   function add(notification) {
-    if (waiting[notification.id]) {
-      const currentQueue = notificationQueue[notification.id] || []
+    update(store => {
+      const existingNotification = store.find(n => n.id === notification.id)
+      if (notification.type === "hint" || !existingNotification) {
+        return [...store, notification]
+      }
 
-      notificationQueue[notification.id] = [...currentQueue, notification]
-      return
-    }
-
-    const existingNotification = currentNotifications.find(
-      n => n.id === notification.id
-    )
-
-    if (notification.type === "hint" || !existingNotification) {
-      update(store => [...store, notification])
-      return
-    }
-
-    waiting[notification.id] = true
-
-    removeAll(notification.id)
-
-    setTimeout(() => {
-      update(() => [...currentNotifications, notification])
-      setTimeout(() => {
-        waiting[notification.id] = false
-        notificationQueue[notification.id] &&
-          notificationQueue[notification.id][0] &&
-          add(notificationQueue[notification.id].shift())
-        setTimeout(() => {
-          if (
-            !waiting[notification.id] &&
-            (!notificationQueue[notification.id] ||
-              !notificationQueue[notification.id].length)
-          ) {
-            delete waiting[notification.id]
-            delete notificationQueue[notification.id]
-          }
-        }, 2500)
-      }, 2000)
-    }, 601)
-  }
-
-  function removeAll(id) {
-    update(store => store.filter(n => n.id !== id))
+      return [
+        ...store.filter(n => n.id !== notification.id || n.type === "hint"),
+        notification
+      ]
+    })
   }
 
   function remove({ id, eventCode }) {
@@ -101,6 +66,7 @@ function createNotificationStore(initialState) {
   return {
     subscribe,
     add,
-    remove
+    remove,
+    update
   }
 }

@@ -5,36 +5,31 @@
 </script>
 
 <style>
-  #blocknative-notifications {
+  ul {
     display: flex;
     flex-flow: column nowrap;
     position: fixed;
-    padding: 10px;
-    width: 371px;
+    padding: 0.75rem;
+    margin: 0;
+    list-style-type: none;
+    width: 20rem;
     bottom: 0;
     right: 0;
+    font-family: "Helvetica Neue";
+    max-height: 100vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
 
   ::-webkit-scrollbar {
     display: none;
   }
-
-  .bn-notifications {
-    display: flex;
-    flex-flow: column nowrap;
-    list-style-type: none;
-    width: 100%;
-  }
 </style>
 
 {#if $notifications.length > 0}
-  <div id="blocknative-notifications" transition:fade={{ duration: 150 }}>
-    <div class="bn-notifications-scroll">
-      <ul class="bn-notifications">
-        {#each $notifications as notification}
-          <Notification {notification} />
-        {/each}
-      </ul>
-    </div>
-  </div>
+  <ul class="bn-notify-notifications">
+    {#each $notifications as notification}
+      <Notification {notification} />
+    {/each}
+  </ul>
 {/if}

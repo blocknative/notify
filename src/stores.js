@@ -87,7 +87,7 @@ function createNotificationStore(initialState) {
           }
         }, 2500)
       }, 2000)
-    }, 410)
+    }, 601)
   }
 
   function removeAll(id) {

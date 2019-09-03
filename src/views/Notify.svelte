@@ -39,15 +39,12 @@
     max-height: 100vh;
     overflow-y: scroll;
     overflow-x: hidden;
+    color: #4a4a4a;
   }
 
   :global(.bn-notify-custom.bn-notify-dark-mode) {
     background: #283944;
     color: #ffffff;
-  }
-
-  :global(ul) {
-    color: #4a4a4a;
   }
 
   ::-webkit-scrollbar {

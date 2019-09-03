@@ -48,14 +48,14 @@ function createNotificationStore(initialState) {
   function add(notification) {
     update(store => {
       const existingNotification = store.find(n => n.id === notification.id)
+
+      // if notification is a hint type or there are no existing notifications with same id, then just add it.
       if (notification.type === "hint" || !existingNotification) {
         return [...store, notification]
       }
 
-      return [
-        ...store.filter(n => n.id !== notification.id || n.type === "hint"),
-        notification
-      ]
+      // otherwise filter out all notifications with the same id and then add the new notification
+      return [...store.filter(n => n.id !== notification.id), notification]
     })
   }
 

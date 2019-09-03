@@ -31,7 +31,5 @@ export function createNotification(details, customization = {}) {
     ...customization
   }
 
-  console.log({ notificationObject })
-
   notifications.add(notificationObject)
 }

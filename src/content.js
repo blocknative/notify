@@ -23,12 +23,12 @@ export const transactionMessages = {
 
 export function eventToType(eventCode) {
   switch (eventCode) {
-    case "txRequest":
     case "txSent":
     case "txPool":
     case "txSpeedUp":
     case "txCancel":
       return "pending"
+    case "txRequest":
     case "txRepeat":
     case "txAwaitingApproval":
     case "txConfirmReminder":

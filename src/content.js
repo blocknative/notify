@@ -18,6 +18,7 @@ export const transactionMessages = {
   txCancel: "Your transaction is being canceled",
   txFailed: "Your transaction has failed",
   txConfirmed: "Your transaction has succeeded",
+  txUnderpriced: "The gas limit is set too low to complete this transaction",
   txError: "Oops something went wrong, please try again"
 }
 

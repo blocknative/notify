@@ -1,7 +1,26 @@
 <script>
   import { fade } from "svelte/transition";
+  import debounce from "lodash.debounce";
   import Notification from "./Notification.svelte";
   import { notifications, app } from "../stores";
+
+  let smallScreen = window.innerWidth < 850;
+
+  // listen for screen resize events
+  window.addEventListener(
+    "resize",
+    debounce(() => {
+      if (window.innerWidth < 850) {
+        if (!smallScreen) {
+          smallScreen = true;
+        }
+      } else {
+        if (smallScreen) {
+          smallScreen = false;
+        }
+      }
+    }, 300)
+  );
 </script>
 
 <style>
@@ -39,7 +58,7 @@
 {#if $notifications.length > 0}
   <ul class="bn-notify-custom bn-notify-notifications">
     {#each $notifications as notification, i (notification.key)}
-      <Notification {notification} />
+      <Notification {notification} {smallScreen} />
     {/each}
   </ul>
 {/if}

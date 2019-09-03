@@ -1,11 +1,12 @@
 <script>
   import { onDestroy } from "svelte";
   import { fly, fade } from "svelte/transition";
-  import { elasticOut, sineOut } from "svelte/easing";
+  import { quintIn } from "svelte/easing";
   import { timeString, formatTime } from "../utilities";
   import CloseIcon from "../components/CloseIcon.svelte";
   import { notifications, styles } from "../stores";
   export let notification;
+  export let smallScreen;
 
   let currentTime = Date.now();
 
@@ -29,6 +30,13 @@
     success: "/icons/icon-check-animated.svg",
     error: "/icons/icon-alert-animated.svg"
   };
+
+  function elasticOut(t) {
+    return (
+      Math.sin((-13.0 * (t + 1.0) * Math.PI) / 2) * Math.pow(2.0, -35.0 * t) +
+      1.0
+    );
+  }
 </script>
 
 <style>
@@ -97,8 +105,8 @@
 <li
   class:bn-notify-dark-mode={$styles.darkMode}
   class="bn-notify-custom bn-notify-notification"
-  in:fly={{ duration: 850, x: 50, easing: elasticOut }}
-  out:fly={{ duration: 200, x: 100, easing: sineOut }}>
+  in:fly={{ duration: 1200, delay: 300, x: smallScreen ? 0 : 321, y: smallScreen ? -50 : 0, easing: elasticOut }}
+  out:fly={{ duration: 400, x: smallScreen ? 0 : 100, y: smallScreen ? -50 : 0, easing: quintIn }}>
   <div class="bn-notify-custom bn-notify-notification-status-icon">
     <img src={icons[notification.type]} alt="status" />
   </div>

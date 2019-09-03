@@ -15,9 +15,7 @@ export const notifications = createNotificationStore([])
 export const styles = writable({
   mobilePosition: null,
   desktopPosition: null,
-  darkMode: null,
-  headlessMode: null,
-  css: null
+  darkMode: null
 })
 
 function createTransactionStore(initialState) {

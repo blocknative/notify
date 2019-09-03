@@ -26,12 +26,6 @@ export function removeUndefined(obj) {
   }, {})
 }
 
-export function waitForUi(wait) {
-  return new Promise(resolve => {
-    setTimeout(resolve, wait)
-  })
-}
-
 // will update object(merge new data) in list if it passes predicate, otherwise adds new object
 export function updateOrAdd(list, predicate, data) {
   const clone = [...list]
@@ -43,4 +37,32 @@ export function updateOrAdd(list, predicate, data) {
   }
 
   return [...list, removeUndefined(data)]
+}
+
+export function extractMessageFromError(message) {
+  if (!message) {
+    return {
+      eventCode: "txError",
+      errorMsg: "An unknown error occured"
+    }
+  }
+
+  if (message.includes("User denied transaction signature")) {
+    return {
+      eventCode: "txSendFail",
+      errorMsg: "User denied transaction signature"
+    }
+  }
+
+  if (message.includes("transaction underpriced")) {
+    return {
+      eventCode: "txUnderpriced",
+      errorMsg: "Transaction is under priced"
+    }
+  }
+
+  return {
+    eventCode: "txError",
+    errorMsg: message
+  }
 }

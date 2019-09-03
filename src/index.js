@@ -1,6 +1,6 @@
 import bigInt from "big-integer"
 import uuid from "uuid/v4"
-import blocknativeApi from "./bn-api-client"
+import blocknativeSdk from "./bn-client-sdk"
 import Notify from "./views/Notify.svelte"
 
 import { app, transactions, notifications, styles } from "./stores"
@@ -10,6 +10,14 @@ import {
   duplicateTransactionCandidate
 } from "./transactions"
 import { createNotification } from "./notifications"
+import {
+  validateConfig,
+  validateTransactionOptions,
+  validateNotificationObject,
+  validateStyles
+} from "./validation"
+
+import { extractMessageFromError } from "./utilities"
 
 const version = "0.0.1"
 
@@ -17,12 +25,11 @@ let transactionQueue
 transactions.subscribe(store => (transactionQueue = store))
 
 function init(config) {
-  // validate config
-  // validateConfig(config)
+  validateConfig(config)
 
   const { dappId, networkId } = config
 
-  const blocknative = blocknativeApi({
+  const blocknative = blocknativeSdk({
     dappId,
     networkId,
     transactionCallback: handleTransactionEvent
@@ -45,19 +52,26 @@ function init(config) {
   }
 
   function account(address) {
-    const { emitter } = blocknative.account(address)
-    return emitter
+    try {
+      const { emitter } = blocknative.account(address)
+      return emitter
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 
   function hash(hash, id) {
-    const { emitter } = blocknative.transaction(hash, id)
-    return emitter
+    try {
+      const { emitter } = blocknative.transaction(hash, id)
+      return emitter
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 
   function transaction(options) {
     return new Promise(async (resolve, reject) => {
-      // @TODO - validate options
-      // validateTransactionOptions(options)
+      validateTransactionOptions(options)
 
       const {
         sendTransaction,
@@ -195,9 +209,9 @@ function init(config) {
       // initiate transaction
       const sendTransactionResult = sendTransaction()
 
-      // get result and handle rejection
-      const result = await sendTransactionResult.catch(err => {
-        const eventCode = "txSendFail"
+      // get result and handle errors
+      const result = await sendTransactionResult.catch(error => {
+        const { eventCode, errorMsg } = extractMessageFromError(error.message)
 
         handlePreFlightEvent({
           blocknative,
@@ -209,12 +223,10 @@ function init(config) {
           listeners
         })
 
-        // @TODO - need to properly handle possible errors here
-        return reject("User rejected transaction")
+        return reject(errorMsg)
       })
 
       if (result && result.hash) {
-        // call blocknative.transaction with hash
         const emitter = hash(result.hash, id)
 
         // Check for pending stall status
@@ -268,8 +280,7 @@ function init(config) {
   }
 
   function notification(eventCode, notificationObject) {
-    // validate notification
-    // validateNotificationObject(notification)
+    validateNotificationObject(notificationObject)
 
     const id = uuid()
     const startTime = Date.now()
@@ -277,8 +288,7 @@ function init(config) {
     const dismiss = () => notifications.remove({ id, eventCode })
 
     function update(eventCode, notificationUpdate) {
-      // validate update object
-
+      validateNotificationObject(notificationUpdate)
       createNotification({ id, startTime, eventCode }, notificationUpdate)
 
       return {
@@ -297,8 +307,7 @@ function init(config) {
   }
 
   function style(config) {
-    // validate style config
-    // validateStyles(config)
+    validateStyles(config)
     styles.update(store => ({ ...store, ...config }))
   }
 }

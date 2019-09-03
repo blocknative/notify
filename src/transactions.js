@@ -1,6 +1,7 @@
 import { transactions } from "./stores"
 import { createNotification } from "./notifications"
 import { argsEqual } from "./utilities"
+import { validateNotificationObject } from "./validation"
 
 let transactionQueue
 
@@ -15,7 +16,6 @@ export function handlePreFlightEvent({
   blocknative,
   status
 }) {
-  // log event
   blocknative.event({
     categoryCode: contract ? "activeContract" : "activeTransaction",
     eventCode,
@@ -34,9 +34,9 @@ export function handlePreFlightEvent({
   const emitterResult =
     listeners[eventCode] && listeners[eventCode](transaction)
 
-  // @TODO - validate emitter result to see if valid notification schema
-  // @NOTE - doesn't need to be a complete object, could be just a message param if that is all they want to customize
-  // emitterResult && validateNotificationObject(emitterResult)
+  if (emitterResult) {
+    validateNotificationObject(emitterResult)
+  }
 
   handleTransactionEvent({
     transaction: transaction,
@@ -45,6 +45,16 @@ export function handlePreFlightEvent({
 }
 
 export function handleTransactionEvent({ transaction, emitterResult }) {
+  // transaction queue alread has tx with same id and same eventCode then don't update
+  // this is to allow for the fact that the server mirrors events sent to it
+  if (
+    transactionQueue.find(
+      tx => tx.id === transaction.id && tx.eventCode === transaction.eventCode
+    )
+  ) {
+    return
+  }
+
   transactions.updateQueue(transaction)
 
   // create notification if dev hasn't opted out

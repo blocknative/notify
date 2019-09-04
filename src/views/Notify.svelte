@@ -11,6 +11,9 @@
   import { timeString, formatTime } from "../utilities";
 
   let smallScreen = window.innerWidth < 420;
+  let positioning;
+  let x = 321;
+  let notificationMargin = "margin: 0.75rem 0 0 0;";
 
   // listen for screen resize events
   window.addEventListener(
@@ -51,6 +54,35 @@
       1.0
     );
   }
+
+  $: if ($styles.desktopPosition && !smallScreen) {
+    positioning =
+      $styles.desktopPosition === "bottomRight"
+        ? undefined
+        : $styles.desktopPosition === "bottomLeft"
+        ? "left: 0; right: unset;"
+        : $styles.desktopPosition === "topRight"
+        ? "top: 0;"
+        : "top: 0; bottom: unset; left: 0; right: unset;";
+
+    x = positioning && positioning.includes("left") ? -321 : x;
+
+    if ($styles.desktopPosition.includes("top")) {
+      notificationMargin = "margin: 0 0 0.75rem 0;";
+    } else {
+      notificationMargin = "margin: 0.75rem 0 0 0;";
+    }
+  }
+
+  $: if ($styles.mobilePosition && smallScreen) {
+    positioning = $styles.mobilePosition === "top" && "top: 0;";
+
+    if ($styles.mobilePosition === "top") {
+      notificationMargin = "margin: 0 0 0.75rem 0;";
+    } else {
+      notificationMargin = "margin: 0.75rem 0 0 0;";
+    }
+  }
 </script>
 
 <style>
@@ -58,7 +90,6 @@
   ul {
     display: flex;
     flex-flow: column nowrap;
-    justify-content: flex-end;
     position: fixed;
     padding: 0.75rem;
     margin: 0;
@@ -67,11 +98,12 @@
     bottom: 0;
     right: 0;
     font-family: "Helvetica Neue";
-    height: 100vh;
+    max-height: 100vh;
     overflow-y: scroll;
     overflow-x: hidden;
     color: #4a4a4a;
     background: transparent;
+    scrollbar-width: none;
   }
 
   :global(.bn-notify-custom.bn-notify-dark-mode) {
@@ -92,7 +124,6 @@
     border-radius: 10px;
     background: #ffffff;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 0.75rem;
     color: inherit;
     transition: background 300ms ease-in-out, color 300ms ease-in-out;
   }
@@ -143,14 +174,15 @@
 </style>
 
 {#if $notifications.length > 0}
-  <ul class="bn-notify-custom bn-notify-notifications">
+  <ul class="bn-notify-custom bn-notify-notifications" style={positioning}>
     {#each $notifications as notification, i (notification.key)}
       <li
+        style={notificationMargin}
         animate:flip={{ duration: 500 }}
         class:bn-notify-dark-mode={$styles.darkMode}
         class="bn-notify-custom bn-notify-notification"
-        in:fly={{ duration: 1200, delay: 300, x: smallScreen ? 0 : 321, y: smallScreen ? -50 : 0, easing: elasticOut }}
-        out:fly={{ duration: 400, x: smallScreen ? 0 : 100, y: smallScreen ? -50 : 0, easing: quintIn }}>
+        in:fly={{ duration: 1200, delay: 300, x: smallScreen ? 0 : x, y: smallScreen ? -50 : 0, easing: elasticOut }}
+        out:fly={{ duration: 400, x: smallScreen ? 0 : x / 3, y: smallScreen ? -50 : 0, easing: quintIn }}>
         <div class="bn-notify-custom bn-notify-notification-status-icon">
           <img src={icons[notification.type]} alt="status" />
         </div>

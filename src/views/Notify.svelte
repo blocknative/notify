@@ -11,10 +11,11 @@
   import { timeString, formatTime } from "../utilities";
 
   let smallScreen = window.innerWidth < 420;
-  let positioning;
+  let positioning = "bottom: 0; right: 0;";
   let x = smallScreen ? 0 : 321;
   let y = smallScreen ? 50 : 0;
-  let notificationMargin = "margin: 0.75rem 0 0 0;";
+  let notificationMargin = "margin: 0 0 0.75rem 0;";
+  let justifyContent = "justify-content: flex-end;";
 
   // listen for screen resize events
   window.addEventListener(
@@ -59,19 +60,21 @@
   $: if ($styles.desktopPosition && !smallScreen) {
     positioning =
       $styles.desktopPosition === "bottomRight"
-        ? undefined
+        ? "bottom: 0; right: 0;"
         : $styles.desktopPosition === "bottomLeft"
         ? "left: 0; right: unset;"
         : $styles.desktopPosition === "topRight"
         ? "top: 0;"
         : "top: 0; bottom: unset; left: 0; right: unset;";
 
-    x = positioning && positioning.includes("left") ? -321 : x;
+    x = positioning && positioning.includes("left") ? -321 : 321;
 
     if ($styles.desktopPosition.includes("top")) {
-      notificationMargin = "margin: 0 0 0.75rem 0;";
-    } else {
+      justifyContent = "justify-content: unset;";
       notificationMargin = "margin: 0.75rem 0 0 0;";
+    } else {
+      justifyContent = "justify-content: flex-end;";
+      notificationMargin = "margin: 0 0 0.75rem 0;";
     }
   }
 
@@ -85,10 +88,12 @@
 
     if ($styles.mobilePosition === "top") {
       y = -50;
-      notificationMargin = "margin: 0 0 0.75rem 0;";
+      justifyContent = "justify-content: flex-end;";
+      notificationMargin = "margin: 0.75rem 0 0 0;";
     } else {
       y = 50;
-      notificationMargin = "margin: 0.75rem 0 0 0;";
+      justifyContent = "justify-content: unset;";
+      notificationMargin = "margin: 0 0 0.75rem 0;";
     }
   }
 </script>
@@ -99,7 +104,7 @@
     display: flex;
     flex-flow: column nowrap;
     position: fixed;
-    padding: 0.75rem;
+    padding: 0 0.75rem;
     margin: 0;
     list-style-type: none;
     width: 20rem;
@@ -189,7 +194,9 @@
 </style>
 
 {#if $notifications.length > 0}
-  <ul class="bn-notify-custom bn-notify-notifications" style={positioning}>
+  <ul
+    class="bn-notify-custom bn-notify-notifications"
+    style={`${positioning} ${justifyContent}`}>
     {#each $notifications as notification, i (notification.key)}
       <li
         style={notificationMargin}
@@ -197,7 +204,7 @@
         class:bn-notify-dark-mode={$styles.darkMode}
         class="bn-notify-custom bn-notify-notification"
         in:fly={{ duration: 1200, delay: 300, x, y, easing: elasticOut }}
-        out:fly={{ duration: 400, x: smallScreen ? 0 : x / 3, y: smallScreen ? -50 : 0, easing: quintIn }}>
+        out:fly={{ duration: 400, x, y, easing: quintIn }}>
         <div class="bn-notify-custom bn-notify-notification-status-icon">
           <img src={icons[notification.type]} alt="status" />
         </div>

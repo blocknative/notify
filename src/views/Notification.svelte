@@ -46,7 +46,6 @@
   li {
     position: relative;
     display: flex;
-    align-items: center;
     padding: 0.75rem;
     font-size: 0.889rem;
     border-radius: 10px;

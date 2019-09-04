@@ -4,13 +4,13 @@
   import Notification from "./Notification.svelte";
   import { notifications, app } from "../stores";
 
-  let smallScreen = window.innerWidth < 850;
+  let smallScreen = window.innerWidth < 420;
 
   // listen for screen resize events
   window.addEventListener(
     "resize",
     debounce(() => {
-      if (window.innerWidth < 850) {
+      if (window.innerWidth < 420) {
         if (!smallScreen) {
           smallScreen = true;
         }

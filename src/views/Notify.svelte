@@ -12,7 +12,8 @@
 
   let smallScreen = window.innerWidth < 420;
   let positioning;
-  let x = 321;
+  let x = smallScreen ? 0 : 321;
+  let y = smallScreen ? 50 : 0;
   let notificationMargin = "margin: 0.75rem 0 0 0;";
 
   // listen for screen resize events
@@ -75,11 +76,18 @@
   }
 
   $: if ($styles.mobilePosition && smallScreen) {
-    positioning = $styles.mobilePosition === "top" && "top: 0;";
+    positioning =
+      $styles.mobilePosition === "top"
+        ? "top: 0; bottom: unset;"
+        : "bottom: 0; top: unset;";
+
+    x = 0;
 
     if ($styles.mobilePosition === "top") {
+      y = -50;
       notificationMargin = "margin: 0 0 0.75rem 0;";
     } else {
+      y = 50;
       notificationMargin = "margin: 0.75rem 0 0 0;";
     }
   }
@@ -104,6 +112,13 @@
     color: #4a4a4a;
     background: transparent;
     scrollbar-width: none;
+    box-sizing: border-box;
+  }
+
+  @media only screen and (max-width: 450px) {
+    ul {
+      width: 100%;
+    }
   }
 
   :global(.bn-notify-custom.bn-notify-dark-mode) {
@@ -181,7 +196,7 @@
         animate:flip={{ duration: 500 }}
         class:bn-notify-dark-mode={$styles.darkMode}
         class="bn-notify-custom bn-notify-notification"
-        in:fly={{ duration: 1200, delay: 300, x: smallScreen ? 0 : x, y: smallScreen ? -50 : 0, easing: elasticOut }}
+        in:fly={{ duration: 1200, delay: 300, x, y, easing: elasticOut }}
         out:fly={{ duration: 400, x: smallScreen ? 0 : x / 3, y: smallScreen ? -50 : 0, easing: quintIn }}>
         <div class="bn-notify-custom bn-notify-notification-status-icon">
           <img src={icons[notification.type]} alt="status" />

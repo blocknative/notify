@@ -18,6 +18,7 @@
     "lodash.debounce": "^4.0.8",
     "ow": "^0.13.2",
     "sirv-cli": "^0.4.4",
+    "svelte-i18n": "^1.1.2-beta",
     "uuid": "^3.3.3"
   },
   "scripts": {

@@ -1,7 +1,10 @@
 import bigInt from "big-integer"
 import uuid from "uuid/v4"
 import blocknativeSdk from "./bn-client-sdk"
+import { locale, dictionary, getClientLocale, _ } from "svelte-i18n"
+
 import { get } from "svelte/store"
+import { notifyMessages } from "./i18n"
 
 import Notify from "./views/Notify.svelte"
 
@@ -49,6 +52,17 @@ function init(initialize) {
   new Notify({
     target: document.body
   })
+
+  // set the dictionary for i18n
+  dictionary.set(notifyMessages)
+
+  // set the locale for i18n
+  locale.set(
+    getClientLocale({
+      fallback: "en-US",
+      navigator: true
+    })
+  )
 
   return {
     account,

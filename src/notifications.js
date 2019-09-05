@@ -1,5 +1,10 @@
+import { _ } from "svelte-i18n"
 import { notifications } from "./stores"
-import { eventToType, eventToMessage, typeToDismissTimeout } from "./defaults"
+import { eventToType, typeToDismissTimeout } from "./defaults"
+
+// subscribe to the formatter store
+let formatter
+_.subscribe(store => (formatter = store))
 
 export function createNotification(details, customization = {}) {
   const {
@@ -14,6 +19,47 @@ export function createNotification(details, customization = {}) {
 
   const type = eventToType(eventCode)
   const key = `${id}-${customization.eventCode || eventCode}`
+  const counterpartyShortened =
+    counterparty &&
+    counterparty.substring(0, 4) +
+      "..." +
+      counterparty.substring(counterparty.length - 4)
+
+  const formatterOptions = counterparty
+    ? [
+        `watched.${eventCode}`,
+        {
+          verb:
+            eventCode === "txConfirmed"
+              ? direction === "incoming"
+                ? "received"
+                : "sent"
+              : direction === "incoming"
+              ? "receiving"
+              : "sending",
+          formattedValue: value / 1000000000000000000,
+          preposition: direction === "incoming" ? "from" : "to",
+          counterpartyShortened
+        }
+      ]
+    : [`transaction.${eventCode}`]
+
+  console.log([
+    `watched.${eventCode}`,
+    {
+      verb:
+        eventCode === "txConfirmed"
+          ? direction === "incoming"
+            ? "received"
+            : "sent"
+          : direction === "incoming"
+          ? "receiving"
+          : "sending",
+      formattedValue: value / 1000000000000000000,
+      preposition: direction === "incoming" ? "from" : "to",
+      counterpartyShortened
+    }
+  ])
 
   const notificationObject = {
     id: id || hash,
@@ -21,12 +67,7 @@ export function createNotification(details, customization = {}) {
     key,
     startTime,
     eventCode,
-    message: eventToMessage(
-      eventCode,
-      direction,
-      counterparty,
-      value && value / 1000000000000000000
-    ),
+    message: formatter(...formatterOptions),
     autoDismiss: typeToDismissTimeout(type),
     ...customization
   }

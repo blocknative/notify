@@ -11,11 +11,12 @@
   import { timeString, formatTime } from "../utilities";
 
   let smallScreen = window.innerWidth < 420;
-  let positioning = "bottom: 0; right: 0;";
-  let x = smallScreen ? 0 : 321;
-  let y = smallScreen ? 50 : 0;
-  let notificationMargin = "margin: 0 0 0.75rem 0;";
-  let justifyContent = "justify-content: flex-end;";
+
+  let positioning;
+  let x;
+  let y;
+  let notificationMargin;
+  let justifyContent;
 
   // listen for screen resize events
   window.addEventListener(
@@ -68,6 +69,7 @@
         : "top: 0; bottom: unset; left: 0; right: unset;";
 
     x = positioning && positioning.includes("left") ? -321 : 321;
+    y = 0;
 
     if ($styles.desktopPosition.includes("top")) {
       justifyContent = "justify-content: unset;";
@@ -95,6 +97,14 @@
       justifyContent = "justify-content: flex-end;";
       notificationMargin = "margin: 0 0 0.75rem 0;";
     }
+  }
+
+  $: if (!$styles.desktopPosition && !$styles.mobilePosition) {
+    x = smallScreen ? 0 : 321;
+    y = smallScreen ? 50 : 0;
+    notificationMargin = "margin: 0 0 0.75rem 0;";
+    justifyContent = "justify-content: flex-end;";
+    positioning = "bottom: 0; right: 0;";
   }
 </script>
 
@@ -203,6 +213,7 @@
     style={`${positioning} ${justifyContent}`}>
     {#each $notifications as notification, i (notification.key)}
       <li
+        on:click={notification.onclick}
         style={notificationMargin}
         animate:flip={{ duration: 500 }}
         class:bn-notify-dark-mode={$styles.darkMode}

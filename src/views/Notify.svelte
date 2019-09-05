@@ -178,7 +178,7 @@
     flex-flow: column nowrap;
     justify-content: center;
     margin-left: 0.75rem;
-    max-width: 80%;
+    max-width: 78%;
   }
 
   /* .bn-notify-notification-info-meta */

@@ -142,6 +142,7 @@
   :global(.bn-notify-custom.bn-notify-dark-mode) {
     background: #283944;
     color: #ffffff;
+    background: rgba(40,57,68,.9);
   }
 
   :global(.bn-notify-clickable:hover) {
@@ -164,6 +165,9 @@
     color: inherit;
     transition: background 300ms ease-in-out, color 300ms ease-in-out;
     pointer-events: all;
+    background: #ffffff;
+    backdrop-filter: blur(5px);
+    background: rgba(255,255,255,.8);
   }
 
   /* .bn-notify-notification-status-icon */

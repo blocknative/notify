@@ -12,10 +12,13 @@ export const contracts = writable([])
 export const transactions = createTransactionStore([])
 export const notifications = createNotificationStore([])
 
-export const styles = writable({
+export const configuration = writable({
   mobilePosition: null,
   desktopPosition: null,
-  darkMode: null
+  darkMode: null,
+  txApproveReminderTimeout: null,
+  txStallPendingTimeout: null,
+  txStallConfirmedTimeout: null
 })
 
 function createTransactionStore(initialState) {

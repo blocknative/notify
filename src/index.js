@@ -1,33 +1,40 @@
 import bigInt from "big-integer"
 import uuid from "uuid/v4"
 import blocknativeSdk from "./bn-client-sdk"
+import { get } from "svelte/store"
+
 import Notify from "./views/Notify.svelte"
 
-import { app, transactions, notifications, styles } from "./stores"
+import { app, transactions, notifications, configuration } from "./stores"
+
 import {
   handlePreFlightEvent,
   handleTransactionEvent,
   duplicateTransactionCandidate
 } from "./transactions"
+
 import { createNotification } from "./notifications"
+
 import {
-  validateConfig,
+  validateInit,
   validateTransactionOptions,
   validateNotificationObject,
-  validateStyles
+  validateConfig
 } from "./validation"
 
 import { extractMessageFromError } from "./utilities"
+
+import { txTimeouts } from "./defaults"
 
 const version = "0.0.1"
 
 let transactionQueue
 transactions.subscribe(store => (transactionQueue = store))
 
-function init(config) {
-  validateConfig(config)
+function init(initialize) {
+  validateInit(initialize)
 
-  const { dappId, networkId } = config
+  const { dappId, networkId } = initialize
 
   const blocknative = blocknativeSdk({
     dappId,
@@ -36,7 +43,7 @@ function init(config) {
   })
 
   // save config to app store
-  app.update(store => ({ ...store, ...config, version }))
+  app.update(store => ({ ...store, ...initialize, version }))
 
   // initialize App
   new Notify({
@@ -48,7 +55,7 @@ function init(config) {
     hash,
     transaction,
     notification,
-    style
+    config
   }
 
   function account(address) {
@@ -156,6 +163,13 @@ function init(config) {
         })
       }
 
+      // get any timeout configurations
+      const {
+        txApproveReminderTimeout,
+        txStallPendingTimeout,
+        txStallConfirmedTimeout
+      } = get(configuration)
+
       // check previous transactions awaiting approval
       if (transactionQueue.find(tx => tx.status === "awaitingApproval")) {
         const eventCode = "txAwaitingApproval"
@@ -188,7 +202,7 @@ function init(config) {
             listeners
           })
         }
-      }, 20000)
+      }, txApproveReminderTimeout || txTimeouts.txApproveReminderTimeout)
 
       handlePreFlightEvent({
         blocknative,
@@ -249,7 +263,7 @@ function init(config) {
               listeners
             })
           }
-        }, 20000) // @TODO - Need to work out how to have this configurable
+        }, txStallPendingTimeout || txTimeouts.txStallPendingTimeout)
 
         // Check for confirmed stall status
         setTimeout(() => {
@@ -272,7 +286,7 @@ function init(config) {
               listeners
             })
           }
-        }, 30000) // @TODO - Need to work out how to have this configurable
+        }, txStallConfirmedTimeout || txTimeouts.txStallConfirmedTimeout)
 
         resolve({ emitter, sendTransactionResult })
       }
@@ -306,9 +320,9 @@ function init(config) {
     }
   }
 
-  function style(config) {
-    validateStyles(config)
-    styles.update(store => ({ ...store, ...config }))
+  function config(options) {
+    validateConfig(options)
+    configuration.update(store => ({ ...store, ...options }))
   }
 }
 

@@ -1,9 +1,9 @@
 import ow from "ow"
 
-export function validateConfig(config) {
+export function validateInit(init) {
   ow(
-    config,
-    "Config",
+    init,
+    "Initialization Options",
     ow.object.exactShape({
       dappId: ow.string,
       networkId: ow.number
@@ -26,7 +26,13 @@ export function validateTransactionOptions(options) {
       }),
       txDetails: ow.optional.object.exactShape({
         to: ow.string,
-        value: ow.any
+        value: function stringOrNumber(val) {
+          return (
+            typeof val === "string" ||
+            typeof val === "number" ||
+            `${val} is not a valid string or number`
+          )
+        }
       }),
       listeners: ow.optional.object.exactShape({
         txRequest: ow.optional.function,
@@ -55,23 +61,18 @@ export function validateNotificationObject(notification) {
   )
 }
 
-export function validateStyles(styles) {
+export function validateConfig(config) {
   ow(
-    styles,
-    "styles",
+    config,
+    "config",
     ow.object.exactShape({
       mobilePosition: ow.optional.string.is(validMobilePosition),
       desktopPosition: ow.optional.string.is(validDesktopPosition),
-      darkMode: ow.optional.boolean
+      darkMode: ow.optional.boolean,
+      txApproveReminderTimeout: ow.optional.number,
+      txStallPendingTimeout: ow.optional.number,
+      txStallConfirmedTimeout: ow.optional.number
     })
-  )
-}
-
-function stringOrNumber(val) {
-  return (
-    typeof val === "string" ||
-    typeof val === "number" ||
-    `${val} is not a valid string or number`
   )
 }
 

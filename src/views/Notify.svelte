@@ -7,7 +7,7 @@
 
   import CloseIcon from "../components/CloseIcon.svelte";
   import AutoDismiss from "../components/AutoDismiss.svelte";
-  import { notifications, app, styles } from "../stores";
+  import { notifications, app, configuration } from "../stores";
   import { timeString, formatTime } from "../utilities";
 
   let smallScreen = window.innerWidth < 420;
@@ -58,20 +58,20 @@
     );
   }
 
-  $: if ($styles.desktopPosition && !smallScreen) {
+  $: if ($configuration.desktopPosition && !smallScreen) {
     positioning =
-      $styles.desktopPosition === "bottomRight"
+      $configuration.desktopPosition === "bottomRight"
         ? "bottom: 0; right: 0;"
-        : $styles.desktopPosition === "bottomLeft"
+        : $configuration.desktopPosition === "bottomLeft"
         ? "left: 0; right: unset;"
-        : $styles.desktopPosition === "topRight"
+        : $configuration.desktopPosition === "topRight"
         ? "top: 0;"
         : "top: 0; bottom: unset; left: 0; right: unset;";
 
     x = positioning && positioning.includes("left") ? -321 : 321;
     y = 0;
 
-    if ($styles.desktopPosition.includes("top")) {
+    if ($configuration.desktopPosition.includes("top")) {
       justifyContent = "justify-content: unset;";
       notificationMargin = "margin: 0.75rem 0 0 0;";
     } else {
@@ -80,15 +80,15 @@
     }
   }
 
-  $: if ($styles.mobilePosition && smallScreen) {
+  $: if ($configuration.mobilePosition && smallScreen) {
     positioning =
-      $styles.mobilePosition === "top"
+      $configuration.mobilePosition === "top"
         ? "top: 0; bottom: unset;"
         : "bottom: 0; top: unset;";
 
     x = 0;
 
-    if ($styles.mobilePosition === "top") {
+    if ($configuration.mobilePosition === "top") {
       y = -50;
       justifyContent = "justify-content: unset;";
       notificationMargin = "margin: 0.75rem 0 0 0;";
@@ -99,7 +99,7 @@
     }
   }
 
-  $: if (!$styles.desktopPosition && !$styles.mobilePosition) {
+  $: if (!$configuration.desktopPosition && !$configuration.mobilePosition) {
     x = smallScreen ? 0 : 321;
     y = smallScreen ? 50 : 0;
     notificationMargin = "margin: 0 0 0.75rem 0;";
@@ -220,7 +220,7 @@
         on:click={notification.onclick}
         style={notificationMargin}
         animate:flip={{ duration: 500 }}
-        class:bn-notify-dark-mode={$styles.darkMode}
+        class:bn-notify-dark-mode={$configuration.darkMode}
         class:bn-notify-clickable={notification.onclick}
         class="bn-notify-custom bn-notify-notification"
         in:fly={{ duration: 1200, delay: 300, x, y, easing: elasticOut }}

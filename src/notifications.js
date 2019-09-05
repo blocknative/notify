@@ -1,5 +1,5 @@
 import { notifications } from "./stores"
-import { eventToType, eventToMessage, typeToDismissTimeout } from "./content"
+import { eventToType, eventToMessage, typeToDismissTimeout } from "./defaults"
 
 export function createNotification(details, customization = {}) {
   const {

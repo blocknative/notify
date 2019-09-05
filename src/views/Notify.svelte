@@ -118,6 +118,9 @@
     background: transparent;
     scrollbar-width: none;
     box-sizing: border-box;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9;
   }
 
   @media only screen and (max-width: 450px) {
@@ -146,6 +149,7 @@
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
     color: inherit;
     transition: background 300ms ease-in-out, color 300ms ease-in-out;
+    pointer-events: all;
   }
 
   /* .bn-notify-notification-status-icon */

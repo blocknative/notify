@@ -88,11 +88,11 @@
 
     if ($styles.mobilePosition === "top") {
       y = -50;
-      justifyContent = "justify-content: flex-end;";
+      justifyContent = "justify-content: unset;";
       notificationMargin = "margin: 0.75rem 0 0 0;";
     } else {
       y = 50;
-      justifyContent = "justify-content: unset;";
+      justifyContent = "justify-content: flex-end;";
       notificationMargin = "margin: 0 0 0.75rem 0;";
     }
   }

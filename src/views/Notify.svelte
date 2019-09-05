@@ -188,7 +188,7 @@
 
   /* .bn-notify-notification-info-meta */
   div:nth-child(2) p:nth-child(2) {
-    margin: 0.75rem 0 0 0;
+    margin: 0.5rem 0 0 0;
     opacity: 0.7;
     font-size: 0.79rem;
   }

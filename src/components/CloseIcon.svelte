@@ -8,13 +8,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0.2rem;
+    padding: 0.3rem;
     border-radius: 40px;
     transition: background 150ms ease-in-out;
   }
 
   div:hover {
     background: #eeeeee;
+    cursor: pointer;
   }
 </style>
 
@@ -23,9 +24,9 @@
   on:mouseenter={() => (hovered = true)}
   on:mouseleave={() => (hovered = false)}>
   <svg
-    height="12"
+    height="8"
     viewBox="0 0 12 12"
-    width="12"
+    width="8"
     xmlns="http://www.w3.org/2000/svg">
     <g
       fill="none"

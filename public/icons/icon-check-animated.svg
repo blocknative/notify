@@ -6,11 +6,11 @@
 100%{stroke-dasharray: 473.87;}}
 @-webkit-keyframes kf_el_RzYtw9rUyN_an_WfcYZ9pjL{
 0%{stroke-dashoffset: 473.87;}
-50%{stroke-dashoffset: 0;}
+50%{stroke-dashoffset: 473.87;}
 100%{stroke-dashoffset: 0;}}
 @keyframes kf_el_RzYtw9rUyN_an_WfcYZ9pjL{
 0%{stroke-dashoffset: 473.87;}
-50%{stroke-dashoffset: 0;}
+50%{stroke-dashoffset: 473.87;}
 100%{stroke-dashoffset: 0;}}
 #el_3OA8Szq_A *{-webkit-animation-duration: 1s;animation-duration: 1s;-webkit-animation-iteration-count: 1;animation-iteration-count: 1;-webkit-animation-timing-function: cubic-bezier(0, 0, 1, 1);animation-timing-function: cubic-bezier(0, 0, 1, 1);}
-#el_RzYtw9rUyN{fill: none;stroke: #7ed321;stroke-width: 17;-webkit-animation-fill-mode: forwards, forwards;animation-fill-mode: forwards, forwards;stroke-dashoffset: 473.87;-webkit-animation-name: kf_el_RzYtw9rUyN_an_WfcYZ9pjL, kf_el_RzYtw9rUyN_an_gX4OsFPwzz;animation-name: kf_el_RzYtw9rUyN_an_WfcYZ9pjL, kf_el_RzYtw9rUyN_an_gX4OsFPwzz;-webkit-animation-timing-function: cubic-bezier(0, 0, 1, 1), cubic-bezier(0, 0, 1, 1);animation-timing-function: cubic-bezier(0, 0, 1, 1), cubic-bezier(0, 0, 1, 1);stroke-dasharray: 473.87;}</style><path d="m176.126953 63.8789062-94.4130858 95.4130858-72.87402345-72.8740232 27.93945315-27.9394532 44.9345703 44.9345704 94.4130858-94.413086" stroke-linecap="round" stroke-linejoin="round" id="el_RzYtw9rUyN"/></svg>
+#el_RzYtw9rUyN{fill: none;stroke: #7ed321;stroke-width: 17;-webkit-animation-fill-mode: forwards, forwards;animation-fill-mode: forwards, forwards;-webkit-animation-name: kf_el_RzYtw9rUyN_an_WfcYZ9pjL, kf_el_RzYtw9rUyN_an_gX4OsFPwzz;animation-name: kf_el_RzYtw9rUyN_an_WfcYZ9pjL, kf_el_RzYtw9rUyN_an_gX4OsFPwzz;-webkit-animation-timing-function: cubic-bezier(0, 0, 1, 1), cubic-bezier(0, 0, 1, 1);animation-timing-function: cubic-bezier(0, 0, 1, 1), cubic-bezier(0, 0, 1, 1);}</style><path d="m176.126953 63.8789062-94.4130858 95.4130858-72.87402345-72.8740232 27.93945315-27.9394532 44.9345703 44.9345704 94.4130858-94.413086" stroke-linecap="round" stroke-linejoin="round" id="el_RzYtw9rUyN"/></svg>

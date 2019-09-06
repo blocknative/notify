@@ -44,23 +44,6 @@ export function createNotification(details, customization = {}) {
       ]
     : [`transaction.${eventCode}`]
 
-  console.log([
-    `watched.${eventCode}`,
-    {
-      verb:
-        eventCode === "txConfirmed"
-          ? direction === "incoming"
-            ? "received"
-            : "sent"
-          : direction === "incoming"
-          ? "receiving"
-          : "sending",
-      formattedValue: value / 1000000000000000000,
-      preposition: direction === "incoming" ? "from" : "to",
-      counterpartyShortened
-    }
-  ])
-
   const notificationObject = {
     id: id || hash,
     type,

@@ -5,6 +5,7 @@
   import { flip } from "svelte/animate";
   import debounce from "lodash.debounce";
 
+  import TypeIcon from "../components/TypeIcon.svelte";
   import CloseIcon from "../components/CloseIcon.svelte";
   import AutoDismiss from "../components/AutoDismiss.svelte";
   import { notifications, app, configuration } from "../stores";
@@ -43,13 +44,6 @@
   onDestroy(() => clearInterval(intervalId));
 
   const formattedTime = formatTime(currentTime);
-
-  const icons = {
-    hint: "/icons/icon-info-animated.svg",
-    pending: "/icons/icon-clock-animated.svg",
-    success: "/icons/icon-check-animated.svg",
-    error: "/icons/icon-alert-animated.svg"
-  };
 
   function elasticOut(t) {
     return (
@@ -142,7 +136,7 @@
   :global(.bn-notify-custom.bn-notify-dark-mode) {
     background: #283944;
     color: #ffffff;
-    background: rgba(40,57,68,.9);
+    background: rgba(40, 57, 68, 0.9);
   }
 
   :global(.bn-notify-clickable:hover) {
@@ -167,13 +161,7 @@
     pointer-events: all;
     background: #ffffff;
     backdrop-filter: blur(5px);
-    background: rgba(255,255,255,.8);
-  }
-
-  /* .bn-notify-notification-status-icon */
-  div:nth-child(1) {
-    height: 100%;
-    width: 1.5rem;
+    background: rgba(255, 255, 255, 0.8);
   }
 
   /* .bn-notify-notification-info */
@@ -229,9 +217,7 @@
         class="bn-notify-custom bn-notify-notification"
         in:fly={{ duration: 1200, delay: 300, x, y, easing: elasticOut }}
         out:fly={{ duration: 400, x, y, easing: quintIn }}>
-        <div class="bn-notify-custom bn-notify-notification-status-icon">
-          <img src={icons[notification.type]} alt="status" />
-        </div>
+        <TypeIcon type={notification.type} />
         <div class="bn-notify-custom bn-notify-notification-info">
           <p>{notification.message}</p>
           <p class="bn-notify-custom bn-notify-notification-info-meta">

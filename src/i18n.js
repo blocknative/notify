@@ -1,5 +1,5 @@
 export const notifyMessages = {
-  "en-US": {
+  en: {
     transaction: {
       txRequest: "Your transaction is waiting for you to confirm",
       nsfFail: "You have insufficient funds to complete this transaction",

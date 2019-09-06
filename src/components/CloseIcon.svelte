@@ -39,6 +39,7 @@
       stroke={hovered ? ($configuration.darkMode ? '#ffffff' : '#4a4a4a') : '#9B9B9B'}
       stroke-linecap="square"
       stroke-width="2"
+      style="transition: stroke 150ms ease-in-out;"
       transform="translate(2 2)">
       <path d="m.1.1 7.82304289 7.82304289" />
       <path d="m.1.1 7.82304289 7.82304289" transform="matrix(-1 0 0 1 8 0)" />

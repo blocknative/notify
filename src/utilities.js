@@ -39,13 +39,15 @@ export function updateOrAdd(list, predicate, data) {
   return [...list, removeUndefined(data)]
 }
 
-export function extractMessageFromError(message) {
-  if (!message) {
+export function extractMessageFromError(error) {
+  if (!error.stack || !error.message) {
     return {
       eventCode: "txError",
       errorMsg: "An unknown error occured"
     }
   }
+
+  const message = error.stack || error.message
 
   if (message.includes("User denied transaction signature")) {
     return {

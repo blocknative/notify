@@ -1,6 +1,6 @@
 import bigInt from "big-integer"
 import uuid from "uuid/v4"
-import blocknativeSdk from "./bn-client-sdk"
+import blocknativeSdk from "./bn-sdk"
 import { locale, dictionary, getClientLocale, _ } from "svelte-i18n"
 
 import { get } from "svelte/store"
@@ -239,7 +239,7 @@ function init(initialize) {
 
       // get result and handle errors
       const result = await sendTransactionResult.catch(error => {
-        const { eventCode, errorMsg } = extractMessageFromError(error.message)
+        const { eventCode, errorMsg } = extractMessageFromError(error)
 
         handlePreFlightEvent({
           blocknative,

@@ -1,6 +1,6 @@
 import bigInt from "big-integer"
 import uuid from "uuid/v4"
-import blocknativeSdk from "./bn-sdk"
+import blocknativeSdk from "bn-sdk"
 import { locale, dictionary, getClientLocale, _ } from "svelte-i18n"
 
 import { get } from "svelte/store"
@@ -9,6 +9,8 @@ import { notifyMessages } from "./i18n"
 import Notify from "./views/Notify.svelte"
 
 import { app, transactions, notifications, configuration } from "./stores"
+
+console.log(blocknativeSdk)
 
 import {
   handlePreFlightEvent,

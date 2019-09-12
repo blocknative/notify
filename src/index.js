@@ -10,8 +10,6 @@ import Notify from "./views/Notify.svelte"
 
 import { app, transactions, notifications, configuration } from "./stores"
 
-console.log(blocknativeSdk)
-
 import {
   handlePreFlightEvent,
   handleTransactionEvent,
@@ -342,4 +340,4 @@ function init(initialize) {
   }
 }
 
-export default { init }
+export default init

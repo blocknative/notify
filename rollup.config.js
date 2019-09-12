@@ -38,7 +38,6 @@ export default [
       "bn-sdk",
       "lodash.debounce",
       "ow",
-      "sirv-cli",
       "svelte-i18n",
       "uuid/v4",
       "svelte",

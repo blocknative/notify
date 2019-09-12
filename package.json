@@ -5,8 +5,7 @@
   "module": "dist/esm/index.js",
   "files": [
     "dist/esm/*",
-    "dist/cjs/*",
-    "dist/iife/*"
+    "dist/cjs/*"
   ],
   "devDependencies": {
     "rollup": "^1.12.0",

@@ -13,7 +13,8 @@ export default [
     output: {
       format: "iife",
       name: "notify",
-      file: "dist/iife/bn-notify.js"
+      file: "dist/iife/bn-notify.js",
+      esModule: false
     },
     plugins: [
       svelte(),

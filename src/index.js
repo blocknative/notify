@@ -39,7 +39,7 @@ function init(initialize) {
 
   const { dappId, networkId } = initialize
 
-  const blocknative = blocknativeSdk({
+  const blocknative = new blocknativeSdk({
     dappId,
     networkId,
     transactionCallback: handleTransactionEvent

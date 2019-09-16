@@ -11,9 +11,116 @@ import { flip } from 'svelte/animate';
 import debounce from 'lodash.debounce';
 import ow from 'ow';
 
-const notifyMessages = {
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    if (enumerableOnly) symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    });
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(source, true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(source).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  }
+}
+
+function _iterableToArray(iter) {
+  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
+
+var _transaction, _transaction2;
+
+var notifyMessages = {
   en: {
-    transaction: {
+    transaction: (_transaction = {
       txRequest: "Your transaction is waiting for you to confirm",
       nsfFail: "You have insufficient funds to complete this transaction",
       txUnderpriced: "The gas price for your transaction is too low, try again with a higher gas price",
@@ -28,10 +135,8 @@ const notifyMessages = {
       txSpeedUp: "Your transaction has been sped up",
       txCancel: "Your transaction is being canceled",
       txFailed: "Your transaction has failed",
-      txConfirmed: "Your transaction has succeeded",
-      txUnderpriced: "The gas limit is set too low to complete this transaction",
-      txError: "Oops something went wrong, please try again"
-    },
+      txConfirmed: "Your transaction has succeeded"
+    }, _defineProperty(_transaction, "txUnderpriced", "The gas limit is set too low to complete this transaction"), _defineProperty(_transaction, "txError", "Oops something went wrong, please try again"), _transaction),
     watched: {
       txPool: "Your account is {verb} {formattedValue} ether {preposition} {counterpartyShortened}",
       txSpeedUp: "Your account is {verb} {formattedValue} ether {preposition} {counterpartyShortened}",
@@ -40,7 +145,7 @@ const notifyMessages = {
     }
   },
   es: {
-    transaction: {
+    transaction: (_transaction2 = {
       txRequest: "Su transacción está esperando que confirme",
       nsfFail: "No tiene fondos suficientes para completar esta transacción.",
       txUnderpriced: "El precio del gas para su transacción es demasiado bajo, intente nuevamente con un precio del gas más alto",
@@ -55,10 +160,8 @@ const notifyMessages = {
       txSpeedUp: "Su transacción ha sido acelerada",
       txCancel: "Tu transacción está siendo cancelada",
       txFailed: "Su transacción ha fallado",
-      txConfirmed: "Su transacción ha tenido éxito.",
-      txUnderpriced: "El límite de gas está establecido demasiado bajo para completar esta transacción",
-      txError: "Vaya, algo salió mal, por favor intente nuevamente"
-    },
+      txConfirmed: "Su transacción ha tenido éxito."
+    }, _defineProperty(_transaction2, "txUnderpriced", "El límite de gas está establecido demasiado bajo para completar esta transacción"), _defineProperty(_transaction2, "txError", "Vaya, algo salió mal, por favor intente nuevamente"), _transaction2),
     watched: {
       txPool: "su cuenta está {verb, select, receiving {recibiendo} sending {enviando}} {formattedValue} ether {preposition, select, from {desde} to {a}} {counterpartyShortened}",
       txSpeedUp: "su cuenta está {verb, select, receiving {recibiendo} sending {enviando}} {formattedValue} ether {preposition, select, from {desde} to {a}} {counterpartyShortened}",
@@ -403,11 +506,11 @@ function argsEqual(args1, args2) {
   return JSON.stringify(args1) === JSON.stringify(args2);
 }
 function timeString(time) {
-  const seconds = Math.floor(time / 1000);
-  return seconds >= 60 ? `${Math.floor(seconds / 60)} min` : `${seconds} sec`;
+  var seconds = Math.floor(time / 1000);
+  return seconds >= 60 ? "".concat(Math.floor(seconds / 60), " min") : "".concat(seconds, " sec");
 }
 function formatTime(number) {
-  const time = new Date(number);
+  var time = new Date(number);
   return time.toLocaleString("en-US", {
     hour: "numeric",
     minute: "numeric",
@@ -415,7 +518,7 @@ function formatTime(number) {
   });
 }
 function removeUndefined(obj) {
-  return Object.keys(obj).reduce((newObj, key) => {
+  return Object.keys(obj).reduce(function (newObj, key) {
     if (obj[key] !== undefined) {
       newObj[key] = obj[key];
     }
@@ -425,17 +528,16 @@ function removeUndefined(obj) {
 } // will update object(merge new data) in list if it passes predicate, otherwise adds new object
 
 function updateOrAdd(list, predicate, data) {
-  const clone = [...list];
-  const index = clone.findIndex(predicate);
+  var clone = _toConsumableArray(list);
+
+  var index = clone.findIndex(predicate);
 
   if (index !== -1) {
-    clone[index] = { ...clone[index],
-      ...removeUndefined(data)
-    };
+    clone[index] = _objectSpread2({}, clone[index], {}, removeUndefined(data));
     return clone;
   }
 
-  return [...list, removeUndefined(data)];
+  return [].concat(_toConsumableArray(list), [removeUndefined(data)]);
 }
 function extractMessageFromError(error) {
   if (!error.stack || !error.message) {
@@ -445,7 +547,7 @@ function extractMessageFromError(error) {
     };
   }
 
-  const message = error.stack || error.message;
+  var message = error.stack || error.message;
 
   if (message.includes("User denied transaction signature")) {
     return {
@@ -467,17 +569,17 @@ function extractMessageFromError(error) {
   };
 }
 
-const app = writable({
+var app = writable({
   version: null,
   dappId: null,
   networkId: null,
   nodeSynced: true
 });
-const accounts = writable([]);
-const contracts = writable([]);
-const transactions = createTransactionStore([]);
-const notifications = createNotificationStore([]);
-const configuration = writable({
+var accounts = writable([]);
+var contracts = writable([]);
+var transactions = createTransactionStore([]);
+var notifications = createNotificationStore([]);
+var configuration = writable({
   mobilePosition: null,
   desktopPosition: null,
   darkMode: null,
@@ -487,61 +589,70 @@ const configuration = writable({
 });
 
 function createTransactionStore(initialState) {
-  const {
-    subscribe,
-    update
-  } = writable(initialState);
+  var _writable = writable(initialState),
+      subscribe = _writable.subscribe,
+      update = _writable.update;
 
   function updateQueue(transaction) {
-    const predicate = tx => tx.id === transaction.id;
+    var predicate = function predicate(tx) {
+      return tx.id === transaction.id;
+    };
 
-    update(store => {
+    update(function (store) {
       return updateOrAdd(store, predicate, transaction);
     });
   }
 
   function add(transaction) {
-    update(store => [...store, transaction]);
+    update(function (store) {
+      return [].concat(_toConsumableArray(store), [transaction]);
+    });
   }
 
   return {
-    subscribe,
-    updateQueue,
-    add
+    subscribe: subscribe,
+    updateQueue: updateQueue,
+    add: add
   };
 }
 
 function createNotificationStore(initialState) {
-  const {
-    subscribe,
-    update
-  } = writable(initialState);
+  var _writable2 = writable(initialState),
+      subscribe = _writable2.subscribe,
+      update = _writable2.update;
 
   function add(notification) {
-    update(store => {
-      const existingNotification = store.find(n => n.id === notification.id); // if notification is a hint type or there are no existing notifications with same id, then just add it.
+    update(function (store) {
+      var existingNotification = store.find(function (n) {
+        return n.id === notification.id;
+      }); // if notification is a hint type or there are no existing notifications with same id, then just add it.
 
       if (notification.type === "hint" || !existingNotification) {
-        return [...store, notification];
+        return [].concat(_toConsumableArray(store), [notification]);
       } // otherwise filter out all notifications with the same id and then add the new notification
 
 
-      return [...store.filter(n => n.id !== notification.id), notification];
+      return [].concat(_toConsumableArray(store.filter(function (n) {
+        return n.id !== notification.id;
+      })), [notification]);
     });
   }
 
-  function remove({
-    id,
-    eventCode
-  }) {
-    update(store => store.filter(n => n.id !== id || n.eventCode !== eventCode));
+  function remove(_ref) {
+    var id = _ref.id,
+        eventCode = _ref.eventCode;
+    update(function (store) {
+      return store.filter(function (n) {
+        return n.id !== id || n.eventCode !== eventCode;
+      });
+    });
   }
 
   return {
-    subscribe,
-    add,
-    remove,
-    update
+    subscribe: subscribe,
+    add: add,
+    remove: remove,
+    update: update
   };
 }
 
@@ -1220,45 +1331,47 @@ function typeToDismissTimeout(type) {
       return false;
   }
 }
-const txTimeouts = {
+var txTimeouts = {
   txApproveReminderTimeout: 20000,
   txStallPendingTimeout: 20000,
   txStallConfirmedTimeout: 90000
 };
 
-let formatter;
+var formatter;
 
-_.subscribe(store => formatter = store);
+_.subscribe(function (store) {
+  return formatter = store;
+});
 
-function createNotification(details, customization = {}) {
-  const {
-    id,
-    hash,
-    startTime,
-    eventCode,
-    direction,
-    counterparty,
-    value
-  } = details;
-  const type = eventToType(eventCode);
-  const key = `${id}-${customization.eventCode || eventCode}`;
-  const counterpartyShortened = counterparty && counterparty.substring(0, 4) + "..." + counterparty.substring(counterparty.length - 4);
-  const formatterOptions = counterparty ? [`watched.${eventCode}`, {
+function createNotification(details) {
+  var customization = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var id = details.id,
+      hash = details.hash,
+      startTime = details.startTime,
+      eventCode = details.eventCode,
+      direction = details.direction,
+      counterparty = details.counterparty,
+      value = details.value;
+  var type = eventToType(eventCode);
+  var key = "".concat(id, "-").concat(customization.eventCode || eventCode);
+  var counterpartyShortened = counterparty && counterparty.substring(0, 4) + "..." + counterparty.substring(counterparty.length - 4);
+  var formatterOptions = counterparty ? ["watched.".concat(eventCode), {
     verb: eventCode === "txConfirmed" ? direction === "incoming" ? "received" : "sent" : direction === "incoming" ? "receiving" : "sending",
     formattedValue: value / 1000000000000000000,
     preposition: direction === "incoming" ? "from" : "to",
-    counterpartyShortened
-  }] : [`transaction.${eventCode}`];
-  const notificationObject = {
+    counterpartyShortened: counterpartyShortened
+  }] : ["transaction.".concat(eventCode)];
+
+  var notificationObject = _objectSpread2({
     id: id || hash,
-    type,
-    key,
-    startTime,
-    eventCode,
-    message: formatter(...formatterOptions),
-    autoDismiss: typeToDismissTimeout(type),
-    ...customization
-  };
+    type: type,
+    key: key,
+    startTime: startTime,
+    eventCode: eventCode,
+    message: formatter.apply(void 0, formatterOptions),
+    autoDismiss: typeToDismissTimeout(type)
+  }, customization);
+
   notifications.add(notificationObject);
 }
 
@@ -1270,9 +1383,9 @@ function validateInit(init) {
 }
 function validateTransactionOptions(options) {
   ow(options, "Transaction Options", ow.object.exactShape({
-    sendTransaction: ow.optional.function,
-    estimateGas: ow.optional.function,
-    gasPrice: ow.optional.function,
+    sendTransaction: ow.optional["function"],
+    estimateGas: ow.optional["function"],
+    gasPrice: ow.optional["function"],
     balance: ow.optional.string,
     contract: ow.optional.object.exactShape({
       methodName: ow.string,
@@ -1281,18 +1394,18 @@ function validateTransactionOptions(options) {
     txDetails: ow.optional.object.exactShape({
       to: ow.string,
       value: function stringOrNumber(val) {
-        return typeof val === "string" || typeof val === "number" || `${val} is not a valid string or number`;
+        return typeof val === "string" || typeof val === "number" || "".concat(val, " is not a valid string or number");
       }
     }),
     listeners: ow.optional.object.exactShape({
-      txRequest: ow.optional.function,
-      nsfFail: ow.optional.function,
-      txRepeat: ow.optional.function,
-      txAwaitingApproval: ow.optional.function,
-      txConfirmReminder: ow.optional.function,
-      txSendFail: ow.optional.function,
-      txError: ow.optional.function,
-      txUnderPriced: ow.optional.function
+      txRequest: ow.optional["function"],
+      nsfFail: ow.optional["function"],
+      txRepeat: ow.optional["function"],
+      txAwaitingApproval: ow.optional["function"],
+      txConfirmReminder: ow.optional["function"],
+      txSendFail: ow.optional["function"],
+      txError: ow.optional["function"],
+      txUnderPriced: ow.optional["function"]
     })
   }));
 }
@@ -1301,14 +1414,14 @@ function validateNotificationObject(notification) {
     type: ow.optional.string.is(validNotificationType),
     message: ow.string,
     autoDismiss: ow.optional.number,
-    onclick: ow.optional.function
+    onclick: ow.optional["function"]
   }));
 }
 function validateConfig(config) {
   ow(config, "config", ow.object.exactShape({
     mobilePosition: ow.optional.string.is(validMobilePosition),
     desktopPosition: ow.optional.string.is(validDesktopPosition),
-    darkMode: ow.optional.boolean,
+    darkMode: ow.optional["boolean"],
     txApproveReminderTimeout: ow.optional.number,
     txStallPendingTimeout: ow.optional.number,
     txStallConfirmedTimeout: ow.optional.number
@@ -1324,12 +1437,12 @@ function validNotificationType(type) {
       return true;
 
     default:
-      return `${type} is not a valid notification type`;
+      return "".concat(type, " is not a valid notification type");
   }
 }
 
 function validMobilePosition(position) {
-  return position === "top" || position === "bottom" || `${position} is not a valid mobile notification position`;
+  return position === "top" || position === "bottom" || "".concat(position, " is not a valid mobile notification position");
 }
 
 function validDesktopPosition(position) {
@@ -1341,36 +1454,39 @@ function validDesktopPosition(position) {
       return true;
 
     default:
-      return `${position} is not a valid desktop notification position`;
+      return "".concat(position, " is not a valid desktop notification position");
   }
 }
 
-let transactionQueue;
-transactions.subscribe(store => transactionQueue = store);
-function handlePreFlightEvent({
-  eventCode,
-  contract,
-  balance,
-  txObject,
-  listeners,
-  blocknative,
-  status
-}) {
+var transactionQueue;
+transactions.subscribe(function (store) {
+  return transactionQueue = store;
+});
+function handlePreFlightEvent(_ref) {
+  var eventCode = _ref.eventCode,
+      contract = _ref.contract,
+      balance = _ref.balance,
+      txObject = _ref.txObject,
+      listeners = _ref.listeners,
+      blocknative = _ref.blocknative,
+      status = _ref.status;
   blocknative.event({
     categoryCode: contract ? "activeContract" : "activeTransaction",
-    eventCode,
+    eventCode: eventCode,
     transaction: txObject,
     wallet: {
-      balance
+      balance: balance
     },
-    contract
+    contract: contract
   });
-  const transaction = { ...txObject,
-    eventCode,
-    status,
+
+  var transaction = _objectSpread2({}, txObject, {
+    eventCode: eventCode,
+    status: status,
     contractCall: contract
-  };
-  const emitterResult = listeners[eventCode] && listeners[eventCode](transaction);
+  });
+
+  var emitterResult = listeners[eventCode] && listeners[eventCode](transaction);
 
   if (emitterResult) {
     validateNotificationObject(emitterResult);
@@ -1378,31 +1494,35 @@ function handlePreFlightEvent({
 
   handleTransactionEvent({
     transaction: transaction,
-    emitterResult
+    emitterResult: emitterResult
   });
 }
-function handleTransactionEvent({
-  transaction,
-  emitterResult
-}) {
+function handleTransactionEvent(_ref2) {
+  var transaction = _ref2.transaction,
+      emitterResult = _ref2.emitterResult;
+
   // transaction queue alread has tx with same id and same eventCode then don't update
   // this is to allow for the fact that the server mirrors events sent to it
-  if (transactionQueue.find(tx => tx.id === transaction.id && tx.eventCode === transaction.eventCode)) {
+  if (transactionQueue.find(function (tx) {
+    return tx.id === transaction.id && tx.eventCode === transaction.eventCode;
+  })) {
     return;
   }
 
   transactions.updateQueue(transaction); // create notification if dev hasn't opted out
 
   if (emitterResult !== false) {
-    const transactionObj = transactionQueue.find(tx => tx.id === transaction.id);
+    var transactionObj = transactionQueue.find(function (tx) {
+      return tx.id === transaction.id;
+    });
     createNotification(transactionObj, emitterResult);
   }
 }
 function duplicateTransactionCandidate(transaction, contract) {
-  let duplicate = transactionQueue.find(tx => {
+  var duplicate = transactionQueue.find(function (tx) {
     if (contract && typeof tx.contract === "undefined") return false;
-    const sameMethod = contract ? contract.methodName === tx.contract.methodName : true;
-    const sameParams = contract ? argsEqual(contract.parameters, tx.contract.parameters) : true;
+    var sameMethod = contract ? contract.methodName === tx.contract.methodName : true;
+    var sameParams = contract ? argsEqual(contract.parameters, tx.contract.parameters) : true;
     return sameMethod && sameParams && tx.value == transaction.value && tx.to.toLowerCase() === transaction.to.toLowerCase();
   });
 
@@ -1413,27 +1533,27 @@ function duplicateTransactionCandidate(transaction, contract) {
   return duplicate;
 }
 
-console.log(blocknativeSdk);
-const version = "0.0.1";
-let transactionQueue$1;
-transactions.subscribe(store => transactionQueue$1 = store);
+var version = "0.0.1";
+var transactionQueue$1;
+transactions.subscribe(function (store) {
+  return transactionQueue$1 = store;
+});
 
 function init(initialize) {
   validateInit(initialize);
-  const {
-    dappId,
-    networkId
-  } = initialize;
-  const blocknative = blocknativeSdk({
-    dappId,
-    networkId,
+  var dappId = initialize.dappId,
+      networkId = initialize.networkId;
+  var blocknative = blocknativeSdk({
+    dappId: dappId,
+    networkId: networkId,
     transactionCallback: handleTransactionEvent
   }); // save config to app store
 
-  app.update(store => ({ ...store,
-    ...initialize,
-    version
-  })); // initialize App
+  app.update(function (store) {
+    return _objectSpread2({}, store, {}, initialize, {
+      version: version
+    });
+  }); // initialize App
 
   new Notify({
     target: document.body
@@ -1446,18 +1566,18 @@ function init(initialize) {
     navigator: true
   }));
   return {
-    account,
-    hash,
-    transaction,
-    notification,
-    config
+    account: account,
+    hash: hash,
+    transaction: transaction,
+    notification: notification,
+    config: config
   };
 
   function account(address) {
     try {
-      const {
-        emitter
-      } = blocknative.account(address);
+      var _blocknative$account = blocknative.account(address),
+          emitter = _blocknative$account.emitter;
+
       return emitter;
     } catch (error) {
       throw new Error(error);
@@ -1466,9 +1586,9 @@ function init(initialize) {
 
   function hash(hash, id) {
     try {
-      const {
-        emitter
-      } = blocknative.transaction(hash, id);
+      var _blocknative$transact = blocknative.transaction(hash, id),
+          emitter = _blocknative$transact.emitter;
+
       return emitter;
     } catch (error) {
       throw new Error(error);
@@ -1476,223 +1596,291 @@ function init(initialize) {
   }
 
   function transaction(options) {
-    return new Promise(async (resolve, reject) => {
-      validateTransactionOptions(options);
-      const {
-        sendTransaction,
-        estimateGas,
-        gasPrice,
-        balance,
-        contract,
-        txDetails,
-        listeners
-      } = options; //=== if `balance` is not provided, then sufficient funds check is disabled === //
-      //=== if `txDetails` is not provided, then duplicate transaction check is disabled === //
-      //== if dev doesn't want notifiy to intiate the transaction and `sendTransaction` is not provided, then transaction rejected notification is disabled ==//
-      //=== to disable hints for `txAwaitingApproval`, `txConfirmReminder` or any other notification, then return false from listener functions ==//
+    return new Promise(
+    /*#__PURE__*/
+    function () {
+      var _ref = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee(resolve, reject) {
+        var sendTransaction, estimateGas, gasPrice, balance, contract, txDetails, listeners, gasLimit, price, id, txObject, transactionCost, eventCode, _eventCode, _get, txApproveReminderTimeout, txStallPendingTimeout, txStallConfirmedTimeout, _eventCode2, sendTransactionResult, result, emitter;
 
-      const gasLimit = estimateGas && bigInt((await estimateGas().catch(err => console.error("There was a problem estimating gas:", err))));
-      const price = gasPrice && bigInt((await gasPrice().catch(err => console.error("There was a problem getting current gas price:", err))));
-      const id = uuid();
-      const txObject = { ...txDetails,
-        value: String(txDetails.value),
-        gas: gasLimit && gasLimit.toString(),
-        gasPrice: price && price.toString(),
-        id
-      }; // check sufficient balance if required parameters are available
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                validateTransactionOptions(options);
+                sendTransaction = options.sendTransaction, estimateGas = options.estimateGas, gasPrice = options.gasPrice, balance = options.balance, contract = options.contract, txDetails = options.txDetails, listeners = options.listeners; //=== if `balance` is not provided, then sufficient funds check is disabled === //
+                //=== if `txDetails` is not provided, then duplicate transaction check is disabled === //
+                //== if dev doesn't want notifiy to intiate the transaction and `sendTransaction` is not provided, then transaction rejected notification is disabled ==//
+                //=== to disable hints for `txAwaitingApproval`, `txConfirmReminder` or any other notification, then return false from listener functions ==//
 
-      if (balance && gasLimit && gasPrice) {
-        const transactionCost = gasLimit.times(price).plus(bigInt(txDetails.value)); // if transaction cost is greater than the current balance
+                _context.t0 = estimateGas;
 
-        if (transactionCost.compare(bigInt(balance)) === 1) {
-          const eventCode = "nsfFail";
-          handlePreFlightEvent({
-            blocknative,
-            eventCode,
-            contract,
-            balance,
-            txObject,
-            listeners
-          });
-          return reject("User has insufficient funds");
-        }
-      } // check if it is a duplicate transaction
+                if (!_context.t0) {
+                  _context.next = 9;
+                  break;
+                }
 
+                _context.t1 = bigInt;
+                _context.next = 7;
+                return estimateGas()["catch"](function (err) {
+                  return console.error("There was a problem estimating gas:", err);
+                });
 
-      if (txDetails && duplicateTransactionCandidate({
-        to: txDetails.to,
-        value: txDetails.value
-      }, contract)) {
-        const eventCode = "txRepeat";
-        handlePreFlightEvent({
-          blocknative,
-          eventCode,
-          contract,
-          balance,
-          txObject,
-          listeners
-        });
-      } // get any timeout configurations
+              case 7:
+                _context.t2 = _context.sent;
+                _context.t0 = (0, _context.t1)(_context.t2);
 
+              case 9:
+                gasLimit = _context.t0;
+                _context.t3 = gasPrice;
 
-      const {
-        txApproveReminderTimeout,
-        txStallPendingTimeout,
-        txStallConfirmedTimeout
-      } = get(configuration); // check previous transactions awaiting approval
+                if (!_context.t3) {
+                  _context.next = 17;
+                  break;
+                }
 
-      if (transactionQueue$1.find(tx => tx.status === "awaitingApproval")) {
-        const eventCode = "txAwaitingApproval";
-        handlePreFlightEvent({
-          blocknative,
-          eventCode,
-          contract,
-          balance,
-          txObject,
-          listeners
-        });
-      } // confirm reminder after timeout
+                _context.t4 = bigInt;
+                _context.next = 15;
+                return gasPrice()["catch"](function (err) {
+                  return console.error("There was a problem getting current gas price:", err);
+                });
 
+              case 15:
+                _context.t5 = _context.sent;
+                _context.t3 = (0, _context.t4)(_context.t5);
 
-      setTimeout(() => {
-        const awaitingApproval = transactionQueue$1.find(tx => tx.id === id && tx.status === "awaitingApproval");
+              case 17:
+                price = _context.t3;
+                id = uuid();
+                txObject = _objectSpread2({}, txDetails, {
+                  value: String(txDetails.value),
+                  gas: gasLimit && gasLimit.toString(),
+                  gasPrice: price && price.toString(),
+                  id: id
+                }); // check sufficient balance if required parameters are available
 
-        if (awaitingApproval) {
-          const eventCode = "txConfirmReminder";
-          handlePreFlightEvent({
-            blocknative,
-            eventCode,
-            contract,
-            balance,
-            txObject,
-            listeners
-          });
-        }
-      }, txApproveReminderTimeout || txTimeouts.txApproveReminderTimeout);
-      handlePreFlightEvent({
-        blocknative,
-        eventCode: "txRequest",
-        status: "awaitingApproval",
-        contract,
-        balance,
-        txObject,
-        listeners
-      }); // if not provided with sendTransaction function, resolve with id so dev can initiate transaction
-      // dev will need to call notify.hash(txHash, id) with this id to link up the preflight with the postflight notifications
+                if (!(balance && gasLimit && gasPrice)) {
+                  _context.next = 26;
+                  break;
+                }
 
-      if (!sendTransaction) {
-        return resolve({
-          id
-        });
-      } // initiate transaction
+                transactionCost = gasLimit.times(price).plus(bigInt(txDetails.value)); // if transaction cost is greater than the current balance
+
+                if (!(transactionCost.compare(bigInt(balance)) === 1)) {
+                  _context.next = 26;
+                  break;
+                }
+
+                eventCode = "nsfFail";
+                handlePreFlightEvent({
+                  blocknative: blocknative,
+                  eventCode: eventCode,
+                  contract: contract,
+                  balance: balance,
+                  txObject: txObject,
+                  listeners: listeners
+                });
+                return _context.abrupt("return", reject("User has insufficient funds"));
+
+              case 26:
+                // check if it is a duplicate transaction
+                if (txDetails && duplicateTransactionCandidate({
+                  to: txDetails.to,
+                  value: txDetails.value
+                }, contract)) {
+                  _eventCode = "txRepeat";
+                  handlePreFlightEvent({
+                    blocknative: blocknative,
+                    eventCode: _eventCode,
+                    contract: contract,
+                    balance: balance,
+                    txObject: txObject,
+                    listeners: listeners
+                  });
+                } // get any timeout configurations
 
 
-      const sendTransactionResult = sendTransaction(); // get result and handle errors
+                _get = get(configuration), txApproveReminderTimeout = _get.txApproveReminderTimeout, txStallPendingTimeout = _get.txStallPendingTimeout, txStallConfirmedTimeout = _get.txStallConfirmedTimeout; // check previous transactions awaiting approval
 
-      const result = await sendTransactionResult.catch(error => {
-        const {
-          eventCode,
-          errorMsg
-        } = extractMessageFromError(error);
-        handlePreFlightEvent({
-          blocknative,
-          eventCode,
-          status: "failed",
-          contract,
-          balance,
-          txObject,
-          listeners
-        });
-        return reject(errorMsg);
-      });
+                if (transactionQueue$1.find(function (tx) {
+                  return tx.status === "awaitingApproval";
+                })) {
+                  _eventCode2 = "txAwaitingApproval";
+                  handlePreFlightEvent({
+                    blocknative: blocknative,
+                    eventCode: _eventCode2,
+                    contract: contract,
+                    balance: balance,
+                    txObject: txObject,
+                    listeners: listeners
+                  });
+                } // confirm reminder after timeout
 
-      if (result && result.hash) {
-        const emitter = hash(result.hash, id); // Check for pending stall status
 
-        setTimeout(() => {
-          const transaction = transactionQueue$1.find(tx => tx.id === id);
+                setTimeout(function () {
+                  var awaitingApproval = transactionQueue$1.find(function (tx) {
+                    return tx.id === id && tx.status === "awaitingApproval";
+                  });
 
-          if (transaction && transaction.status === "sent" && blocknative.status.connected && blocknative.status.nodeSynced) {
-            const eventCode = "txStallPending";
-            handlePreFlightEvent({
-              blocknative,
-              eventCode,
-              contract,
-              balance,
-              txObject,
-              listeners
-            });
+                  if (awaitingApproval) {
+                    var _eventCode3 = "txConfirmReminder";
+                    handlePreFlightEvent({
+                      blocknative: blocknative,
+                      eventCode: _eventCode3,
+                      contract: contract,
+                      balance: balance,
+                      txObject: txObject,
+                      listeners: listeners
+                    });
+                  }
+                }, txApproveReminderTimeout || txTimeouts.txApproveReminderTimeout);
+                handlePreFlightEvent({
+                  blocknative: blocknative,
+                  eventCode: "txRequest",
+                  status: "awaitingApproval",
+                  contract: contract,
+                  balance: balance,
+                  txObject: txObject,
+                  listeners: listeners
+                }); // if not provided with sendTransaction function, resolve with id so dev can initiate transaction
+                // dev will need to call notify.hash(txHash, id) with this id to link up the preflight with the postflight notifications
+
+                if (sendTransaction) {
+                  _context.next = 33;
+                  break;
+                }
+
+                return _context.abrupt("return", resolve({
+                  id: id
+                }));
+
+              case 33:
+                // initiate transaction
+                sendTransactionResult = sendTransaction(); // get result and handle errors
+
+                _context.next = 36;
+                return sendTransactionResult["catch"](function (error) {
+                  var _extractMessageFromEr = extractMessageFromError(error),
+                      eventCode = _extractMessageFromEr.eventCode,
+                      errorMsg = _extractMessageFromEr.errorMsg;
+
+                  handlePreFlightEvent({
+                    blocknative: blocknative,
+                    eventCode: eventCode,
+                    status: "failed",
+                    contract: contract,
+                    balance: balance,
+                    txObject: txObject,
+                    listeners: listeners
+                  });
+                  return reject(errorMsg);
+                });
+
+              case 36:
+                result = _context.sent;
+
+                if (result && result.hash) {
+                  emitter = hash(result.hash, id); // Check for pending stall status
+
+                  setTimeout(function () {
+                    var transaction = transactionQueue$1.find(function (tx) {
+                      return tx.id === id;
+                    });
+
+                    if (transaction && transaction.status === "sent" && blocknative.status.connected && blocknative.status.nodeSynced) {
+                      var _eventCode4 = "txStallPending";
+                      handlePreFlightEvent({
+                        blocknative: blocknative,
+                        eventCode: _eventCode4,
+                        contract: contract,
+                        balance: balance,
+                        txObject: txObject,
+                        listeners: listeners
+                      });
+                    }
+                  }, txStallPendingTimeout || txTimeouts.txStallPendingTimeout); // Check for confirmed stall status
+
+                  setTimeout(function () {
+                    var transaction = transactionQueue$1.find(function (tx) {
+                      return tx.id === id;
+                    });
+
+                    if (transaction && transaction.status === "pending" && blocknative.status.connected && blocknative.status.nodeSynced) {
+                      var _eventCode5 = "txStallConfirmed";
+                      handlePreFlightEvent({
+                        blocknative: blocknative,
+                        eventCode: _eventCode5,
+                        contract: contract,
+                        balance: balance,
+                        txObject: txObject,
+                        listeners: listeners
+                      });
+                    }
+                  }, txStallConfirmedTimeout || txTimeouts.txStallConfirmedTimeout);
+                  resolve({
+                    emitter: emitter,
+                    sendTransactionResult: sendTransactionResult
+                  });
+                }
+
+              case 38:
+              case "end":
+                return _context.stop();
+            }
           }
-        }, txStallPendingTimeout || txTimeouts.txStallPendingTimeout); // Check for confirmed stall status
+        }, _callee);
+      }));
 
-        setTimeout(() => {
-          const transaction = transactionQueue$1.find(tx => tx.id === id);
-
-          if (transaction && transaction.status === "pending" && blocknative.status.connected && blocknative.status.nodeSynced) {
-            const eventCode = "txStallConfirmed";
-            handlePreFlightEvent({
-              blocknative,
-              eventCode,
-              contract,
-              balance,
-              txObject,
-              listeners
-            });
-          }
-        }, txStallConfirmedTimeout || txTimeouts.txStallConfirmedTimeout);
-        resolve({
-          emitter,
-          sendTransactionResult
-        });
-      }
-    });
+      return function (_x, _x2) {
+        return _ref.apply(this, arguments);
+      };
+    }());
   }
 
   function notification(eventCode, notificationObject) {
     validateNotificationObject(notificationObject);
-    const id = uuid();
-    const startTime = Date.now();
+    var id = uuid();
+    var startTime = Date.now();
 
-    const dismiss = () => notifications.remove({
-      id,
-      eventCode
-    });
+    var dismiss = function dismiss() {
+      return notifications.remove({
+        id: id,
+        eventCode: eventCode
+      });
+    };
 
     function update(eventCode, notificationUpdate) {
       validateNotificationObject(notificationUpdate);
       createNotification({
-        id,
-        startTime,
-        eventCode
+        id: id,
+        startTime: startTime,
+        eventCode: eventCode
       }, notificationUpdate);
       return {
-        dismiss,
-        update
+        dismiss: dismiss,
+        update: update
       };
     } // create notification
 
 
     createNotification({
-      id,
-      startTime,
-      eventCode
+      id: id,
+      startTime: startTime,
+      eventCode: eventCode
     }, notificationObject);
     return {
-      dismiss,
-      update
+      dismiss: dismiss,
+      update: update
     };
   }
 
   function config(options) {
     validateConfig(options);
-    configuration.update(store => ({ ...store,
-      ...options
-    }));
+    configuration.update(function (store) {
+      return _objectSpread2({}, store, {}, options);
+    });
   }
 }
 
-var index = {
-  init
-};
-
-export default index;
+export default init;

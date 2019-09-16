@@ -32,7 +32,7 @@ export function handlePreFlightEvent({
   }
 
   const emitterResult =
-    listeners[eventCode] && listeners[eventCode](transaction)
+    listeners && listeners[eventCode] && listeners[eventCode](transaction)
 
   if (emitterResult) {
     validateNotificationObject(emitterResult)

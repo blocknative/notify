@@ -1385,21 +1385,24 @@ function validateInit(init) {
     networkId: ow.number
   }));
 }
+
+function stringOrNumber(val) {
+  return typeof val === "string" || typeof val === "number" || "".concat(val, " is not a valid string or number");
+}
+
 function validateTransactionOptions(options) {
   ow(options, "Transaction Options", ow.object.exactShape({
     sendTransaction: ow.optional["function"],
     estimateGas: ow.optional["function"],
     gasPrice: ow.optional["function"],
-    balance: ow.optional.string,
+    balance: stringOrNumber,
     contract: ow.optional.object.exactShape({
       methodName: ow.string,
       params: ow.optional.array.nonEmpty
     }),
     txDetails: ow.optional.object.exactShape({
       to: ow.string,
-      value: function stringOrNumber(val) {
-        return typeof val === "string" || typeof val === "number" || "".concat(val, " is not a valid string or number");
-      }
+      value: stringOrNumber
     }),
     listeners: ow.optional.object.exactShape({
       txRequest: ow.optional["function"],
@@ -1490,7 +1493,7 @@ function handlePreFlightEvent(_ref) {
     contractCall: contract
   });
 
-  var emitterResult = listeners[eventCode] && listeners[eventCode](transaction);
+  var emitterResult = listeners && listeners[eventCode] && listeners[eventCode](transaction);
 
   if (emitterResult) {
     validateNotificationObject(emitterResult);
@@ -1547,7 +1550,7 @@ function init(initialize) {
   validateInit(initialize);
   var dappId = initialize.dappId,
       networkId = initialize.networkId;
-  var blocknative = blocknativeSdk({
+  var blocknative = new blocknativeSdk({
     dappId: dappId,
     networkId: networkId,
     transactionCallback: handleTransactionEvent

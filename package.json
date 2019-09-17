@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "big-integer": "^1.6.44",
-    "bn-sdk": "github:blocknative/bn-client-sdk#package",
+    "bn-sdk": "github:blocknative/bn-sdk#master",
     "lodash.debounce": "^4.0.8",
     "ow": "^0.13.2",
     "svelte": "^3.5.4",

@@ -1,6 +1,6 @@
 <script>
   import { onDestroy } from "svelte";
-  import { fade, fly } from "svelte/transition";
+  import { fly } from "svelte/transition";
   import { quintIn } from "svelte/easing";
   import { flip } from "svelte/animate";
   import debounce from "lodash.debounce";

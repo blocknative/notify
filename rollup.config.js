@@ -1,7 +1,9 @@
 import svelte from "rollup-plugin-svelte"
 import resolve from "rollup-plugin-node-resolve"
+import babel from "rollup-plugin-babel"
+import globals from "rollup-plugin-node-globals"
 import commonjs from "rollup-plugin-commonjs"
-import livereload from "rollup-plugin-livereload"
+import builtins from "rollup-plugin-node-builtins"
 import json from "rollup-plugin-json"
 import { terser } from "rollup-plugin-terser"
 
@@ -30,40 +32,37 @@ export default [
       terser()
     ]
   },
-  plugins: [
-    svelte({
-      // enable run-time checks when not in production
-      dev: !production
-      // we'll extract any component CSS out into
-      // a separate file — better for performance
-      // css: css => {
-      //   css.write('public/bundle.css')
-      // }
-    }),
-
-    json(),
-
-    // If you have external dependencies installed from
-    // npm, you'll most likely need these plugins. In
-    // some cases you'll need additional configuration —
-    // consult the documentation for details:
-    // https://github.com/rollup/rollup-plugin-commonjs
-    resolve({ browser: true }),
-    commonjs(),
-
-    // string({
-    //   include: 'public/*.css'
-    // }),
-
-    // Watch the `public` directory and refresh the
-    // browser on changes when not in production
-    !production && livereload("public"),
-
-    // If we're building for production (npm run build
-    // instead of npm run dev), minify
-    production && terser()
-  ],
-  watch: {
-    clearScreen: false
+  {
+    input: "src/index.js",
+    external: [
+      "big-integer",
+      "bn-sdk",
+      "lodash.debounce",
+      "ow",
+      "svelte-i18n",
+      "uuid/v4",
+      "svelte",
+      "svelte/store",
+      "svelte/internal",
+      "svelte/transition",
+      "svelte/easing",
+      "svelte/animate"
+    ],
+    plugins: [
+      svelte(),
+      json(),
+      commonjs(),
+      babel({ exclude: "node_modules/**" })
+    ],
+    output: [
+      {
+        dir: "dist/esm",
+        format: "esm"
+      },
+      {
+        dir: "dist/cjs",
+        format: "cjs"
+      }
+    ]
   }
-}
+]

@@ -11,6 +11,14 @@ export function validateInit(init) {
   )
 }
 
+function stringOrNumber(val) {
+  return (
+    typeof val === "string" ||
+    typeof val === "number" ||
+    `${val} is not a valid string or number`
+  )
+}
+
 export function validateTransactionOptions(options) {
   ow(
     options,
@@ -26,13 +34,7 @@ export function validateTransactionOptions(options) {
       }),
       txDetails: ow.optional.object.exactShape({
         to: ow.string,
-        value: function stringOrNumber(val) {
-          return (
-            typeof val === "string" ||
-            typeof val === "number" ||
-            `${val} is not a valid string or number`
-          )
-        }
+        value: stringOrNumber
       }),
       listeners: ow.optional.object.exactShape({
         txRequest: ow.optional.function,

@@ -1,6 +1,6 @@
 import bigInt from "big-integer"
 import uuid from "uuid/v4"
-import blocknativeSdk from "./bn-sdk"
+import blocknativeSdk from "bn-sdk"
 import { locale, dictionary, getClientLocale, _ } from "svelte-i18n"
 
 import { get } from "svelte/store"
@@ -39,7 +39,7 @@ function init(initialize) {
 
   const { dappId, networkId } = initialize
 
-  const blocknative = blocknativeSdk({
+  const blocknative = new blocknativeSdk({
     dappId,
     networkId,
     transactionCallback: handleTransactionEvent
@@ -340,4 +340,4 @@ function init(initialize) {
   }
 }
 
-export default { init }
+export default init

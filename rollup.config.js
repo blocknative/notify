@@ -5,15 +5,30 @@ import livereload from "rollup-plugin-livereload"
 import json from "rollup-plugin-json"
 import { terser } from "rollup-plugin-terser"
 
-const production = !process.env.ROLLUP_WATCH
-
-export default {
-  input: "src/index.js",
-  output: {
-    sourcemap: true,
-    format: "umd",
-    name: "Notify",
-    file: "public/bundle.js"
+export default [
+  {
+    input: "src/index.js",
+    output: {
+      format: "iife",
+      name: "notify",
+      file: "dist/iife/notify.js",
+      esModule: false
+    },
+    plugins: [
+      svelte(),
+      json(),
+      resolve({
+        preferBuiltins: true,
+        browser: true,
+        dedupe: importee =>
+          importee === "svelte" || importee.startsWith("svelte/")
+      }),
+      commonjs(),
+      babel({ exclude: "node_modules/**" }),
+      builtins(),
+      globals(),
+      terser()
+    ]
   },
   plugins: [
     svelte({

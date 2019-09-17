@@ -60,6 +60,10 @@ const { emitter, sendTransactionResult } = notify.transaction({
 })
 ```
 
+#### Send Transaction Result
+
+The `sendTransactionResult` parameter on the object that is returned from calls to `notify.transaction` is simply the result of calling the `sendTransaction` function that was passed in. This is just in case you need it to get event logs or something else that your web3 library provides in the result of the call.
+
 #### Emitter
 
 The `emitter` object returned is used to listen for transaction events:

@@ -1,5 +1,5 @@
 import { _ } from "svelte-i18n"
-import bigInt from "big-integer"
+import units from "ethereumjs-units"
 import { notifications } from "./stores"
 import { eventToType, typeToDismissTimeout } from "./defaults"
 
@@ -38,9 +38,7 @@ export function createNotification(details, customization = {}) {
               : direction === "incoming"
               ? "receiving"
               : "sending",
-          formattedValue: bigInt(value)
-            .divide(bigInt(1000000000000000000))
-            .toString(),
+          formattedValue: units.convert(value, "wei", "eth"),
           preposition: direction === "incoming" ? "from" : "to",
           counterpartyShortened
         }

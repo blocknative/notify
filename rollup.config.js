@@ -41,6 +41,7 @@ export default [
       "ow",
       "svelte-i18n",
       "uuid/v4",
+      "ethereumjs-units",
       "svelte",
       "svelte/store",
       "svelte/internal",

@@ -57,12 +57,15 @@ function init(initialize) {
   dictionary.set(notifyMessages)
 
   // set the locale for i18n
-  locale.set(
-    getClientLocale({
-      fallback: "en-US",
-      navigator: true
-    })
-  )
+  const clientLocale = getClientLocale({
+    fallback: "en",
+    navigator: true
+  })
+
+  const availableLocale =
+    notifyMessages[clientLocale] || notifyMessages[clientLocale.slice(0, 2)]
+
+  locale.set(availableLocale ? clientLocale : "en")
 
   return {
     account,

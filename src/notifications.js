@@ -1,4 +1,5 @@
 import { _ } from "svelte-i18n"
+import bigInt from "big-integer"
 import { notifications } from "./stores"
 import { eventToType, typeToDismissTimeout } from "./defaults"
 
@@ -37,7 +38,9 @@ export function createNotification(details, customization = {}) {
               : direction === "incoming"
               ? "receiving"
               : "sending",
-          formattedValue: value / 1000000000000000000,
+          formattedValue: bigInt(value)
+            .divide(bigInt(1000000000000000000))
+            .toString(),
           preposition: direction === "incoming" ? "from" : "to",
           counterpartyShortened
         }

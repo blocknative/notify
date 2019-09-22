@@ -27,15 +27,15 @@ export const notifyMessages = {
     },
     watched: {
       txPool:
-        "Your account is {verb} {formattedValue} ether {preposition} {counterpartyShortened}",
+        "Your account is {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
       txSpeedUp:
-        "Your account is {verb} {formattedValue} ether {preposition} {counterpartyShortened}",
+        "Your account is {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
       txCancel:
-        "Your account is {verb} {formattedValue} ether {preposition} {counterpartyShortened}",
+        "Your account is {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
       txConfirmed:
-        "Your account successfully {verb} {formattedValue} ether {preposition} {counterpartyShortened}",
+        "Your account successfully {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
       txFailed:
-        "Your account failed to {verb} {formattedValue} ether {preposition} {counterpartyShortened}"
+        "Your account failed to {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
     }
   },
   es: {
@@ -66,15 +66,15 @@ export const notifyMessages = {
     },
     watched: {
       txPool:
-        "su cuenta está {verb, select, receiving {recibiendo} sending {enviando}} {formattedValue} ether {preposition, select, from {desde} to {a}} {counterpartyShortened}",
+        "su cuenta está {verb, select, receiving {recibiendo} sending {enviando}} {formattedValue} {asset} {preposition, select, from {desde} to {a}} {counterpartyShortened}",
       txSpeedUp:
-        "su cuenta está {verb, select, receiving {recibiendo} sending {enviando}} {formattedValue} ether {preposition, select, from {desde} to {a}} {counterpartyShortened}",
+        "su cuenta está {verb, select, receiving {recibiendo} sending {enviando}} {formattedValue} {asset} {preposition, select, from {desde} to {a}} {counterpartyShortened}",
       txCancel:
-        "su cuenta está {verb, select, receiving {recibiendo} sending {enviando}} {formattedValue} ether {preposition, select, from {desde} to {a}} {counterpartyShortened}",
+        "su cuenta está {verb, select, receiving {recibiendo} sending {enviando}} {formattedValue} {asset} {preposition, select, from {desde} to {a}} {counterpartyShortened}",
       txConfirmed:
-        "su cuenta {verb, select, received {recibió} sent {ha enviado}} con éxito {formattedValue} ether {preposition, select, from {de} to {a}} {counterpartyShortened}",
+        "su cuenta {verb, select, received {recibió} sent {ha enviado}} con éxito {formattedValue} {asset} {preposition, select, from {de} to {a}} {counterpartyShortened}",
       txFailed:
-        "su cuenta fallado {verb, select, received {recibió} sent {ha enviado}} con éxito {formattedValue} ether {preposition, select, from {de} to {a}} {counterpartyShortened}"
+        "su cuenta fallado {verb, select, received {recibió} sent {ha enviado}} con éxito {formattedValue} {asset} {preposition, select, from {de} to {a}} {counterpartyShortened}"
     }
   }
 }

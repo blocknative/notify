@@ -15,7 +15,8 @@ export function createNotification(details, customization = {}) {
     eventCode,
     direction,
     counterparty,
-    value
+    value,
+    asset
   } = details
 
   const type = eventToType(eventCode)
@@ -40,7 +41,8 @@ export function createNotification(details, customization = {}) {
               : "sending",
           formattedValue: units.convert(value, "wei", "eth"),
           preposition: direction === "incoming" ? "from" : "to",
-          counterpartyShortened
+          counterpartyShortened,
+          asset
         }
       ]
     : [`transaction.${eventCode}`]

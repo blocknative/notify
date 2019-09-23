@@ -80,6 +80,12 @@ emitter.on("txRepeat", transaction => {
     autoDismiss: Number // The number of milliseconds before the notification automatically hides or false for no autodismiss
   }
 })
+
+// You can also use the `all` event to register a listener for all events for that transaction. The `all` listener will only be called if there isn't a listener defined for the particular event:
+
+emitter.on("all", transaction => {
+  // called on every event that doesn't have a listener defined on this transaction
+})
 ```
 
 ### Configuration

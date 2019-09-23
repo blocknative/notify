@@ -13,7 +13,8 @@
 ```javascript
 const notify = Notify.init({
   dappId: String, // Your api key - Head to https://www.blocknative.com/ to get a free key
-  networkId: Number // The id of the network your dapp runs on
+  networkId: Number, // The id of the network your dapp runs on
+  transactionEvents: Function // callback that is called for every transaction event with the transaction object and the result from the emitter for that transaction
 })
 ```
 

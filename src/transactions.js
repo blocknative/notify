@@ -1,10 +1,14 @@
-import { transactions } from "./stores"
+import bigInt from "big-integer"
+import uuid from "uuid/v4"
+import { get } from "svelte/store"
+
+import { transactions, configuration } from "./stores"
 import { createNotification } from "./notifications"
-import { argsEqual } from "./utilities"
+import { argsEqual, extractMessageFromError } from "./utilities"
+import { txTimeouts } from "./defaults"
 import { validateNotificationObject } from "./validation"
 
 let transactionQueue
-
 transactions.subscribe(store => (transactionQueue = store))
 
 export function handlePreFlightEvent({
@@ -12,7 +16,7 @@ export function handlePreFlightEvent({
   contract,
   balance,
   txObject,
-  listeners,
+  emitter,
   blocknative,
   status
 }) {
@@ -31,8 +35,9 @@ export function handlePreFlightEvent({
     contractCall: contract
   }
 
-  const emitterResult =
-    listeners && listeners[eventCode] && listeners[eventCode](transaction)
+  const listener = emitter.listeners[eventCode] || emitter.listeners.all
+
+  const emitterResult = listener && listener(transaction)
 
   if (emitterResult) {
     validateNotificationObject(emitterResult)
@@ -92,4 +97,229 @@ export function duplicateTransactionCandidate(transaction, contract) {
   }
 
   return duplicate
+}
+
+export function preflightTransaction(options, emitter, blocknative) {
+  return new Promise((resolve, reject) => {
+    // wrap in set timeout to put to the end of the event queue
+    setTimeout(async () => {
+      const {
+        sendTransaction,
+        estimateGas,
+        gasPrice,
+        balance,
+        contract,
+        txDetails
+      } = options
+
+      //=== if `balance` is not provided, then sufficient funds check is disabled === //
+      //=== if `txDetails` is not provided, then duplicate transaction check is disabled === //
+      //== if dev doesn't want notify to intiate the transaction and `sendTransaction` is not provided, then transaction rejected notification is disabled ==//
+      //=== to disable hints for `txAwaitingApproval`, `txConfirmReminder` or any other notification, then return false from listener functions ==//
+
+      const gasLimit =
+        estimateGas &&
+        bigInt(
+          await estimateGas().catch(err =>
+            console.error("There was a problem estimating gas:", err)
+          )
+        )
+
+      const price =
+        gasPrice &&
+        bigInt(
+          await gasPrice().catch(err =>
+            console.error("There was a problem getting current gas price:", err)
+          )
+        )
+
+      const id = uuid()
+
+      const txObject = {
+        ...txDetails,
+        value: String(txDetails.value),
+        gas: gasLimit && gasLimit.toString(),
+        gasPrice: price && price.toString(),
+        id
+      }
+
+      // check sufficient balance if required parameters are available
+      if (balance && gasLimit && gasPrice) {
+        const transactionCost = gasLimit
+          .times(price)
+          .plus(bigInt(txDetails.value))
+
+        // if transaction cost is greater than the current balance
+        if (transactionCost.compare(bigInt(balance)) === 1) {
+          const eventCode = "nsfFail"
+
+          handlePreFlightEvent({
+            blocknative,
+            eventCode,
+            contract,
+            balance,
+            txObject,
+            emitter
+          })
+
+          return reject("User has insufficient funds")
+        }
+      }
+
+      // check if it is a duplicate transaction
+      if (
+        txDetails &&
+        duplicateTransactionCandidate(
+          { to: txDetails.to, value: txDetails.value },
+          contract
+        )
+      ) {
+        const eventCode = "txRepeat"
+
+        handlePreFlightEvent({
+          blocknative,
+          eventCode,
+          contract,
+          balance,
+          txObject,
+          emitter
+        })
+      }
+
+      // get any timeout configurations
+      const {
+        txApproveReminderTimeout,
+        txStallPendingTimeout,
+        txStallConfirmedTimeout
+      } = get(configuration)
+
+      // check previous transactions awaiting approval
+      if (transactionQueue.find(tx => tx.status === "awaitingApproval")) {
+        const eventCode = "txAwaitingApproval"
+
+        handlePreFlightEvent({
+          blocknative,
+          eventCode,
+          contract,
+          balance,
+          txObject,
+          emitter
+        })
+      }
+
+      // confirm reminder after timeout
+      setTimeout(() => {
+        const awaitingApproval = transactionQueue.find(
+          tx => tx.id === id && tx.status === "awaitingApproval"
+        )
+
+        if (awaitingApproval) {
+          const eventCode = "txConfirmReminder"
+
+          handlePreFlightEvent({
+            blocknative,
+            eventCode,
+            contract,
+            balance,
+            txObject,
+            emitter
+          })
+        }
+      }, txApproveReminderTimeout || txTimeouts.txApproveReminderTimeout)
+
+      handlePreFlightEvent({
+        blocknative,
+        eventCode: "txRequest",
+        status: "awaitingApproval",
+        contract,
+        balance,
+        txObject,
+        emitter
+      })
+
+      resolve(id)
+
+      // if not provided with sendTransaction function, resolve with id so dev can initiate transaction
+      // dev will need to call notify.hash(txHash, id) with this id to link up the preflight with the postflight notifications
+      if (!sendTransaction) {
+        return
+      }
+
+      // initiate transaction
+      const sendTransactionResult = sendTransaction()
+
+      // get result and handle errors
+      const result = await sendTransactionResult.catch(error => {
+        const { eventCode, errorMsg } = extractMessageFromError(error)
+
+        handlePreFlightEvent({
+          blocknative,
+          eventCode,
+          status: "failed",
+          contract,
+          balance,
+          txObject,
+          emitter
+        })
+
+        return reject(errorMsg)
+      })
+
+      if (result && result.hash) {
+        const serverEmitter = blocknative.transaction(result.hash, id).emitter
+
+        serverEmitter.on("all", transaction => {
+          const listener =
+            emitter.listeners[transaction.eventCode] || emitter.listeners.all
+          const result = listener && listener(transaction)
+          return result
+        })
+
+        // Check for pending stall status
+        setTimeout(() => {
+          const transaction = transactionQueue.find(tx => tx.id === id)
+          if (
+            transaction &&
+            transaction.status === "sent" &&
+            blocknative.status.connected &&
+            blocknative.status.nodeSynced
+          ) {
+            const eventCode = "txStallPending"
+
+            handlePreFlightEvent({
+              blocknative,
+              eventCode,
+              contract,
+              balance,
+              txObject,
+              emitter
+            })
+          }
+        }, txStallPendingTimeout || txTimeouts.txStallPendingTimeout)
+
+        // Check for confirmed stall status
+        setTimeout(() => {
+          const transaction = transactionQueue.find(tx => tx.id === id)
+
+          if (
+            transaction &&
+            transaction.status === "pending" &&
+            blocknative.status.connected &&
+            blocknative.status.nodeSynced
+          ) {
+            const eventCode = "txStallConfirmed"
+
+            handlePreFlightEvent({
+              blocknative,
+              eventCode,
+              contract,
+              balance,
+              txObject,
+              emitter
+            })
+          }
+        }, txStallConfirmedTimeout || txTimeouts.txStallConfirmedTimeout)
+      }
+    }, 10)
+  })
 }

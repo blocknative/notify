@@ -68,3 +68,42 @@ export function extractMessageFromError(error) {
     errorMsg: message
   }
 }
+
+export function createEmitter() {
+  return {
+    listeners: {},
+    on: function(eventCode, listener) {
+      // check if valid eventCode
+      switch (eventCode) {
+        case "txSent":
+        case "txPool":
+        case "txConfirmed":
+        case "txSpeedUp":
+        case "txCancel":
+        case "txFailed":
+        case "txRequest":
+        case "nsfFail":
+        case "txRepeat":
+        case "txAwaitingApproval":
+        case "txConfirmReminder":
+        case "txSendFail":
+        case "txError":
+        case "txUnderPriced":
+        case "all":
+          break
+        default:
+          throw new Error(
+            `${eventCode} is not a valid event code, for a list of valid event codes see: https://github.com/blocknative/notify`
+          )
+      }
+
+      // check that listener is a function
+      if (typeof listener !== "function") {
+        throw new Error("Listener must be a function")
+      }
+
+      // add listener for the eventCode
+      this.listeners[eventCode] = listener
+    }
+  }
+}

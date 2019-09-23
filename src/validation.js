@@ -36,16 +36,6 @@ export function validateTransactionOptions(options) {
       txDetails: ow.optional.object.exactShape({
         to: ow.string,
         value: stringOrNumber
-      }),
-      listeners: ow.optional.object.exactShape({
-        txRequest: ow.optional.function,
-        nsfFail: ow.optional.function,
-        txRepeat: ow.optional.function,
-        txAwaitingApproval: ow.optional.function,
-        txConfirmReminder: ow.optional.function,
-        txSendFail: ow.optional.function,
-        txError: ow.optional.function,
-        txUnderPriced: ow.optional.function
       })
     })
   )

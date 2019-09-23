@@ -14,7 +14,7 @@ export const notifications = createNotificationStore([])
 
 export const configuration = writable({
   mobilePosition: "top",
-  desktopPosition: null,
+  desktopPosition: "bottomRight",
   darkMode: null,
   txApproveReminderTimeout: null,
   txStallPendingTimeout: null,

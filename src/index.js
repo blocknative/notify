@@ -37,12 +37,18 @@ transactions.subscribe(store => (transactionQueue = store))
 function init(initialize) {
   validateInit(initialize)
 
-  const { dappId, networkId } = initialize
+  const { dappId, networkId, transactionEvents } = initialize
+
+  const transactionListeners = [handleTransactionEvent]
+
+  if (transactionEvents) {
+    transactionListeners.push(transactionEvents)
+  }
 
   const blocknative = new blocknativeSdk({
     dappId,
     networkId,
-    transactionCallback: handleTransactionEvent
+    transactionListeners
   })
 
   // save config to app store

@@ -6,7 +6,8 @@ export function validateInit(init) {
     "Initialization Options",
     ow.object.exactShape({
       dappId: ow.string,
-      networkId: ow.number
+      networkId: ow.number,
+      transactionEvents: ow.optional.function
     })
   )
 }

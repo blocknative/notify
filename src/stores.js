@@ -13,7 +13,7 @@ export const transactions = createTransactionStore([])
 export const notifications = createNotificationStore([])
 
 export const configuration = writable({
-  mobilePosition: null,
+  mobilePosition: "top",
   desktopPosition: null,
   darkMode: null,
   txApproveReminderTimeout: null,

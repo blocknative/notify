@@ -8,7 +8,7 @@
 
 ## Usage
 
-#### Initialize
+### Initialize
 
 ```javascript
 const notify = Notify.init({
@@ -17,7 +17,7 @@ const notify = Notify.init({
 })
 ```
 
-#### Notifications
+### Notifications
 
 register an account address to receive notifications for pending and confirmed statuses whenever a transaction involving that address is detected:
 
@@ -78,5 +78,17 @@ emitter.on("txRepeat", transaction => {
     message: String, // The message you would like to display
     autoDismiss: Number // The number of milliseconds before the notification automatically hides or false for no autodismiss
   }
+})
+```
+
+### Configuration
+
+There are some configuration options available:
+
+```javascript
+notify.config({
+  darkMode: Boolean, // (default: false)
+  mobilePosition: String, // 'top', 'bottom' (default: 'top')
+  desktopPosition: String // 'bottomLeft', 'bottomRight', 'topLeft', 'topRight' (default: 'bottomRight')
 })
 ```

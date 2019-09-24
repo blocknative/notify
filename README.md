@@ -29,7 +29,7 @@ const { emitter } = notify.hash(hash)
 to receive notifications for the full lifecycle of a transaction:
 
 ```javascript
-const { emitter, sendTransactionResult } = notify.transaction({
+const { emitter, id } = notify.transaction({
   sendTransaction: Function, // A function to call to send the transaction
   // if sendTransaction not provided, then an object with id is returned to be passed to notify.hash after you have initiated the transaction yourself
   estimateGas: Function, // A function to call to estimate the gas limit for this transaction (if not passed no sufficient balance check)(must return a string)
@@ -39,25 +39,9 @@ const { emitter, sendTransactionResult } = notify.transaction({
     // if not passed no duplicate transaction check
     to: String, // the address the transaction is being sent to
     value: Number || String // the value of the transaction
-  },
-  listeners: {
-    // Key pairs of eventCode to listener function (same function structure as emitter callback)
-    txRequest: Function,
-    txRepeat: Function,
-    txAwaitingApproval: Function,
-    txConfirmReminder: Function,
-    txStallPending: Function,
-    txStallConfirmed: Function,
-    txError: Function,
-    txSendFail: Function,
-    txUnderpriced: Function
   }
 })
 ```
-
-#### Send Transaction Result
-
-The `sendTransactionResult` parameter on the object that is returned from calls to `notify.transaction` is simply the result of calling the `sendTransaction` function that was passed in. This is just in case you need it to get event logs or something else that your web3 library provides in the result of the call.
 
 #### Emitter
 
@@ -81,6 +65,26 @@ emitter.on("all", transaction => {
   // called on every event that doesn't have a listener defined on this transaction
 })
 ```
+
+#### Event Codes
+
+The following event codes are valid events to listen to on the transaction emitter:
+
+- `txRequest`: Transaction has been initiated and is waiting approval from the user
+- `txRepeat`: Transaction has the same value and to address, so may be a repeat transaction
+- `txAwaitingApproval`: A previous transaction is awaiting approval
+- `txConfirmReminder`: Transaction has not been confirmed after timeout
+- `txStallPending`: Transaction has not been received in the txPool after timeout
+- `txStallConfirmed`: Transaction has been in the txPool for longer than the timeout
+- `txError`: An error has occured with the transaction
+- `txSendFail`: The user rejected the transaction
+- `txUnderpriced`: The gas was set too low for the transaction to complete
+- `txPool`: Transaction is in the mempool and is pending
+- `txConfirmed`: Transaction has been mined
+- `txFailed`: Transaction has failed
+- `txSpeedUp`: A new transaction has been submitted with the same nonce and a higher gas price, replacing the original transaction
+- `txCancel`: A new transaction has been submitted with the same nonce, a higher gas price, a value of zero and sent to an external address (not a contract)
+- `txDropped`: Transaction was dropped from the mempool without being added to a block
 
 ### Configuration
 

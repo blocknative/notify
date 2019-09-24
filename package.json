@@ -24,9 +24,8 @@
     "babel-plugin-external-helpers": "^6.18.0"
   },
   "dependencies": {
-    "big-integer": "^1.6.44",
+    "big.js": "^5.2.2",
     "bn-sdk": "github:blocknative/bn-sdk#master",
-    "ethereumjs-units": "^0.2.0",
     "lodash.debounce": "^4.0.8",
     "ow": "^0.13.2",
     "svelte": "^3.5.4",

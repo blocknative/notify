@@ -35,9 +35,3 @@ export function typeToDismissTimeout(type) {
       return false
   }
 }
-
-export const txTimeouts = {
-  txApproveReminderTimeout: 20000,
-  txStallPendingTimeout: 20000,
-  txStallConfirmedTimeout: 90000
-}

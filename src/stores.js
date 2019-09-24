@@ -5,21 +5,18 @@ export const app = writable({
   version: null,
   dappId: null,
   networkId: null,
-  nodeSynced: true
+  nodeSynced: true,
+  mobilePosition: "top",
+  desktopPosition: "bottomRight",
+  darkMode: null,
+  txApproveReminderTimeout: 20000,
+  txStallPendingTimeout: 20000,
+  txStallConfirmedTimeout: 90000
 })
 export const accounts = writable([])
 export const contracts = writable([])
 export const transactions = createTransactionStore([])
 export const notifications = createNotificationStore([])
-
-export const configuration = writable({
-  mobilePosition: "top",
-  desktopPosition: "bottomRight",
-  darkMode: null,
-  txApproveReminderTimeout: null,
-  txStallPendingTimeout: null,
-  txStallConfirmedTimeout: null
-})
 
 function createTransactionStore(initialState) {
   const { subscribe, update } = writable(initialState)

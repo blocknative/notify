@@ -1,5 +1,5 @@
 <script>
-  import { configuration } from "../stores";
+  import { app } from "../stores";
   let hovered;
 </script>
 
@@ -26,7 +26,7 @@
 
 <div
   class="bn-notify-custom bn-notify-notification-close-icon"
-  class:bn-notify-dark-mode-close-background={$configuration.darkMode}
+  class:bn-notify-dark-mode-close-background={$app.darkMode}
   on:mouseenter={() => (hovered = true)}
   on:mouseleave={() => (hovered = false)}>
   <svg
@@ -36,7 +36,7 @@
     xmlns="http://www.w3.org/2000/svg">
     <g
       fill="none"
-      stroke={hovered ? ($configuration.darkMode ? '#ffffff' : '#4a4a4a') : '#9B9B9B'}
+      stroke={hovered ? ($app.darkMode ? '#ffffff' : '#4a4a4a') : '#9B9B9B'}
       stroke-linecap="square"
       stroke-width="2"
       style="transition: stroke 150ms ease-in-out;"

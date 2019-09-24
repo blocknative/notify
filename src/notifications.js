@@ -1,7 +1,9 @@
 import { _ } from "svelte-i18n"
-import units from "ethereumjs-units"
+import Big from "big.js"
 import { notifications } from "./stores"
 import { eventToType, typeToDismissTimeout } from "./defaults"
+
+Big.NE = -20
 
 // subscribe to the formatter store
 let formatter
@@ -39,7 +41,9 @@ export function createNotification(details, customization = {}) {
               : direction === "incoming"
               ? "receiving"
               : "sending",
-          formattedValue: units.convert(value, "wei", "eth"),
+          formattedValue: Big(value)
+            .div(Big("1000000000000000000"))
+            .toString(),
           preposition: direction === "incoming" ? "from" : "to",
           counterpartyShortened,
           asset

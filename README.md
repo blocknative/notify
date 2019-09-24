@@ -94,6 +94,9 @@ There are some configuration options available:
 notify.config({
   darkMode: Boolean, // (default: false)
   mobilePosition: String, // 'top', 'bottom' (default: 'top')
-  desktopPosition: String // 'bottomLeft', 'bottomRight', 'topLeft', 'topRight' (default: 'bottomRight')
+  desktopPosition: String, // 'bottomLeft', 'bottomRight', 'topLeft', 'topRight' (default: 'bottomRight')
+  txApproveReminderTimeout: Number, // (default: 20000)
+  txStallPendingTimeout: Number, // (default: 20000)
+  txStallConfirmedTimeout: Number // (default: 90000)
 })
 ```

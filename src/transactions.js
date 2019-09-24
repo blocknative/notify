@@ -1,12 +1,13 @@
-import bigInt from "big-integer"
+import Big from "big.js"
 import uuid from "uuid/v4"
 import { get } from "svelte/store"
 
-import { transactions, configuration } from "./stores"
+import { transactions, app } from "./stores"
 import { createNotification } from "./notifications"
 import { argsEqual, extractMessageFromError } from "./utilities"
-import { txTimeouts } from "./defaults"
 import { validateNotificationObject } from "./validation"
+
+Big.NE = -20
 
 let transactionQueue
 transactions.subscribe(store => (transactionQueue = store))
@@ -119,7 +120,7 @@ export function preflightTransaction(options, emitter, blocknative) {
 
       const gasLimit =
         estimateGas &&
-        bigInt(
+        Big(
           await estimateGas().catch(err =>
             console.error("There was a problem estimating gas:", err)
           )
@@ -127,7 +128,7 @@ export function preflightTransaction(options, emitter, blocknative) {
 
       const price =
         gasPrice &&
-        bigInt(
+        Big(
           await gasPrice().catch(err =>
             console.error("There was a problem getting current gas price:", err)
           )
@@ -145,12 +146,10 @@ export function preflightTransaction(options, emitter, blocknative) {
 
       // check sufficient balance if required parameters are available
       if (balance && gasLimit && gasPrice) {
-        const transactionCost = gasLimit
-          .times(price)
-          .plus(bigInt(txDetails.value))
+        const transactionCost = gasLimit.times(price).plus(Big(txDetails.value))
 
         // if transaction cost is greater than the current balance
-        if (transactionCost.compare(bigInt(balance)) === 1) {
+        if (transactionCost.gt(Big(balance))) {
           const eventCode = "nsfFail"
 
           handlePreFlightEvent({
@@ -186,12 +185,11 @@ export function preflightTransaction(options, emitter, blocknative) {
         })
       }
 
-      // get any timeout configurations
       const {
         txApproveReminderTimeout,
         txStallPendingTimeout,
         txStallConfirmedTimeout
-      } = get(configuration)
+      } = get(app)
 
       // check previous transactions awaiting approval
       if (transactionQueue.find(tx => tx.status === "awaitingApproval")) {
@@ -225,7 +223,7 @@ export function preflightTransaction(options, emitter, blocknative) {
             emitter
           })
         }
-      }, txApproveReminderTimeout || txTimeouts.txApproveReminderTimeout)
+      }, txApproveReminderTimeout)
 
       handlePreFlightEvent({
         blocknative,
@@ -295,7 +293,7 @@ export function preflightTransaction(options, emitter, blocknative) {
               emitter
             })
           }
-        }, txStallPendingTimeout || txTimeouts.txStallPendingTimeout)
+        }, txStallPendingTimeout)
 
         // Check for confirmed stall status
         setTimeout(() => {
@@ -318,7 +316,7 @@ export function preflightTransaction(options, emitter, blocknative) {
               emitter
             })
           }
-        }, txStallConfirmedTimeout || txTimeouts.txStallConfirmedTimeout)
+        }, txStallConfirmedTimeout)
       }
     }, 10)
   })

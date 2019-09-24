@@ -5,7 +5,7 @@ import { notifyMessages } from "./i18n"
 
 import Notify from "./views/Notify.svelte"
 
-import { app, transactions, notifications, configuration } from "./stores"
+import { app, notifications } from "./stores"
 
 import { handleTransactionEvent, preflightTransaction } from "./transactions"
 
@@ -62,7 +62,6 @@ function init(initialize) {
   locale.set(availableLocale ? clientLocale : "en")
 
   return {
-    account,
     hash,
     transaction,
     notification,
@@ -129,7 +128,7 @@ function init(initialize) {
 
   function config(options) {
     validateConfig(options)
-    configuration.update(store => ({ ...store, ...options }))
+    app.update(store => ({ ...store, ...options }))
   }
 }
 

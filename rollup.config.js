@@ -35,13 +35,12 @@ export default [
   {
     input: "src/index.js",
     external: [
-      "big-integer",
+      "big.js",
       "bn-sdk",
       "lodash.debounce",
       "ow",
       "svelte-i18n",
       "uuid/v4",
-      "ethereumjs-units",
       "svelte",
       "svelte/store",
       "svelte/internal",

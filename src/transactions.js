@@ -139,7 +139,7 @@ export function preflightTransaction(options, emitter, blocknative) {
 
       const txObject = {
         ...txDetails,
-        value: String(txDetails.value),
+        value: String(txDetails.value || 0),
         gas: gas && gas.toString(),
         gasPrice: price && price.toString(),
         id

@@ -69,14 +69,14 @@ function init(initialize) {
     config
   }
 
-  function account(address) {
-    try {
-      const { emitter } = blocknative.account(address)
-      return emitter
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
+  // function account(address) {
+  //   try {
+  //     const { emitter } = blocknative.account(address)
+  //     return emitter
+  //   } catch (error) {
+  //     throw new Error(error)
+  //   }
+  // }
 
   function hash(hash, id) {
     try {

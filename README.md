@@ -20,12 +20,6 @@ const notify = Notify.init({
 
 ### Notifications
 
-register an account address to receive notifications for pending and confirmed statuses whenever a transaction involving that address is detected:
-
-```javascript
-const { emitter } = notify.account(address)
-```
-
 register a hash of a transaction to receive notifications for pending and confirmed statuses:
 
 ```javascript

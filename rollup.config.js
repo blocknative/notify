@@ -46,7 +46,8 @@ export default [
       "svelte/internal",
       "svelte/transition",
       "svelte/easing",
-      "svelte/animate"
+      "svelte/animate",
+      "regenerator-runtime/runtime"
     ],
     plugins: [
       svelte(),

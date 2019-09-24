@@ -27,6 +27,7 @@
     "big.js": "^5.2.2",
     "bn-sdk": "github:blocknative/bn-sdk#master",
     "lodash.debounce": "^4.0.8",
+    "regenerator-runtime": "^0.13.3",
     "ow": "^0.13.2",
     "svelte": "^3.5.4",
     "svelte-i18n": "^1.1.2-beta",

@@ -34,8 +34,9 @@ export function validateTransactionOptions(options) {
         params: ow.optional.array.nonEmpty
       }),
       txDetails: ow.optional.object.exactShape({
-        to: ow.string,
-        value: stringOrNumber
+        to: ow.optional.string,
+        value: stringOrNumber,
+        from: ow.optional.string
       })
     })
   )

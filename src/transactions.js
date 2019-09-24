@@ -110,43 +110,44 @@ export function preflightTransaction(options, emitter, blocknative) {
         gasPrice,
         balance,
         contract,
-        txDetails
+        txDetails = {}
       } = options
 
       //=== if `balance` is not provided, then sufficient funds check is disabled === //
       //=== if `txDetails` is not provided, then duplicate transaction check is disabled === //
       //== if dev doesn't want notify to intiate the transaction and `sendTransaction` is not provided, then transaction rejected notification is disabled ==//
       //=== to disable hints for `txAwaitingApproval`, `txConfirmReminder` or any other notification, then return false from listener functions ==//
-
-      const gasLimit =
+      const estimateGasResult =
         estimateGas &&
-        Big(
-          await estimateGas().catch(err =>
-            console.error("There was a problem estimating gas:", err)
-          )
-        )
+        (await estimateGas().catch(err =>
+          console.error("There was a problem estimating gas:", err)
+        ))
 
-      const price =
+      // @TODO - validate result and show helpful error
+      const gas = Big(estimateGasResult)
+
+      const gasPriceResult =
         gasPrice &&
-        Big(
-          await gasPrice().catch(err =>
-            console.error("There was a problem getting current gas price:", err)
-          )
-        )
+        (await gasPrice().catch(err =>
+          console.error("There was a problem getting current gas price:", err)
+        ))
+
+      // @TODO - validate result and show helpful error
+      const price = Big(gasPriceResult)
 
       const id = uuid()
 
       const txObject = {
         ...txDetails,
         value: String(txDetails.value),
-        gas: gasLimit && gasLimit.toString(),
+        gas: gas && gas.toString(),
         gasPrice: price && price.toString(),
         id
       }
 
       // check sufficient balance if required parameters are available
-      if (balance && gasLimit && gasPrice) {
-        const transactionCost = gasLimit.times(price).plus(Big(txDetails.value))
+      if (balance && gas && gasPrice) {
+        const transactionCost = gas.times(price).plus(Big(0))
 
         // if transaction cost is greater than the current balance
         if (transactionCost.gt(Big(balance))) {

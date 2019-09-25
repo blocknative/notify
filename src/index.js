@@ -93,11 +93,11 @@ function init(initialize) {
 
     const emitter = createEmitter()
 
-    const id = preflightTransaction(options, emitter, blocknative)
+    const result = preflightTransaction(options, emitter, blocknative)
 
     return {
       emitter,
-      id
+      result
     }
   }
 

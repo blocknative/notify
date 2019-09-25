@@ -29,7 +29,7 @@ const { emitter } = notify.hash(hash)
 to receive notifications for the full lifecycle of a transaction:
 
 ```javascript
-const { emitter, id } = notify.transaction({
+const { emitter, result } = notify.transaction({
   sendTransaction: Function, // A function to call to send the transaction
   // if sendTransaction not provided, then an object with id is returned to be passed to notify.hash after you have initiated the transaction yourself
   estimateGas: Function, // A function to call to estimate the gas limit for this transaction (if not passed no sufficient balance check)(must return a string)
@@ -42,6 +42,8 @@ const { emitter, id } = notify.transaction({
   }
 })
 ```
+
+`result` is a promise that resolves with the `id` of the transaction or rejects with an error if there was an error initiating the transaction. The `id` is useful for when you would like to initiate the transaction yourself and didn't pass a `sendTransaction` function in to `transaction`. You can then send the transaction yourself, receive the hash, and then call `notify.hash(hash, id)`. By passing in the `id` to `hash` you enable notify to link the preflight notifications to the post send transaction notifications, ensuring a consistent UX.
 
 #### Emitter
 

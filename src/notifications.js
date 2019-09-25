@@ -1,9 +1,7 @@
 import { _ } from "svelte-i18n"
-import Big from "big.js"
+import BigNumber from "bignumber.js"
 import { notifications } from "./stores"
 import { eventToType, typeToDismissTimeout } from "./defaults"
-
-Big.NE = -20
 
 // subscribe to the formatter store
 let formatter
@@ -41,8 +39,8 @@ export function createNotification(details, customization = {}) {
               : direction === "incoming"
               ? "receiving"
               : "sending",
-          formattedValue: Big(value)
-            .div(Big("1000000000000000000"))
+          formattedValue: BigNumber(value)
+            .div(BigNumber("1000000000000000000"))
             .toString(),
           preposition: direction === "incoming" ? "from" : "to",
           counterpartyShortened,

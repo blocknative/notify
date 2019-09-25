@@ -1,4 +1,4 @@
-import Big from "big.js"
+import BigNumber from "bignumber.js"
 import uuid from "uuid/v4"
 import { get } from "svelte/store"
 
@@ -6,8 +6,6 @@ import { transactions, app } from "./stores"
 import { createNotification } from "./notifications"
 import { argsEqual, extractMessageFromError } from "./utilities"
 import { validateNotificationObject } from "./validation"
-
-Big.NE = -20
 
 let transactionQueue
 transactions.subscribe(store => (transactionQueue = store))
@@ -124,7 +122,7 @@ export function preflightTransaction(options, emitter, blocknative) {
         ))
 
       // @TODO - validate result and show helpful error
-      const gas = Big(estimateGasResult)
+      const gas = BigNumber(estimateGasResult)
 
       const gasPriceResult =
         gasPrice &&
@@ -133,13 +131,15 @@ export function preflightTransaction(options, emitter, blocknative) {
         ))
 
       // @TODO - validate result and show helpful error
-      const price = Big(gasPriceResult)
+      const price = BigNumber(gasPriceResult)
 
       const id = uuid()
 
+      const value = BigNumber(txDetails.value || 0)
+
       const txObject = {
         ...txDetails,
-        value: String(txDetails.value || 0),
+        value: value.toString(),
         gas: gas && gas.toString(),
         gasPrice: price && price.toString(),
         id
@@ -147,10 +147,10 @@ export function preflightTransaction(options, emitter, blocknative) {
 
       // check sufficient balance if required parameters are available
       if (balance && gas && gasPrice) {
-        const transactionCost = gas.times(price).plus(Big(0))
+        const transactionCost = gas.times(price).plus(value)
 
         // if transaction cost is greater than the current balance
-        if (transactionCost.gt(Big(balance))) {
+        if (transactionCost.gt(BigNumber(balance))) {
           const eventCode = "nsfFail"
 
           handlePreFlightEvent({

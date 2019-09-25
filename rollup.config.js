@@ -35,7 +35,7 @@ export default [
   {
     input: "src/index.js",
     external: [
-      "big.js",
+      "bignumber.js",
       "bn-sdk",
       "lodash.debounce",
       "ow",

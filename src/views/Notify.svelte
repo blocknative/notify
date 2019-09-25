@@ -162,7 +162,7 @@
     pointer-events: all;
     background: #ffffff;
     backdrop-filter: blur(5px);
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.9);
   }
 
   /* .bn-notify-notification-close */

@@ -111,30 +111,13 @@ export function preflightTransaction(options, emitter, blocknative) {
         txDetails = {}
       } = options
 
-      //=== if `balance` is not provided, then sufficient funds check is disabled === //
+      //=== if `balance` or `estimateGas` or `gasPrice` is not provided, then sufficient funds check is disabled === //
       //=== if `txDetails` is not provided, then duplicate transaction check is disabled === //
       //== if dev doesn't want notify to intiate the transaction and `sendTransaction` is not provided, then transaction rejected notification is disabled ==//
       //=== to disable hints for `txAwaitingApproval`, `txConfirmReminder` or any other notification, then return false from listener functions ==//
-      const estimateGasResult =
-        estimateGas &&
-        (await estimateGas().catch(err =>
-          console.error("There was a problem estimating gas:", err)
-        ))
 
-      // @TODO - validate result and show helpful error
-      const gas = BigNumber(estimateGasResult)
-
-      const gasPriceResult =
-        gasPrice &&
-        (await gasPrice().catch(err =>
-          console.error("There was a problem getting current gas price:", err)
-        ))
-
-      // @TODO - validate result and show helpful error
-      const price = BigNumber(gasPriceResult)
-
+      const [gas, price] = await gasEstimates(estimateGas, gasPrice)
       const id = uuid()
-
       const value = BigNumber(txDetails.value || 0)
 
       const txObject = {
@@ -146,7 +129,7 @@ export function preflightTransaction(options, emitter, blocknative) {
       }
 
       // check sufficient balance if required parameters are available
-      if (balance && gas && gasPrice) {
+      if (balance && gas && price) {
         const transactionCost = gas.times(price).plus(value)
 
         // if transaction cost is greater than the current balance
@@ -320,5 +303,36 @@ export function preflightTransaction(options, emitter, blocknative) {
         }, txStallConfirmedTimeout)
       }
     }, 10)
+  })
+}
+
+function gasEstimates(gasFunc, gasPriceFunc) {
+  if (!gasFunc || !gasPriceFunc) {
+    return Promise.resolve([])
+  }
+
+  const gasProm = gasFunc()
+  if (!gasProm.then) {
+    throw new Error('The `estimateGas` function must return a Promise')
+  }
+
+  const gasPriceProm = gasPriceFunc()
+  if (!gasPriceProm.then) {
+    throw new Error('The `gasPrice` function must return a Promise')
+  }
+
+
+  return Promise.all([gasProm, gasPriceProm]).then(([gasResult, gasPriceResult]) => {
+    if (typeof gasResult !== 'string') {
+      throw new Error(`The Promise returned from calling 'estimateGas' must resolve with a value of type 'string'. Received a value of: ${gasResult} with a type: ${typeof gasResult}`)
+    }
+
+    if (typeof gasPriceResult !== 'string') {
+      throw new Error(`The Promise returned from calling 'gasPrice' must resolve with a value of type 'string'. Received a value of: ${gasPriceResult} with a type: ${typeof gasPriceResult}`)
+    }
+
+    return [BigNumber(gasResult), BigNumber(gasPriceResult)]
+  }).catch(error => {
+    throw new Error(`There was an error getting gas estimates: ${error}`)
   })
 }

@@ -80,13 +80,13 @@ export function duplicateTransactionCandidate(transaction, contract) {
       ? argsEqual(contract.parameters, tx.contract.parameters)
       : true
 
-    return (
-      sameMethod &&
-      sameParams &&
-      tx.value == transaction.value &&
-      (tx.to && tx.to.toLowerCase()) ===
-        (transaction.to && transaction.to.toLowerCase())
-    )
+    const sameVal = tx.value == transaction.value
+
+    const sameTo = contract
+      ? sameMethod
+      : tx.to.toLowerCase() === transaction.to.toLowerCase()
+
+    return sameMethod && sameParams && sameVal && sameTo
   })
 
   if (

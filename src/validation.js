@@ -31,7 +31,7 @@ export function validateTransactionOptions(options) {
       balance: ow.optional.string,
       contract: ow.optional.object.exactShape({
         methodName: ow.string,
-        params: ow.optional.array.nonEmpty
+        parameters: ow.optional.array.nonEmpty
       }),
       txDetails: ow.optional.object.exactShape({
         to: ow.optional.string,

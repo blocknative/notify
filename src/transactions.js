@@ -31,7 +31,7 @@ export function handlePreFlightEvent({
     ...txObject,
     eventCode,
     status,
-    contractCall: contract
+    contract
   }
 
   const listener = emitter.listeners[eventCode] || emitter.listeners.all
@@ -84,7 +84,8 @@ export function duplicateTransactionCandidate(transaction, contract) {
       sameMethod &&
       sameParams &&
       tx.value == transaction.value &&
-      tx.to.toLowerCase() === transaction.to.toLowerCase()
+      (tx.to && tx.to.toLowerCase()) ===
+        (transaction.to && transaction.to.toLowerCase())
     )
   })
 
@@ -153,7 +154,7 @@ export function preflightTransaction(options, emitter, blocknative) {
       if (
         txDetails &&
         duplicateTransactionCandidate(
-          { to: txDetails.to, value: txDetails.value },
+          { to: txObject.to, value: txObject.value },
           contract
         )
       ) {
@@ -313,26 +314,31 @@ function gasEstimates(gasFunc, gasPriceFunc) {
 
   const gasProm = gasFunc()
   if (!gasProm.then) {
-    throw new Error('The `estimateGas` function must return a Promise')
+    throw new Error("The `estimateGas` function must return a Promise")
   }
 
   const gasPriceProm = gasPriceFunc()
   if (!gasPriceProm.then) {
-    throw new Error('The `gasPrice` function must return a Promise')
+    throw new Error("The `gasPrice` function must return a Promise")
   }
 
+  return Promise.all([gasProm, gasPriceProm])
+    .then(([gasResult, gasPriceResult]) => {
+      if (typeof gasResult !== "string") {
+        throw new Error(
+          `The Promise returned from calling 'estimateGas' must resolve with a value of type 'string'. Received a value of: ${gasResult} with a type: ${typeof gasResult}`
+        )
+      }
 
-  return Promise.all([gasProm, gasPriceProm]).then(([gasResult, gasPriceResult]) => {
-    if (typeof gasResult !== 'string') {
-      throw new Error(`The Promise returned from calling 'estimateGas' must resolve with a value of type 'string'. Received a value of: ${gasResult} with a type: ${typeof gasResult}`)
-    }
+      if (typeof gasPriceResult !== "string") {
+        throw new Error(
+          `The Promise returned from calling 'gasPrice' must resolve with a value of type 'string'. Received a value of: ${gasPriceResult} with a type: ${typeof gasPriceResult}`
+        )
+      }
 
-    if (typeof gasPriceResult !== 'string') {
-      throw new Error(`The Promise returned from calling 'gasPrice' must resolve with a value of type 'string'. Received a value of: ${gasPriceResult} with a type: ${typeof gasPriceResult}`)
-    }
-
-    return [BigNumber(gasResult), BigNumber(gasPriceResult)]
-  }).catch(error => {
-    throw new Error(`There was an error getting gas estimates: ${error}`)
-  })
+      return [BigNumber(gasResult), BigNumber(gasPriceResult)]
+    })
+    .catch(error => {
+      throw new Error(`There was an error getting gas estimates: ${error}`)
+    })
 }

@@ -1,6 +1,6 @@
 {
   "name": "bnc-notify",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "files": [
@@ -35,6 +35,7 @@
   },
   "scripts": {
     "prepare": "rollup -c",
-    "build": "npm run prepare"
+    "build": "npm run prepare",
+    "test": "echo \"TBD\" && exit 0"
   }
 }

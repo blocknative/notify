@@ -916,10 +916,10 @@ bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.1.1, bn.js@^4.11.0, bn.js@^4.11.1, bn.js@^4
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.8.tgz#2cde09eb5ee341f484746bb0309b3253b1b1442f"
   integrity sha512-ItfYfPLkWHUjckQCk8xC+LwxgK8NYcXywGigJgSwOP8Y2iyWT4f2vsZnoOXTTbo+o5yXmIUJ4gn5538SO5S3gA==
 
-bnc-sdk@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/bnc-sdk/-/bnc-sdk-0.1.0.tgz#047091748bed2e11799c65cf80b436e1b07506f3"
-  integrity sha512-pRgD0owj0dJ2O0qPjdAGF1JADQCaA9YL0sHm/28FR1jd3zC3iXbnhdzU+T6pEPso9ArBZYqC7tHEFbrP098QRw==
+bnc-sdk@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/bnc-sdk/-/bnc-sdk-0.1.1.tgz#d18cfb9fa1c6d529f7b3ac785d3ef512e0c776b4"
+  integrity sha512-2vuvwQ+CGAHMcjWiJ6t+K0d4BT1EOh//sapzeZ+V76cRyMqrI4WhotqDEMNzBSmKeu06pkqVXM3CgpzixUPAzw==
   dependencies:
     ethereumjs-util "^6.1.0"
     ow "^0.13.2"

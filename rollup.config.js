@@ -36,7 +36,7 @@ export default [
     input: "src/index.js",
     external: [
       "bignumber.js",
-      "bn-sdk",
+      "bnc-sdk",
       "lodash.debounce",
       "ow",
       "svelte-i18n",

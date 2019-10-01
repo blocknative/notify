@@ -2,22 +2,45 @@
 
 A JavaScript library for real time notifications for Ethereum transactions
 
-- [Quick Start Examples](#quick-start-examples)
-  - [web3.js - `0.2.x`](#web3-0.2.x-example)
-  - [web3.js - `1.x.x`](#web3-1.x.x-example)
-  - [ethers.js - `v4`](#ethers-v4-example)
-  - [ethers.js - `v5`](#ethers-v5-example)
-- [API](#api)
+## Install
 
-## Quick Start Examples
+`npm install bnc-notify`
 
-### web3 0.2.x example
+## Quick Start
 
-### web3 1.x.x example
+```javascript
+import Notify from "bnc-notify"
+import web3 from "./web3"
 
-### ether v4 example
+const options = {
+  dappId: "Your dappId here",
+  networkId: 1,
+  transactionEvents: event =>
+    console.log("Transaction Event:", event.transaction)
+}
 
-### ethers v5 example
+// initialize notify
+const notify = Notify(options)
+
+// send a transaction and get the hash
+const transactionHash = await web3.eth.sendTransaction({
+  to: "0xa1C5E103Dfd56CBC3f6B6a526d2044598fD1cf1F",
+  value: 100000000000000,
+  from: "0x54c43790da9F8bd5d9bef06f56f798Eb16c53A91"
+})
+
+// pass the hash in to notify to receive "post-flight" notifications
+const { emitter } = notify.hash(transactionHash)
+
+// listen to transaction events
+emitter.on("txSent", console.log)
+emitter.on("txPool", console.log)
+emitter.on("txConfirmed", console.log)
+emitter.on("txSpeedUp", console.log)
+emitter.on("txCancel", console.log)
+emitter.on("txFailed", console.log)
+emitter.on("all", console.log)
+```
 
 ### API
 
@@ -28,7 +51,7 @@ import Notify from "bn-notify"
 
 const options = {
   dappId: "Your dappId here",
-  networkId: "1",
+  networkId: 1,
   transactionEvents: event =>
     console.log("Transaction Event:", event.transaction)
 }
@@ -54,26 +77,19 @@ Your unique apiKey that identifies your application. You can generate a dappId b
 
 The Ethereum network id that your application runs on. The following values are valid:
 
-- `'1'` Main Network
-- `'3'` Ropsten Test Network
-- `'4'` Rinkeby Test Network
-- `'5'` Goerli Test Network
-- `'42'` Kovan Test Network
+- `1` Main Network
+- `3` Ropsten Test Network
+- `4` Rinkeby Test Network
+- `5` Goerli Test Network
+- `42` Kovan Test Network
 
 ##### `transactionEvents` - [OPTIONAL]
 
 The function defined for the `transactionEvents` parameter will be called once for every status update for _every_ transaction that is associated with a watched address _or_ a watched transaction. This is useful as a global handler for all transactions and status updates. The callback is called with the following object:
 
-```javascript
-{
-  transaction, // transaction object
-    emitterResult // data that is returned from the transaction event listener defined on the emitter
-}
-```
-
 See the [Transaction Object](#transaction-object) section for more info on what is included in the `transaction` parameter.
 
-### `notify.hash`
+### `hash`
 
 To get notifications for every status that occurs after sending a transaction ("post-flight"), use the `hash` function:
 
@@ -87,7 +103,7 @@ const { emitter } = notify.hash(hash)
 
 Check out the [Emitter Section](#emitter) for details on the `emitter` object
 
-### `notify.transaction`
+### `transaction`
 
 To get notifications for every status that occurs for the full transaction lifecycle ("pre-flight" and "post-flight"), use the `transaction` function:
 
@@ -128,7 +144,22 @@ The `txDetails` object includes a `to` parameter which is the address the transa
 
 The `sendTransaction` function must return a `Promise` that resolves with a `String` that is the transaction hash.
 
-#### Emitter
+### `config`
+
+There are some configuration options available:
+
+```javascript
+notify.config({
+  darkMode: Boolean, // (default: false)
+  mobilePosition: String, // 'top', 'bottom' (default: 'top')
+  desktopPosition: String, // 'bottomLeft', 'bottomRight', 'topLeft', 'topRight' (default: 'bottomRight')
+  txApproveReminderTimeout: Number, // (default: 20000)
+  txStallPendingTimeout: Number, // (default: 20000)
+  txStallConfirmedTimeout: Number // (default: 90000)
+})
+```
+
+### Emitter
 
 The `emitter` object returned is used to listen for transaction events:
 
@@ -136,7 +167,7 @@ The `emitter` object returned is used to listen for transaction events:
 emitter.on("txRepeat", transaction => {
   // return false for no notification
   // no return (or return undefined) to show default notification
-  // return custom transaction object to show custom transaction, can return all or one of the following parameters:
+  // return custom notification object to show custom notifications, can return all or one of the following parameters:
   return {
     type: String, // ['hint' (gray), 'pending' (yellow), 'success' (green), 'error' (red)]
     message: String, // The message you would like to display
@@ -151,7 +182,7 @@ emitter.on("all", transaction => {
 })
 ```
 
-#### Event Codes
+### Event Codes
 
 The following event codes are valid events to listen to on the transaction emitter:
 
@@ -170,18 +201,3 @@ The following event codes are valid events to listen to on the transaction emitt
 - `txSpeedUp`: A new transaction has been submitted with the same nonce and a higher gas price, replacing the original transaction
 - `txCancel`: A new transaction has been submitted with the same nonce, a higher gas price, a value of zero and sent to an external address (not a contract)
 - `txDropped`: Transaction was dropped from the mempool without being added to a block
-
-### `notify.config`
-
-There are some configuration options available:
-
-```javascript
-notify.config({
-  darkMode: Boolean, // (default: false)
-  mobilePosition: String, // 'top', 'bottom' (default: 'top')
-  desktopPosition: String, // 'bottomLeft', 'bottomRight', 'topLeft', 'topRight' (default: 'bottomRight')
-  txApproveReminderTimeout: Number, // (default: 20000)
-  txStallPendingTimeout: Number, // (default: 20000)
-  txStallConfirmedTimeout: Number // (default: 90000)
-})
-```

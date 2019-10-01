@@ -1,7 +1,7 @@
 import "regenerator-runtime/runtime"
 
 import uuid from "uuid/v4"
-import blocknativeSdk from "bn-sdk"
+import blocknativeSdk from "bnc-sdk"
 import { locale, dictionary, getClientLocale, _ } from "svelte-i18n"
 import { notifyMessages } from "./i18n"
 
@@ -81,8 +81,8 @@ function init(initialize) {
 
   function hash(hash, id) {
     try {
-      const { emitter } = blocknative.transaction(hash, id)
-      return emitter
+      const result = blocknative.transaction(hash, id)
+      return result
     } catch (error) {
       throw new Error(error)
     }

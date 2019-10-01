@@ -1,5 +1,5 @@
 {
-  "name": "bn-notify",
+  "name": "bnc-notify",
   "version": "0.0.1",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "bignumber.js": "^9.0.0",
-    "bn-sdk": "github:blocknative/bn-sdk#master",
+    "bnc-sdk": "^0.1.0",
     "lodash.debounce": "^4.0.8",
     "ow": "^0.13.2",
     "regenerator-runtime": "^0.13.3",

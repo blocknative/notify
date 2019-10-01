@@ -232,7 +232,7 @@ export function preflightTransaction(options, emitter, blocknative) {
       const sendTransactionResult = sendTransaction()
 
       // get result and handle errors
-      const result = await sendTransactionResult.catch(error => {
+      const hash = await sendTransactionResult.catch(error => {
         const { eventCode, errorMsg } = extractMessageFromError(error)
 
         handlePreFlightEvent({
@@ -248,7 +248,7 @@ export function preflightTransaction(options, emitter, blocknative) {
         return reject(errorMsg)
       })
 
-      if (result && result.hash) {
+      if (hash && typeof hash === "string") {
         const serverEmitter = blocknative.transaction(result.hash, id).emitter
 
         serverEmitter.on("all", transaction => {
@@ -302,6 +302,10 @@ export function preflightTransaction(options, emitter, blocknative) {
             })
           }
         }, txStallConfirmedTimeout)
+      } else {
+        throw new Error(
+          "sendTransaction function must resolve to a transaction hash that is of type String."
+        )
       }
     }, 10)
   })

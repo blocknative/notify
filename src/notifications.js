@@ -27,29 +27,27 @@ export function createNotification(details, customization = {}) {
       "..." +
       counterparty.substring(counterparty.length - 4)
 
-  // const formatterOptions = counterparty
-  //   ? [
-  //       `watched.${eventCode}`,
-  //       {
-  //         verb:
-  //           eventCode === "txConfirmed"
-  //             ? direction === "incoming"
-  //               ? "received"
-  //               : "sent"
-  //             : direction === "incoming"
-  //             ? "receiving"
-  //             : "sending",
-  //         formattedValue: BigNumber(value)
-  //           .div(BigNumber("1000000000000000000"))
-  //           .toString(),
-  //         preposition: direction === "incoming" ? "from" : "to",
-  //         counterpartyShortened,
-  //         asset
-  //       }
-  //     ]
-  //   : [`transaction.${eventCode}`]
-
-  const formatterOptions = [`transaction.${eventCode}`]
+  const formatterOptions = counterparty
+    ? [
+        `watched.${eventCode}`,
+        {
+          verb:
+            eventCode === "txConfirmed"
+              ? direction === "incoming"
+                ? "received"
+                : "sent"
+              : direction === "incoming"
+              ? "receiving"
+              : "sending",
+          formattedValue: BigNumber(value)
+            .div(BigNumber("1000000000000000000"))
+            .toString(),
+          preposition: direction === "incoming" ? "from" : "to",
+          counterpartyShortened,
+          asset
+        }
+      ]
+    : [`transaction.${eventCode}`]
 
   const notificationObject = {
     id: id || hash,

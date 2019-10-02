@@ -22,15 +22,11 @@ const options = {
 // initialize notify
 const notify = Notify(options)
 
-// send a transaction and get the hash
-const transactionHash = await web3.eth.sendTransaction({
-  to: "0xa1C5E103Dfd56CBC3f6B6a526d2044598fD1cf1F",
-  value: 100000000000000,
-  from: "0x54c43790da9F8bd5d9bef06f56f798Eb16c53A91"
-})
+// get users' account address
+const accounts = await window.ethereum.enable()
 
-// pass the hash in to notify to receive "post-flight" notifications
-const { emitter } = notify.hash(transactionHash)
+// pass the account address in to notify to receive "post-flight" notifications for every incoming and outgoing transaction that happens on the users' account
+const { emitter } = notify.account(accounts[0])
 
 // listen to transaction events
 emitter.on("txSent", console.log)
@@ -99,6 +95,20 @@ const hash = await web3.eth.sendTransaction(txOptions)
 
 // pash the hash in to notify.hash
 const { emitter } = notify.hash(hash)
+```
+
+Check out the [Emitter Section](#emitter) for details on the `emitter` object
+
+### `account`
+
+To get notifications for every "post-flight" status update for every transaction that occurs on a particular address, use the `account` function:
+
+```javascript
+// get the users' account address
+const accounts = await window.ethereum.enable()
+
+// pash the hash in to notify.hash
+const { emitter } = notify.account(accounts[0])
 ```
 
 Check out the [Emitter Section](#emitter) for details on the `emitter` object

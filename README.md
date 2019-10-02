@@ -38,7 +38,7 @@ emitter.on("txFailed", console.log)
 emitter.on("all", console.log)
 ```
 
-### API
+## API
 
 ### Initialization
 

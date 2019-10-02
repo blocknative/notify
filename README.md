@@ -38,9 +38,7 @@ emitter.on("txFailed", console.log)
 emitter.on("all", console.log)
 ```
 
-## API
-
-### Initialization
+## Initialization
 
 ```javascript
 import Notify from "bn-notify"
@@ -55,7 +53,7 @@ const options = {
 const notify = Notify(options)
 ```
 
-#### Options
+### Options
 
 ```javascript
 const options = {
@@ -65,11 +63,11 @@ const options = {
 }
 ```
 
-##### `dappId` - [REQUIRED]
+#### `dappId` - [REQUIRED]
 
 Your unique apiKey that identifies your application. You can generate a dappId by visiting the [Blocknative account page](https://account.blocknative.com/) and create a free account.
 
-##### `networkId` - [REQUIRED]
+#### `networkId` - [REQUIRED]
 
 The Ethereum network id that your application runs on. The following values are valid:
 
@@ -79,11 +77,13 @@ The Ethereum network id that your application runs on. The following values are 
 - `5` Goerli Test Network
 - `42` Kovan Test Network
 
-##### `transactionEvents` - [OPTIONAL]
+#### `transactionEvents` - [OPTIONAL]
 
 The function defined for the `transactionEvents` parameter will be called once for every status update for _every_ transaction that is associated with a watched address _or_ a watched transaction. This is useful as a global handler for all transactions and status updates. The callback is called with the following object:
 
 See the [Transaction Object](#transaction-object) section for more info on what is included in the `transaction` parameter.
+
+## API
 
 ### `hash`
 
@@ -169,7 +169,7 @@ notify.config({
 })
 ```
 
-### Emitter
+## Emitter
 
 The `emitter` object returned is used to listen for transaction events:
 
@@ -192,7 +192,7 @@ emitter.on("all", transaction => {
 })
 ```
 
-### Event Codes
+## Event Codes
 
 The following event codes are valid events to listen to on the transaction emitter:
 

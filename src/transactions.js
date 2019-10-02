@@ -49,16 +49,6 @@ export function handlePreFlightEvent({
 }
 
 export function handleTransactionEvent({ transaction, emitterResult }) {
-  // transaction queue alread has tx with same id and same eventCode then don't update
-  // this is to allow for the fact that the server mirrors events sent to it
-  if (
-    transactionQueue.find(
-      tx => tx.id === transaction.id && tx.eventCode === transaction.eventCode
-    )
-  ) {
-    return
-  }
-
   transactions.updateQueue(transaction)
 
   // create notification if dev hasn't opted out

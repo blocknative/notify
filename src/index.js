@@ -66,18 +66,19 @@ function init(initialize) {
   return {
     hash,
     transaction,
+    account,
     notification,
     config
   }
 
-  // function account(address) {
-  //   try {
-  //     const { emitter } = blocknative.account(address)
-  //     return emitter
-  //   } catch (error) {
-  //     throw new Error(error)
-  //   }
-  // }
+  function account(address) {
+    try {
+      const result = blocknative.account(address)
+      return result
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
 
   function hash(hash, id) {
     try {

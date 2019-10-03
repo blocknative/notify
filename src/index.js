@@ -73,8 +73,8 @@ function init(initialize) {
 
   function account(address) {
     try {
-      const { emitter } = blocknative.account(address)
-      return emitter
+      const result = blocknative.account(address)
+      return result
     } catch (error) {
       throw new Error(error)
     }

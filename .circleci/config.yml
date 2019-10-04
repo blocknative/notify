@@ -2,7 +2,7 @@ version: 2
 jobs:
   test:
     docker:
-      - image: circleci/node:8.15-browsers
+      - image: circleci/node:10.16
     steps:
       - checkout
       - restore_cache:
@@ -18,13 +18,14 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
   deploy_stage:
     docker:
-      - image: circleci/node:8.15-browsers
+      - image: circleci/node:10.16
     steps:
       - checkout
       - run: sudo apt update && sudo apt install awscli
       - run: yarn
       - run: yarn build
-      - run: sudo npm i -g npm-cli-login
+      - run: sudo -s
+      - run: npm i -g npm-cli-login
       - run: NPM_USER=$NPM_USERNAME NPM_EMAIL=$NPM_EMAIL NPM_PASS=$NPM_PASSWORD npm-cli-login
       - run: npm publish --dry-run
       - run: gzip -9 /home/circleci/project/dist/iife/notify.js
@@ -37,7 +38,7 @@ jobs:
       - run: aws s3 sync /home/circleci/project/deploy-temp/${VERSION}/ s3://staging.notify.blocknative.com/${VERSION}/ --content-type "text/javascript" --content-encoding "gzip" --cache-control "max-age=31536000" --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
   deploy_prod:
     docker:
-      - image: circleci/node:8.15-browsers
+      - image: circleci/node:10.16
     steps:
       - checkout
       - run: sudo apt update && sudo apt install awscli

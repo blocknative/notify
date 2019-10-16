@@ -113,9 +113,9 @@ export function preflightTransaction(options, emitter, blocknative) {
 
       const txObject = {
         ...txDetails,
-        value: value.toString(),
-        gas: gas && gas.toString(),
-        gasPrice: price && price.toString(),
+        value: value.toString(10),
+        gas: gas && gas.toString(10),
+        gasPrice: price && price.toString(10),
         id
       }
 
@@ -239,7 +239,7 @@ export function preflightTransaction(options, emitter, blocknative) {
       })
 
       if (hash && typeof hash === "string") {
-        const serverEmitter = blocknative.transaction(result.hash, id).emitter
+        const serverEmitter = blocknative.transaction(hash, id).emitter
 
         serverEmitter.on("all", transaction => {
           const listener =

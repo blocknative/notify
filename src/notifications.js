@@ -41,7 +41,7 @@ export function createNotification(details, customization = {}) {
               : "sending",
           formattedValue: BigNumber(value)
             .div(BigNumber("1000000000000000000"))
-            .toString(),
+            .toString(10),
           preposition: direction === "incoming" ? "from" : "to",
           counterpartyShortened,
           asset

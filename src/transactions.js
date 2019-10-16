@@ -239,7 +239,7 @@ export function preflightTransaction(options, emitter, blocknative) {
       })
 
       if (hash && typeof hash === "string") {
-        const serverEmitter = blocknative.transaction(result.hash, id).emitter
+        const serverEmitter = blocknative.transaction(hash, id).emitter
 
         serverEmitter.on("all", transaction => {
           const listener =

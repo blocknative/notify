@@ -154,9 +154,39 @@ The `txDetails` object includes a `to` parameter which is the address the transa
 
 The `sendTransaction` function must return a `Promise` that resolves with a `String` that is the transaction hash.
 
+### `notification`
+
+You may want to trigger a notification for a custom event that may not be related to a transaction. You can use the `notification` function to do that:
+
+```javascript
+const notificationObject = {
+  type: "pending",
+  message: "Updating the database with your information",
+  autoDismiss: 4000
+}
+
+const { update, dismiss } = notify.notification(
+  "databaseUpdate",
+  notificationObject
+)
+```
+
+The `notification` function is called with two arguments:
+
+- `eventCode`: a string which is used to keep track of that event for your analytics dashboard
+- `notificationObject`: a object that defines the notification with the parameters:
+  - `type`: a string that defines the style - ['hint' (gray), 'pending' (yellow), 'success' (green), 'error' (red)]
+  - `message`: a message string that is displayed on the notification
+  - `autoDismiss`: a number in milliseconds before the notification auto dismisses. Defaults to no auto dismissal
+
+Returned from the notification function is an object that has two functions defined on it:
+
+- `update`: a function that can be called with a new notification object to replace the original notification with
+- `dismiss`: a function that can be called to dismiss the notification manually
+
 ### `config`
 
-There are some configuration options available:
+There are some configuration options available which can be updated by calling the `config` function:
 
 ```javascript
 notify.config({

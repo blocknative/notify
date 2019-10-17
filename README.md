@@ -160,24 +160,36 @@ You may want to trigger a notification for a custom event that may not be relate
 
 ```javascript
 const notificationObject = {
+  eventCode: "dbUpdate"
   type: "pending",
-  message: "Updating the database with your information",
-  autoDismiss: 4000
+  message: "Updating the database with your information"
 }
 
-const { update, dismiss } = notify.notification(
-  "databaseUpdate",
-  notificationObject
-)
+const { update, dismiss } = notify.notification(notificationObject)
+
+//.... somewhere else in your code
+
+if (dbUpdated) {
+  update({
+    eventCode: "dbUpdateComplete"
+    type: "success",
+    message: "Your info is up to date!"
+  })
+} else {
+  update({
+    eventCode: "dbUpdateSlow"
+    type: "pending",
+    message: "Database update is taking longer than usual, hang in there!"
+  })
+}
 ```
 
-The `notification` function is called with two arguments:
+The `notification` function is called with a notification object with the following parameters:
 
 - `eventCode`: a string which is used to keep track of that event for your analytics dashboard
-- `notificationObject`: a object that defines the notification with the parameters:
-  - `type`: a string that defines the style - ['hint' (gray), 'pending' (yellow), 'success' (green), 'error' (red)]
-  - `message`: a message string that is displayed on the notification
-  - `autoDismiss`: a number in milliseconds before the notification auto dismisses. Defaults to no auto dismissal
+- `type`: a string that defines the style - ['hint' (gray), 'pending' (yellow), 'success' (green), 'error' (red)]
+- `message`: a message string that is displayed on the notification
+- `autoDismiss`: a number in milliseconds before the notification auto dismisses or `false` for no auto dismissal. `success` and `hint` types default to `4000`
 
 Returned from the notification function is an object that has two functions defined on it:
 

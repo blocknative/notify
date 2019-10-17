@@ -102,16 +102,21 @@ function init(initialize) {
     }
   }
 
-  function notification(eventCode, notificationObject) {
+  function notification(notificationObject) {
     validateNotificationObject(notificationObject)
+
+    let key = 0
 
     const id = uuid()
     const startTime = Date.now()
+    const { eventCode = `customNotification${key++}` } = notificationObject
 
-    const dismiss = () => notifications.remove({ id, eventCode })
+    const dismiss = () => notifications.remove(id)
 
-    function update(eventCode, notificationUpdate) {
+    function update(notificationUpdate) {
       validateNotificationObject(notificationUpdate)
+
+      const { eventCode = `customNotification${key++}` } = notificationUpdate
       createNotification({ id, startTime, eventCode }, notificationUpdate)
 
       return {
@@ -120,7 +125,6 @@ function init(initialize) {
       }
     }
 
-    // create notification
     createNotification({ id, startTime, eventCode }, notificationObject)
 
     return {

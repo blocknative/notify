@@ -57,8 +57,8 @@ function createNotificationStore(initialState) {
     })
   }
 
-  function remove({ id, eventCode }) {
-    update(store => store.filter(n => n.id !== id || n.eventCode !== eventCode))
+  function remove(id) {
+    update(store => store.filter(n => n.id !== id))
   }
 
   return {

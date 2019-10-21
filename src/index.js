@@ -35,7 +35,7 @@ function init(initialize) {
     transactionListeners.push(transactionEvents)
   }
 
-  const blocknative = new blocknativeSdk({
+  const blocknative = blocknativeSdk({
     dappId,
     networkId,
     transactionListeners

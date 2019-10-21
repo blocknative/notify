@@ -16,16 +16,6 @@ export function formatTime(number) {
   })
 }
 
-export function removeUndefined(obj) {
-  return Object.keys(obj).reduce((newObj, key) => {
-    if (obj[key] !== undefined) {
-      newObj[key] = obj[key]
-    }
-
-    return newObj
-  }, {})
-}
-
 // will update object(merge new data) in list if it passes predicate, otherwise adds new object
 export function replaceOrAdd(list, predicate, data) {
   const clone = [...list]

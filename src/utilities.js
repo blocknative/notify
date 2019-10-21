@@ -27,16 +27,16 @@ export function removeUndefined(obj) {
 }
 
 // will update object(merge new data) in list if it passes predicate, otherwise adds new object
-export function updateOrAdd(list, predicate, data) {
+export function replaceOrAdd(list, predicate, data) {
   const clone = [...list]
   const index = clone.findIndex(predicate)
 
   if (index !== -1) {
-    clone[index] = { ...clone[index], ...removeUndefined(data) }
+    clone[index] = data
     return clone
   }
 
-  return [...list, removeUndefined(data)]
+  return [...list, data]
 }
 
 export function extractMessageFromError(error) {

@@ -1,5 +1,5 @@
 import { writable } from "svelte/store"
-import { updateOrAdd } from "./utilities"
+import { replaceOrAdd } from "./utilities"
 
 export const app = writable({
   version: null,
@@ -25,7 +25,7 @@ function createTransactionStore(initialState) {
     const predicate = tx => tx.id === transaction.id
 
     update(store => {
-      return updateOrAdd(store, predicate, transaction)
+      return replaceOrAdd(store, predicate, transaction)
     })
   }
 

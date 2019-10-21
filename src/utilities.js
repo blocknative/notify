@@ -22,7 +22,8 @@ export function replaceOrAdd(list, predicate, data) {
   const index = clone.findIndex(predicate)
 
   if (index !== -1) {
-    clone[index] = data
+    const { startTime } = clone[index]
+    clone[index] = { ...data, startTime }
     return clone
   }
 

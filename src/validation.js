@@ -47,6 +47,7 @@ export function validateNotificationObject(notification) {
     notification,
     "notification",
     ow.object.exactShape({
+      eventCode: ow.optional.string,
       type: ow.optional.string.is(validNotificationType),
       message: ow.string,
       autoDismiss: ow.optional.number,

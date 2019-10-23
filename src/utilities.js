@@ -4,7 +4,10 @@ export function argsEqual(args1, args2) {
 
 export function timeString(time) {
   const seconds = Math.floor(time / 1000)
-  return seconds >= 60 ? `${Math.floor(seconds / 60)} min` : `${seconds} sec`
+  const formattedSeconds = seconds < 0 ? 0 : seconds
+  return formattedSeconds >= 60
+    ? `${Math.floor(formattedSeconds / 60)} min`
+    : `${formattedSeconds} sec`
 }
 
 export function formatTime(number) {
@@ -16,27 +19,19 @@ export function formatTime(number) {
   })
 }
 
-export function removeUndefined(obj) {
-  return Object.keys(obj).reduce((newObj, key) => {
-    if (obj[key] !== undefined) {
-      newObj[key] = obj[key]
-    }
-
-    return newObj
-  }, {})
-}
-
 // will update object(merge new data) in list if it passes predicate, otherwise adds new object
-export function updateOrAdd(list, predicate, data) {
+export function replaceOrAdd(list, predicate, data) {
   const clone = [...list]
   const index = clone.findIndex(predicate)
 
   if (index !== -1) {
-    clone[index] = { ...clone[index], ...removeUndefined(data) }
+    const { startTime } = clone[index]
+    const { startTime: serverStartTime } = data
+    clone[index] = { ...data, startTime: startTime || serverStartTime }
     return clone
   }
 
-  return [...list, removeUndefined(data)]
+  return [...list, data]
 }
 
 export function extractMessageFromError(error) {

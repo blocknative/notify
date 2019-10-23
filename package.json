@@ -1,6 +1,6 @@
 {
   "name": "bnc-notify",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "files": [
@@ -26,9 +26,8 @@
   },
   "dependencies": {
     "bignumber.js": "^9.0.0",
-    "bnc-sdk": "0.1.1",
+    "bnc-sdk": "0.2.1",
     "lodash.debounce": "^4.0.8",
-    "ow": "^0.13.2",
     "regenerator-runtime": "^0.13.3",
     "svelte": "^3.5.4",
     "svelte-i18n": "^1.1.2-beta",

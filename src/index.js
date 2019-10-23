@@ -27,18 +27,18 @@ const version = "0.0.1"
 function init(initialize) {
   validateInit(initialize)
 
-  const { dappId, networkId, transactionEvents } = initialize
+  const { dappId, networkId, transactionHandler } = initialize
 
-  const transactionListeners = [handleTransactionEvent]
+  const transactionHandlers = [handleTransactionEvent]
 
-  if (transactionEvents) {
-    transactionListeners.push(transactionEvents)
+  if (transactionHandler) {
+    transactionHandlers.push(transactionHandler)
   }
 
-  const blocknative = new blocknativeSdk({
+  const blocknative = blocknativeSdk({
     dappId,
     networkId,
-    transactionListeners
+    transactionHandlers
   })
 
   // save config to app store
@@ -73,7 +73,7 @@ function init(initialize) {
 
   function account(address) {
     try {
-      const result = blocknative.account(address)
+      const result = blocknative.account(blocknative.clientIndex, address)
       return result
     } catch (error) {
       throw new Error(error)
@@ -82,7 +82,7 @@ function init(initialize) {
 
   function hash(hash, id) {
     try {
-      const result = blocknative.transaction(hash, id)
+      const result = blocknative.transaction(blocknative.clientIndex, hash, id)
       return result
     } catch (error) {
       throw new Error(error)
@@ -94,7 +94,12 @@ function init(initialize) {
 
     const emitter = createEmitter()
 
-    const result = preflightTransaction(options, emitter, blocknative)
+    const result = preflightTransaction(
+      blocknative.clientIndex,
+      options,
+      emitter,
+      blocknative
+    )
 
     return {
       emitter,
@@ -102,16 +107,21 @@ function init(initialize) {
     }
   }
 
-  function notification(eventCode, notificationObject) {
+  function notification(notificationObject) {
     validateNotificationObject(notificationObject)
+
+    let key = 0
 
     const id = uuid()
     const startTime = Date.now()
+    const { eventCode = `customNotification${key++}` } = notificationObject
 
-    const dismiss = () => notifications.remove({ id, eventCode })
+    const dismiss = () => notifications.remove(id)
 
-    function update(eventCode, notificationUpdate) {
+    function update(notificationUpdate) {
       validateNotificationObject(notificationUpdate)
+
+      const { eventCode = `customNotification${key++}` } = notificationUpdate
       createNotification({ id, startTime, eventCode }, notificationUpdate)
 
       return {
@@ -120,7 +130,6 @@ function init(initialize) {
       }
     }
 
-    // create notification
     createNotification({ id, startTime, eventCode }, notificationObject)
 
     return {

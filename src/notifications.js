@@ -56,7 +56,7 @@ export function createNotification(details, customization = {}) {
     startTime,
     eventCode,
     message: formatter(...formatterOptions),
-    autoDismiss: typeToDismissTimeout(type),
+    autoDismiss: typeToDismissTimeout(customization.type || type),
     ...customization
   }
 

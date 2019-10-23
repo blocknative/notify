@@ -195,7 +195,7 @@
           {currentTime} />
         <div
           class="bn-notify-custom bn-notify-notification-close"
-          on:click={() => notifications.remove(notification)}>
+          on:click={() => notifications.remove(notification.id)}>
           <CloseIcon />
         </div>
         <AutoDismiss {notification} />

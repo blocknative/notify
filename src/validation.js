@@ -1,73 +1,248 @@
-import ow from "ow"
+export function validateType({
+  name,
+  value,
+  type,
+  optional,
+  customValidation
+}) {
+  if (!optional && typeof value === "undefined") {
+    throw new Error(`"${name}" is required`)
+  }
+
+  if (
+    typeof value !== "undefined" &&
+    (type === "array" ? Array.isArray(type) : typeof value !== type)
+  ) {
+    throw new Error(
+      `"${name}" must be of type: ${type}, received type: ${typeof value} from value: ${value}`
+    )
+  }
+
+  if (
+    typeof value !== "undefined" &&
+    customValidation &&
+    !customValidation(value)
+  ) {
+    throw new Error(`"${value}" is not a valid "${name}"`)
+  }
+}
 
 export function validateInit(init) {
-  ow(
-    init,
-    "Initialization Options",
-    ow.object.exactShape({
-      dappId: ow.string,
-      networkId: ow.number,
-      transactionEvents: ow.optional.function
-    })
-  )
+  validateType({ name: "init", value: init, type: "object" })
+
+  const { dappId, networkId, transactionHandler } = init
+
+  validateType({ name: "dappId", value: dappId, type: "string" })
+  validateType({ name: "networkId", value: networkId, type: "number" })
+  validateType({
+    name: "transactionHandler",
+    value: transactionHandler,
+    type: "function",
+    optional: true
+  })
 }
 
 function stringOrNumber(val) {
-  return (
-    typeof val === "string" ||
-    typeof val === "number" ||
-    `${val} is not a valid string or number`
-  )
+  return typeof val === "string" || typeof val === "number"
 }
 
 export function validateTransactionOptions(options) {
-  ow(
-    options,
-    "Transaction Options",
-    ow.object.exactShape({
-      sendTransaction: ow.optional.function,
-      estimateGas: ow.optional.function,
-      gasPrice: ow.optional.function,
-      balance: ow.optional.string,
-      contract: ow.optional.object.exactShape({
-        methodName: ow.string,
-        parameters: ow.optional.array.nonEmpty
-      }),
-      txDetails: ow.optional.object.exactShape({
-        to: ow.optional.string,
-        value: stringOrNumber,
-        from: ow.optional.string
-      })
+  validateType({ name: "transaction options", value: options, type: "object" })
+
+  const {
+    sendTransaction,
+    estimateGas,
+    gasPrice,
+    balance,
+    contract,
+    txDetails
+  } = options
+
+  validateType({
+    name: "sendTransaction",
+    value: sendTransaction,
+    type: "function",
+    optional: true
+  })
+
+  validateType({
+    name: "estimateGas",
+    value: estimateGas,
+    type: "function",
+    optional: true
+  })
+
+  validateType({
+    name: "gasPrice",
+    value: gasPrice,
+    type: "function",
+    optional: true
+  })
+
+  validateType({
+    name: "balance",
+    value: balance,
+    type: "string",
+    optional: true
+  })
+
+  validateType({
+    name: "contract",
+    value: contract,
+    type: "object",
+    optional: true
+  })
+
+  if (contract) {
+    const { methodName, parameters } = contract
+    validateType({
+      name: "methodName",
+      value: methodName,
+      type: "string",
+      optional: true
     })
-  )
+    validateType({
+      name: "parameters",
+      value: parameters,
+      type: "array",
+      optional: true
+    })
+  }
+
+  validateType({
+    name: "txDetails",
+    value: txDetails,
+    type: "object",
+    optional: true
+  })
+
+  if (txDetails) {
+    const { to, value, from } = txDetails
+
+    validateType({
+      name: "to",
+      value: to,
+      type: "string",
+      optional: true,
+      customValidation: isAddress
+    })
+
+    if (typeof value !== "undefined" && !stringOrNumber(value)) {
+      throw new Error(
+        `"value" must be of type: string | number, received type: ${typeof value} from value: ${value}`
+      )
+    }
+
+    validateType({
+      name: "from",
+      value: from,
+      type: "string",
+      optional: true,
+      customValidation: isAddress
+    })
+  }
 }
 
 export function validateNotificationObject(notification) {
-  ow(
-    notification,
-    "notification",
-    ow.object.exactShape({
-      type: ow.optional.string.is(validNotificationType),
-      message: ow.string,
-      autoDismiss: ow.optional.number,
-      onclick: ow.optional.function
-    })
-  )
+  validateType({
+    name: "notification",
+    value: notification,
+    type: "object"
+  })
+
+  const { eventCode, type, message, autoDismiss, onclick } = notification
+
+  validateType({
+    name: "eventCode",
+    value: eventCode,
+    type: "string",
+    optional: true
+  })
+
+  validateType({
+    name: "type",
+    value: type,
+    type: "string",
+    optional: true,
+    customValidation: validNotificationType
+  })
+
+  validateType({
+    name: "message",
+    value: message,
+    type: "string"
+  })
+
+  validateType({
+    name: "autoDismiss",
+    value: autoDismiss,
+    type: "number",
+    optional: true
+  })
+
+  validateType({
+    name: "onclick",
+    value: onclick,
+    type: "function",
+    optional: true
+  })
 }
 
 export function validateConfig(config) {
-  ow(
-    config,
-    "config",
-    ow.object.exactShape({
-      mobilePosition: ow.optional.string.is(validMobilePosition),
-      desktopPosition: ow.optional.string.is(validDesktopPosition),
-      darkMode: ow.optional.boolean,
-      txApproveReminderTimeout: ow.optional.number,
-      txStallPendingTimeout: ow.optional.number,
-      txStallConfirmedTimeout: ow.optional.number
-    })
-  )
+  validateType({ name: "config", value: config, type: "object" })
+
+  const {
+    mobilePosition,
+    desktopPosition,
+    darkMode,
+    txApproveReminderTimeout,
+    txStallPendingTimeout,
+    txStallConfirmedTimeout
+  } = config
+
+  validateType({
+    name: "mobilePosition",
+    value: mobilePosition,
+    type: "string",
+    optional: true,
+    customValidation: validMobilePosition
+  })
+
+  validateType({
+    name: "desktopPosition",
+    value: desktopPosition,
+    type: "string",
+    optional: true,
+    customValidation: validDesktopPosition
+  })
+
+  validateType({
+    name: "darkMode",
+    value: darkMode,
+    type: "boolean",
+    optional: true
+  })
+
+  validateType({
+    name: "txApproveReminderTimeout",
+    value: txApproveReminderTimeout,
+    type: "number",
+    optional: true
+  })
+
+  validateType({
+    name: "txStallPendingTimeout",
+    value: txStallPendingTimeout,
+    type: "number",
+    optional: true
+  })
+
+  validateType({
+    name: "txStallConfirmedTimeout",
+    value: txStallConfirmedTimeout,
+    type: "number",
+    optional: true
+  })
 }
 
 function validNotificationType(type) {
@@ -78,16 +253,12 @@ function validNotificationType(type) {
     case "success":
       return true
     default:
-      return `${type} is not a valid notification type`
+      return false
   }
 }
 
 function validMobilePosition(position) {
-  return (
-    position === "top" ||
-    position === "bottom" ||
-    `${position} is not a valid mobile notification position`
-  )
+  return position === "top" || position === "bottom"
 }
 
 function validDesktopPosition(position) {
@@ -98,6 +269,10 @@ function validDesktopPosition(position) {
     case "topRight":
       return true
     default:
-      return `${position} is not a valid desktop notification position`
+      return false
   }
+}
+
+function isAddress(address) {
+  return /^(0x)?[0-9a-fA-F]{40}$/.test(address)
 }

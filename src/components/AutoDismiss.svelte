@@ -4,7 +4,7 @@
 
   if (notification.autoDismiss) {
     setTimeout(() => {
-      notifications.remove(notification);
+      notifications.remove(notification.id);
     }, notification.autoDismiss);
   }
 </script>

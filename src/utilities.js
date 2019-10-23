@@ -4,7 +4,10 @@ export function argsEqual(args1, args2) {
 
 export function timeString(time) {
   const seconds = Math.floor(time / 1000)
-  return seconds >= 60 ? `${Math.floor(seconds / 60)} min` : `${seconds} sec`
+  const formattedSeconds = seconds < 0 ? 0 : seconds
+  return formattedSeconds >= 60
+    ? `${Math.floor(formattedSeconds / 60)} min`
+    : `${formattedSeconds} sec`
 }
 
 export function formatTime(number) {
@@ -23,7 +26,8 @@ export function replaceOrAdd(list, predicate, data) {
 
   if (index !== -1) {
     const { startTime } = clone[index]
-    clone[index] = { ...data, startTime }
+    const { startTime: serverStartTime } = data
+    clone[index] = { ...data, startTime: startTime || serverStartTime }
     return clone
   }
 

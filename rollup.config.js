@@ -38,7 +38,6 @@ export default [
       "bignumber.js",
       "bnc-sdk",
       "lodash.debounce",
-      "ow",
       "svelte-i18n",
       "uuid/v4",
       "svelte",

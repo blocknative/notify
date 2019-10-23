@@ -15,7 +15,7 @@ import web3 from "./web3"
 const options = {
   dappId: "Your dappId here",
   networkId: 1,
-  transactionEvents: event =>
+  transactionHandler: event =>
     console.log("Transaction Event:", event.transaction)
 }
 
@@ -46,7 +46,7 @@ import Notify from "bn-notify"
 const options = {
   dappId: "Your dappId here",
   networkId: 1,
-  transactionEvents: event =>
+  transactionHandler: event =>
     console.log("Transaction Event:", event.transaction)
 }
 
@@ -59,7 +59,7 @@ const notify = Notify(options)
 const options = {
   dappId: String,
   networkId: Number,
-  transactionEvents: Function
+  transactionHandler: Function
 }
 ```
 
@@ -77,9 +77,9 @@ The Ethereum network id that your application runs on. The following values are 
 - `5` Goerli Test Network
 - `42` Kovan Test Network
 
-#### `transactionEvents` - [OPTIONAL]
+#### `transactionHandler` - [OPTIONAL]
 
-The function defined for the `transactionEvents` parameter will be called once for every status update for _every_ transaction that is associated with a watched address _or_ a watched transaction. This is useful as a global handler for all transactions and status updates. The callback is called with the following object:
+The function defined for the `transactionHandler` parameter will be called once for every status update for _every_ transaction that is associated with a watched address _or_ a watched transaction. This is useful as a global handler for all transactions and status updates. The callback is called with the following object:
 
 See the [Transaction Object](#transaction-object) section for more info on what is included in the `transaction` parameter.
 

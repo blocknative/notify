@@ -34,8 +34,7 @@
     "uuid": "^3.3.3"
   },
   "scripts": {
-    "prepare": "rollup -c",
-    "build": "npm run prepare",
+    "build": "rollup -c",
     "test": "echo \"TBD\" && exit 0"
   }
 }

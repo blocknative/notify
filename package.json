@@ -23,14 +23,14 @@
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "babel-eslint": "^7.1.1",
-    "babel-plugin-external-helpers": "^6.18.0"
+    "babel-plugin-external-helpers": "^6.18.0",
+    "svelte": "^3.5.4"
   },
   "dependencies": {
     "bignumber.js": "^9.0.0",
     "bnc-sdk": "0.2.1",
     "lodash.debounce": "^4.0.8",
     "regenerator-runtime": "^0.13.3",
-    "svelte": "^3.5.4",
     "svelte-i18n": "^1.1.2-beta",
     "uuid": "^3.3.3"
   },

@@ -16,6 +16,16 @@ export default [
       file: "dist/iife/notify.js",
       esModule: false
     },
+    moduleContext: id => {
+      const thisAsWindowForModules = [
+        "node_modules/intl-messageformat/lib/core.js",
+        "node_modules/intl-messageformat/lib/compiler.js"
+      ]
+
+      if (thisAsWindowForModules.some(id_ => id.trimRight().endsWith(id_))) {
+        return "window"
+      }
+    },
     plugins: [
       svelte(),
       json(),
@@ -38,22 +48,26 @@ export default [
       "bignumber.js",
       "bnc-sdk",
       "lodash.debounce",
-      "svelte-i18n",
       "uuid/v4",
-      "svelte",
-      "svelte/store",
-      "svelte/internal",
-      "svelte/transition",
-      "svelte/easing",
-      "svelte/animate",
       "regenerator-runtime/runtime"
     ],
     plugins: [
       svelte(),
       json(),
+      resolve(),
       commonjs(),
       babel({ exclude: "node_modules/**" })
     ],
+    moduleContext: id => {
+      const thisAsWindowForModules = [
+        "node_modules/intl-messageformat/lib/core.js",
+        "node_modules/intl-messageformat/lib/compiler.js"
+      ]
+
+      if (thisAsWindowForModules.some(id_ => id.trimRight().endsWith(id_))) {
+        return "window"
+      }
+    },
     output: [
       {
         dir: "dist/esm",

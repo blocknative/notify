@@ -10,7 +10,7 @@
     autoDismiss?: number;
   } = { id: "", type: "", key: "", message: "" };
 
-  if (notification && notification.autoDismiss && notification.id) {
+  if (notification.autoDismiss && notification.id) {
     setTimeout(() => {
       notifications.remove(notification.id);
     }, notification.autoDismiss);

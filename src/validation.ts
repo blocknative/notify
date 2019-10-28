@@ -1,10 +1,23 @@
+import {
+  InitOptions,
+  TransactionOptions,
+  CustomNotificationObject,
+  ConfigOptions
+} from "./interfaces"
+
 export function validateType({
   name,
   value,
   type,
   optional,
   customValidation
-}) {
+}: {
+  name: string
+  value: any
+  type: string
+  optional?: boolean
+  customValidation?: (val: any) => boolean
+}): never | void {
   if (!optional && typeof value === "undefined") {
     throw new Error(`"${name}" is required`)
   }
@@ -27,7 +40,7 @@ export function validateType({
   }
 }
 
-export function validateInit(init) {
+export function validateInit(init: InitOptions): void {
   validateType({ name: "init", value: init, type: "object" })
 
   const { dappId, networkId, transactionHandler } = init
@@ -42,11 +55,11 @@ export function validateInit(init) {
   })
 }
 
-function stringOrNumber(val) {
+function stringOrNumber(val: string | number): boolean {
   return typeof val === "string" || typeof val === "number"
 }
 
-export function validateTransactionOptions(options) {
+export function validateTransactionOptions(options: TransactionOptions): void {
   validateType({ name: "transaction options", value: options, type: "object" })
 
   const {
@@ -54,7 +67,7 @@ export function validateTransactionOptions(options) {
     estimateGas,
     gasPrice,
     balance,
-    contract,
+    contractCall,
     txDetails
   } = options
 
@@ -87,14 +100,14 @@ export function validateTransactionOptions(options) {
   })
 
   validateType({
-    name: "contract",
-    value: contract,
+    name: "contractCall",
+    value: contractCall,
     type: "object",
     optional: true
   })
 
-  if (contract) {
-    const { methodName, parameters } = contract
+  if (contractCall) {
+    const { methodName, params } = contractCall
     validateType({
       name: "methodName",
       value: methodName,
@@ -102,8 +115,8 @@ export function validateTransactionOptions(options) {
       optional: true
     })
     validateType({
-      name: "parameters",
-      value: parameters,
+      name: "params",
+      value: params,
       type: "array",
       optional: true
     })
@@ -143,12 +156,16 @@ export function validateTransactionOptions(options) {
   }
 }
 
-export function validateNotificationObject(notification) {
+export function validateNotificationObject(
+  notification: CustomNotificationObject | boolean | undefined
+): void {
   validateType({
     name: "notification",
     value: notification,
     type: "object"
   })
+
+  if (typeof notification !== "object") return
 
   const { eventCode, type, message, autoDismiss, onclick } = notification
 
@@ -188,7 +205,7 @@ export function validateNotificationObject(notification) {
   })
 }
 
-export function validateConfig(config) {
+export function validateConfig(config: ConfigOptions): void {
   validateType({ name: "config", value: config, type: "object" })
 
   const {
@@ -245,7 +262,7 @@ export function validateConfig(config) {
   })
 }
 
-function validNotificationType(type) {
+function validNotificationType(type: string): boolean {
   switch (type) {
     case "hint":
     case "pending":
@@ -257,11 +274,11 @@ function validNotificationType(type) {
   }
 }
 
-function validMobilePosition(position) {
+function validMobilePosition(position: string): boolean {
   return position === "top" || position === "bottom"
 }
 
-function validDesktopPosition(position) {
+function validDesktopPosition(position: string): boolean {
   switch (position) {
     case "bottomLeft":
     case "bottomRight":
@@ -273,6 +290,6 @@ function validDesktopPosition(position) {
   }
 }
 
-function isAddress(address) {
+function isAddress(address: string): boolean {
   return /^(0x)?[0-9a-fA-F]{40}$/.test(address)
 }

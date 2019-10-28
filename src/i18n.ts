@@ -1,4 +1,4 @@
-export const notifyMessages = {
+export const notifyMessages: any = {
   en: {
     transaction: {
       txRequest: "Your transaction is waiting for you to confirm",
@@ -21,8 +21,6 @@ export const notifyMessages = {
       txCancel: "Your transaction is being canceled",
       txFailed: "Your transaction has failed",
       txConfirmed: "Your transaction has succeeded",
-      txUnderpriced:
-        "The gas limit is set too low to complete this transaction",
       txError: "Oops something went wrong, please try again"
     },
     watched: {
@@ -60,8 +58,6 @@ export const notifyMessages = {
       txCancel: "Tu transacción está siendo cancelada",
       txFailed: "Su transacción ha fallado",
       txConfirmed: "Su transacción ha tenido éxito.",
-      txUnderpriced:
-        "El límite de gas está establecido demasiado bajo para completar esta transacción",
       txError: "Vaya, algo salió mal, por favor intente nuevamente"
     },
     watched: {

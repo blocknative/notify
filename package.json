@@ -1,37 +1,43 @@
 {
   "name": "bnc-notify",
-  "version": "0.2.1",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "files": [
-    "dist/esm/*",
-    "dist/cjs/*"
+  "version": "0.2.2",
+  "description": "Show web3 users realtime transaction notifications",
+  "keywords": [
+    "ethereum",
+    "web3",
+    "blocknative",
+    "notifications"
   ],
-  "types": "./types.d.ts",
+  "main": "dist/bnc-notify.js",
+  "module": "dist/bnc-notify.es5.js",
+  "typings": "dist/notify.d.ts",
+  "files": [
+    "dist"
+  ],
+  "author": "Aaron Barnard <abarnard@protonmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blocknative/notify"
+  },
   "license": "MIT",
   "devDependencies": {
+    "@pyoner/svelte-ts-preprocess": "^1.2.1",
+    "@types/lodash.debounce": "^4.0.6",
+    "@types/uuid": "^3.4.5",
     "rollup": "^1.12.0",
     "rollup-plugin-commonjs": "^10.0.0",
-    "rollup-plugin-json": "^4.0.0",
-    "rollup-plugin-livereload": "^1.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "@joseph184/rollup-plugin-node-builtins": "^2.1.4",
     "rollup-plugin-svelte": "^5.0.3",
     "rollup-plugin-terser": "^4.0.4",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-node-globals": "^1.4.0",
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "babel-eslint": "^7.1.1",
-    "babel-plugin-external-helpers": "^6.18.0",
-    "svelte": "^3.5.4"
+    "rollup-plugin-typescript2": "0.21.0",
+    "svelte": "^3.12.1",
+    "svelte-i18n": "^1.1.2-beta",
+    "typescript": "^3.4.5"
   },
   "dependencies": {
     "bignumber.js": "^9.0.0",
-    "bnc-sdk": "0.2.1",
+    "bnc-sdk": "0.2.3",
     "lodash.debounce": "^4.0.8",
-    "regenerator-runtime": "^0.13.3",
-    "svelte-i18n": "^1.1.2-beta",
     "uuid": "^3.3.3"
   },
   "scripts": {

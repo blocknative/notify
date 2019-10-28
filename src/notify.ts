@@ -1,5 +1,3 @@
-import "regenerator-runtime/runtime"
-
 import uuid from "uuid/v4"
 import { locale, dictionary, getClientLocale, _ } from "svelte-i18n"
 import { notifyMessages } from "./i18n"

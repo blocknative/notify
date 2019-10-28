@@ -1,20 +1,33 @@
 import svelte from "rollup-plugin-svelte"
 import resolve from "rollup-plugin-node-resolve"
-import babel from "rollup-plugin-babel"
-import globals from "rollup-plugin-node-globals"
 import commonjs from "rollup-plugin-commonjs"
-import builtins from "@joseph184/rollup-plugin-node-builtins"
-import json from "rollup-plugin-json"
 import { terser } from "rollup-plugin-terser"
+import typescript from "rollup-plugin-typescript2"
+
+import {
+  preprocess,
+  createEnv,
+  readConfigFile
+} from "@pyoner/svelte-ts-preprocess"
+
+const env = createEnv()
+const compilerOptions = readConfigFile(env)
+const opts = {
+  env,
+  compilerOptions: {
+    ...compilerOptions,
+    allowNonTsExtensions: true
+  }
+}
 
 export default [
   {
-    input: "src/index.js",
+    input: "src/notify.ts",
     output: {
-      format: "iife",
+      sourcemap: true,
+      format: "umd",
       name: "notify",
-      file: "dist/iife/notify.js",
-      esModule: false
+      file: "dist/bnc-notify.js"
     },
     moduleContext: id => {
       const thisAsWindowForModules = [
@@ -27,37 +40,26 @@ export default [
       }
     },
     plugins: [
-      svelte(),
-      json(),
+      svelte({
+        preprocess: preprocess(opts)
+      }),
       resolve({
-        preferBuiltins: true,
         browser: true,
         dedupe: importee =>
           importee === "svelte" || importee.startsWith("svelte/")
       }),
       commonjs(),
-      babel({ exclude: "node_modules/**" }),
-      builtins(),
-      globals(),
+      typescript(),
       terser()
     ]
   },
   {
-    input: "src/index.js",
-    external: [
-      "bignumber.js",
-      "bnc-sdk",
-      "lodash.debounce",
-      "uuid/v4",
-      "regenerator-runtime/runtime"
-    ],
-    plugins: [
-      svelte(),
-      json(),
-      resolve(),
-      commonjs(),
-      babel({ exclude: "node_modules/**" })
-    ],
+    input: "src/notify.ts",
+    output: {
+      sourcemap: true,
+      format: "es",
+      file: "dist/bnc-notify.es5.js"
+    },
     moduleContext: id => {
       const thisAsWindowForModules = [
         "node_modules/intl-messageformat/lib/core.js",
@@ -68,15 +70,18 @@ export default [
         return "window"
       }
     },
-    output: [
-      {
-        dir: "dist/esm",
-        format: "esm"
-      },
-      {
-        dir: "dist/cjs",
-        format: "cjs"
-      }
-    ]
+    plugins: [
+      svelte({
+        preprocess: preprocess(opts)
+      }),
+      resolve({
+        browser: true,
+        dedupe: importee =>
+          importee === "svelte" || importee.startsWith("svelte/")
+      }),
+      commonjs(),
+      typescript()
+    ],
+    external: ["bignumber.js", "bnc-sdk", "lodash.debounce", "uuid/v4"]
   }
 ]

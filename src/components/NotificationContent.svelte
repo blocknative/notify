@@ -1,13 +1,21 @@
-<script>
+<script lang="ts">
   import { timeString } from "../utilities";
   import NotificationMessage from "../elements/NotificationMessage.svelte";
   import Clock from "../elements/Clock.svelte";
   import Time from "../elements/Time.svelte";
   import Timer from "../elements/Timer.svelte";
-  export let notification;
-  export let formattedTime;
-  export let currentTime;
-  export let notifications;
+
+  export let notification: {
+    id: string;
+    type: string;
+    key: string;
+    startTime?: number;
+    eventCode?: string;
+    message: string;
+    autoDismiss?: number;
+  };
+  export let formattedTime: string;
+  export let currentTime: number;
 </script>
 
 <style>

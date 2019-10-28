@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
   import { app } from "../stores";
-  let hovered;
+  let hovered: boolean;
 </script>
 
 <style>

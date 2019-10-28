@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { onDestroy } from "svelte";
   import { fly } from "svelte/transition";
   import { quintIn } from "svelte/easing";
@@ -12,13 +12,41 @@
   import { notifications, app } from "../stores";
   import { formatTime } from "../utilities";
 
-  let smallScreen = window.innerWidth < 420;
+  let smallScreen: boolean = window.innerWidth < 420;
 
-  let positioning;
-  let x;
-  let y;
-  let notificationMargin;
-  let justifyContent;
+  let positioning: string;
+  let x: number;
+  let y: number;
+  let notificationMargin: string;
+  let justifyContent: string;
+
+  interface AppStore {
+    version: string;
+    dappId: string;
+    networkId: number;
+    nodeSynced: boolean;
+    mobilePosition: string;
+    desktopPosition: string;
+    darkMode: boolean;
+    txApproveReminderTimeout: number;
+    txStallPendingTimeout: number;
+    txStallConfirmedTimeout: number;
+  }
+
+  let appState: AppStore = {
+    version: "",
+    dappId: "",
+    networkId: 1,
+    nodeSynced: true,
+    mobilePosition: "top",
+    desktopPosition: "bottomRight",
+    darkMode: false,
+    txApproveReminderTimeout: 20000,
+    txStallPendingTimeout: 20000,
+    txStallConfirmedTimeout: 90000
+  };
+
+  const unsubscribe = app.subscribe((store: AppStore) => (appState = store));
 
   // listen for screen resize events
   window.addEventListener(
@@ -36,37 +64,40 @@
     }, 300)
   );
 
-  let currentTime = Date.now();
+  let currentTime: number = Date.now();
 
-  const intervalId = setInterval(() => {
+  const intervalId: number = setInterval(() => {
     currentTime = Date.now();
   }, 1000);
 
-  onDestroy(() => clearInterval(intervalId));
+  onDestroy(() => {
+    clearInterval(intervalId);
+    unsubscribe();
+  });
 
-  const formattedTime = formatTime(currentTime);
+  const formattedTime: string = formatTime(currentTime);
 
-  function elasticOut(t) {
+  function elasticOut(t: number): number {
     return (
       Math.sin((-13.0 * (t + 1.0) * Math.PI) / 2) * Math.pow(2.0, -35.0 * t) +
       1.0
     );
   }
 
-  $: if ($app.desktopPosition && !smallScreen) {
+  $: if (appState.desktopPosition && !smallScreen) {
     positioning =
-      $app.desktopPosition === "bottomRight"
+      appState.desktopPosition === "bottomRight"
         ? "bottom: 0; right: 0;"
-        : $app.desktopPosition === "bottomLeft"
+        : appState.desktopPosition === "bottomLeft"
         ? "left: 0; right: unset;"
-        : $app.desktopPosition === "topRight"
+        : appState.desktopPosition === "topRight"
         ? "top: 0;"
         : "top: 0; bottom: unset; left: 0; right: unset;";
 
     x = positioning && positioning.includes("left") ? -321 : 321;
     y = 0;
 
-    if ($app.desktopPosition.includes("top")) {
+    if (appState.desktopPosition.includes("top")) {
       justifyContent = "justify-content: unset;";
       notificationMargin = "margin: 0.75rem 0 0 0;";
     } else {
@@ -75,15 +106,15 @@
     }
   }
 
-  $: if ($app.mobilePosition && smallScreen) {
+  $: if (appState.mobilePosition && smallScreen) {
     positioning =
-      $app.mobilePosition === "top"
+      appState.mobilePosition === "top"
         ? "top: 0; bottom: unset;"
         : "bottom: 0; top: unset;";
 
     x = 0;
 
-    if ($app.mobilePosition === "top") {
+    if (appState.mobilePosition === "top") {
       y = -50;
       justifyContent = "justify-content: unset;";
       notificationMargin = "margin: 0.75rem 0 0 0;";
@@ -94,7 +125,7 @@
     }
   }
 
-  $: if (!$app.desktopPosition && !$app.mobilePosition) {
+  $: if (!appState.desktopPosition && !appState.mobilePosition) {
     x = smallScreen ? 0 : 321;
     y = smallScreen ? 50 : 0;
     notificationMargin = "margin: 0 0 0.75rem 0;";
@@ -188,11 +219,7 @@
         in:fly={{ duration: 1200, delay: 300, x, y, easing: elasticOut }}
         out:fly={{ duration: 400, x, y, easing: quintIn }}>
         <TypeIcon type={notification.type} />
-        <NotificationContent
-          {notifications}
-          {notification}
-          {formattedTime}
-          {currentTime} />
+        <NotificationContent {notification} {formattedTime} {currentTime} />
         <div
           class="bn-notify-custom bn-notify-notification-close"
           on:click={() => notifications.remove(notification.id)}>

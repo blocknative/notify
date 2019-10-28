@@ -1,4 +1,4 @@
-export function eventToType(eventCode) {
+export function eventToType(eventCode: string | undefined): string {
   switch (eventCode) {
     case "txSent":
     case "txPool":
@@ -26,12 +26,12 @@ export function eventToType(eventCode) {
   }
 }
 
-export function typeToDismissTimeout(type) {
+export function typeToDismissTimeout(type: string): number {
   switch (type) {
     case "success":
     case "hint":
       return 4000
     default:
-      return false
+      return 0
   }
 }

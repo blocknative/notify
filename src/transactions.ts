@@ -6,37 +6,47 @@ import { transactions, app } from "./stores"
 import { createNotification } from "./notifications"
 import { argsEqual, extractMessageFromError } from "./utilities"
 import { validateNotificationObject } from "./validation"
+import { getBlocknative } from "./services"
+import {
+  TransactionData,
+  PreflightEvent,
+  ContractObject,
+  CustomNotificationObject,
+  Emitter,
+  TransactionOptions
+} from "./interfaces"
 
-let transactionQueue
-transactions.subscribe(store => (transactionQueue = store))
+let transactionQueue: TransactionData[]
+transactions.subscribe((store: TransactionData[]) => (transactionQueue = store))
 
-export function handlePreFlightEvent({
-  eventCode,
-  contract,
-  balance,
-  txObject,
-  emitter,
-  blocknative,
-  status
-}) {
-  blocknative.event({
-    categoryCode: contract ? "activeContract" : "activeTransaction",
+export function handlePreFlightEvent(preflightEvent: PreflightEvent) {
+  const {
     eventCode,
-    transaction: txObject,
+    contractCall,
+    balance,
+    txDetails,
+    emitter,
+    status
+  } = preflightEvent
+
+  const blocknative = getBlocknative()
+
+  blocknative.event({
+    categoryCode: contractCall ? "activeContract" : "activeTransaction",
+    eventCode,
+    transaction: txDetails,
     wallet: { balance },
-    contract
+    contract: contractCall
   })
 
   const transaction = {
-    ...txObject,
+    ...txDetails,
     eventCode,
     status,
-    contract
+    contractCall
   }
 
-  const listener = emitter.listeners[eventCode] || emitter.listeners.all
-
-  const emitterResult = listener && listener(transaction)
+  const emitterResult = emitter.emit(transaction)
 
   if (emitterResult) {
     validateNotificationObject(emitterResult)
@@ -48,36 +58,52 @@ export function handlePreFlightEvent({
   })
 }
 
-export function handleTransactionEvent({ transaction, emitterResult }) {
+export function handleTransactionEvent(event: {
+  transaction: TransactionData
+  emitterResult: boolean | undefined | CustomNotificationObject
+}) {
+  const { transaction, emitterResult } = event
   transactions.updateQueue(transaction)
 
   // create notification if dev hasn't opted out
   if (emitterResult !== false) {
-    const transactionObj = transactionQueue.find(tx => tx.id === transaction.id)
-    createNotification(transactionObj, emitterResult)
+    const transactionObj = transactionQueue.find(
+      (tx: TransactionData) => tx.id === transaction.id
+    )
+    if (transactionObj) {
+      createNotification(transactionObj, emitterResult)
+    }
   }
 }
 
-export function duplicateTransactionCandidate(transaction, contract) {
-  let duplicate = transactionQueue.find(tx => {
-    if (contract && typeof tx.contract === "undefined") return false
+export function duplicateTransactionCandidate(
+  transaction: TransactionData,
+  contract: ContractObject
+) {
+  let duplicate: TransactionData | undefined | boolean = transactionQueue.find(
+    (tx: TransactionData) => {
+      if (contract && typeof tx.contractCall === "undefined") return false
 
-    const sameMethod = contract
-      ? contract.methodName === tx.contract.methodName
-      : true
+      const sameMethod = contract
+        ? contract.methodName ===
+          (tx.contractCall && tx.contractCall.methodName)
+        : true
 
-    const sameParams = contract
-      ? argsEqual(contract.parameters, tx.contract.parameters)
-      : true
+      const sameParams = contract
+        ? argsEqual(contract.params, tx.contractCall && tx.contractCall.params)
+        : true
 
-    const sameVal = tx.value == transaction.value
+      const sameVal = tx.value == transaction.value
 
-    const sameTo = contract
-      ? sameMethod
-      : tx.to.toLowerCase() === transaction.to.toLowerCase()
+      const sameTo = contract
+        ? sameMethod
+        : tx.to &&
+          tx.to.toLowerCase() === transaction.to &&
+          transaction.to.toLowerCase()
 
-    return sameMethod && sameParams && sameVal && sameTo
-  })
+      return sameMethod && sameParams && sameVal && sameTo
+    }
+  )
 
   if (
     duplicate &&
@@ -90,11 +116,9 @@ export function duplicateTransactionCandidate(transaction, contract) {
 }
 
 export function preflightTransaction(
-  clientIndex,
-  options,
-  emitter,
-  blocknative
-) {
+  options: TransactionOptions,
+  emitter: Emitter
+): Promise<string> {
   return new Promise((resolve, reject) => {
     // wrap in set timeout to put to the end of the event queue
     setTimeout(async () => {
@@ -103,9 +127,10 @@ export function preflightTransaction(
         estimateGas,
         gasPrice,
         balance,
-        contract,
-        txDetails = {}
+        contractCall,
+        txDetails
       } = options
+      const blocknative = getBlocknative()
 
       //=== if `balance` or `estimateGas` or `gasPrice` is not provided, then sufficient funds check is disabled === //
       //=== if `txDetails` is not provided, then duplicate transaction check is disabled === //
@@ -114,7 +139,7 @@ export function preflightTransaction(
 
       const [gas, price] = await gasEstimates(estimateGas, gasPrice)
       const id = uuid()
-      const value = BigNumber(txDetails.value || 0)
+      const value = new BigNumber(txDetails.value || 0)
 
       const txObject = {
         ...txDetails,
@@ -129,15 +154,14 @@ export function preflightTransaction(
         const transactionCost = gas.times(price).plus(value)
 
         // if transaction cost is greater than the current balance
-        if (transactionCost.gt(BigNumber(balance))) {
+        if (transactionCost.gt(new BigNumber(balance))) {
           const eventCode = "nsfFail"
 
           handlePreFlightEvent({
-            blocknative,
             eventCode,
-            contract,
+            contractCall,
             balance,
-            txObject,
+            txDetails: txObject,
             emitter
           })
 
@@ -149,18 +173,17 @@ export function preflightTransaction(
       if (
         txDetails &&
         duplicateTransactionCandidate(
-          { to: txObject.to, value: txObject.value },
-          contract
+          { to: txDetails.to, value: txDetails.value },
+          contractCall
         )
       ) {
         const eventCode = "txRepeat"
 
         handlePreFlightEvent({
-          blocknative,
           eventCode,
-          contract,
+          contractCall,
           balance,
-          txObject,
+          txDetails: txObject,
           emitter
         })
       }
@@ -176,11 +199,10 @@ export function preflightTransaction(
         const eventCode = "txAwaitingApproval"
 
         handlePreFlightEvent({
-          blocknative,
           eventCode,
-          contract,
+          contractCall,
           balance,
-          txObject,
+          txDetails: txObject,
           emitter
         })
       }
@@ -195,23 +217,21 @@ export function preflightTransaction(
           const eventCode = "txConfirmReminder"
 
           handlePreFlightEvent({
-            blocknative,
             eventCode,
-            contract,
+            contractCall,
             balance,
-            txObject,
+            txDetails: txObject,
             emitter
           })
         }
       }, txApproveReminderTimeout)
 
       handlePreFlightEvent({
-        blocknative,
         eventCode: "txRequest",
         status: "awaitingApproval",
-        contract,
+        contractCall,
         balance,
-        txObject,
+        txDetails: txObject,
         emitter
       })
 
@@ -231,12 +251,11 @@ export function preflightTransaction(
         const { eventCode, errorMsg } = extractMessageFromError(error)
 
         handlePreFlightEvent({
-          blocknative,
           eventCode,
           status: "failed",
-          contract,
+          contractCall,
           balance,
-          txObject,
+          txDetails: txObject,
           emitter
         })
 
@@ -244,19 +263,22 @@ export function preflightTransaction(
       })
 
       if (hash && typeof hash === "string") {
-        const serverEmitter = blocknative.transaction(clientIndex, hash, id)
-          .emitter
+        const serverEmitter = blocknative.transaction(
+          blocknative.clientIndex,
+          hash,
+          id
+        ).emitter
 
-        serverEmitter.on("all", transaction => {
-          const listener =
-            emitter.listeners[transaction.eventCode] || emitter.listeners.all
-          const result = listener && listener(transaction)
+        serverEmitter.on("all", (transaction: TransactionData) => {
+          const result = emitter.emit(transaction)
           return result
         })
 
         // Check for pending stall status
         setTimeout(() => {
-          const transaction = transactionQueue.find(tx => tx.id === id)
+          const transaction = transactionQueue.find(
+            (tx: TransactionData) => tx.id === id
+          )
           if (
             transaction &&
             transaction.status === "sent" &&
@@ -266,11 +288,10 @@ export function preflightTransaction(
             const eventCode = "txStallPending"
 
             handlePreFlightEvent({
-              blocknative,
               eventCode,
-              contract,
+              contractCall,
               balance,
-              txObject,
+              txDetails: txObject,
               emitter
             })
           }
@@ -289,11 +310,10 @@ export function preflightTransaction(
             const eventCode = "txStallConfirmed"
 
             handlePreFlightEvent({
-              blocknative,
               eventCode,
-              contract,
+              contractCall,
               balance,
-              txObject,
+              txDetails: txObject,
               emitter
             })
           }
@@ -307,7 +327,10 @@ export function preflightTransaction(
   })
 }
 
-function gasEstimates(gasFunc, gasPriceFunc) {
+function gasEstimates(
+  gasFunc: () => Promise<string>,
+  gasPriceFunc: () => Promise<string>
+) {
   if (!gasFunc || !gasPriceFunc) {
     return Promise.resolve([])
   }
@@ -336,7 +359,7 @@ function gasEstimates(gasFunc, gasPriceFunc) {
         )
       }
 
-      return [BigNumber(gasResult), BigNumber(gasPriceResult)]
+      return [new BigNumber(gasResult), new BigNumber(gasPriceResult)]
     })
     .catch(error => {
       throw new Error(`There was an error getting gas estimates: ${error}`)

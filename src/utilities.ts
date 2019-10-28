@@ -1,8 +1,10 @@
-export function argsEqual(args1, args2) {
+import { Emitter, EmitterListener, TransactionData } from "./interfaces"
+
+export function argsEqual(args1: any, args2: any): boolean {
   return JSON.stringify(args1) === JSON.stringify(args2)
 }
 
-export function timeString(time) {
+export function timeString(time: number): string {
   const seconds = Math.floor(time / 1000)
   const formattedSeconds = seconds < 0 ? 0 : seconds
   return formattedSeconds >= 60
@@ -10,7 +12,7 @@ export function timeString(time) {
     : `${formattedSeconds} sec`
 }
 
-export function formatTime(number) {
+export function formatTime(number: number): string {
   const time = new Date(number)
   return time.toLocaleString("en-US", {
     hour: "numeric",
@@ -20,7 +22,11 @@ export function formatTime(number) {
 }
 
 // will update object(merge new data) in list if it passes predicate, otherwise adds new object
-export function replaceOrAdd(list, predicate, data) {
+export function replaceOrAdd(
+  list: any[],
+  predicate: (val: any) => boolean,
+  data: any
+): any[] {
   const clone = [...list]
   const index = clone.findIndex(predicate)
 
@@ -34,7 +40,10 @@ export function replaceOrAdd(list, predicate, data) {
   return [...list, data]
 }
 
-export function extractMessageFromError(error) {
+export function extractMessageFromError(error: {
+  message: string
+  stack: string
+}): { eventCode: string; errorMsg: string } {
   if (!error.stack || !error.message) {
     return {
       eventCode: "txError",
@@ -64,10 +73,10 @@ export function extractMessageFromError(error) {
   }
 }
 
-export function createEmitter() {
+export function createEmitter(): Emitter {
   return {
     listeners: {},
-    on: function(eventCode, listener) {
+    on: function(eventCode: string, listener: EmitterListener): never | void {
       // check if valid eventCode
       switch (eventCode) {
         case "txSent":
@@ -99,6 +108,15 @@ export function createEmitter() {
 
       // add listener for the eventCode
       this.listeners[eventCode] = listener
+    },
+    emit: function(state: TransactionData) {
+      if (this.listeners[state.eventCode || ""]) {
+        return this.listeners[state.eventCode || ""](state)
+      }
+
+      if (this.listeners.all) {
+        return this.listeners.all(state)
+      }
     }
   }
 }

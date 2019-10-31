@@ -12,7 +12,7 @@
   import { notifications, app } from "../stores";
   import { formatTime } from "../utilities";
 
-  let smallScreen: boolean = window.innerWidth < 420;
+  let smallScreen: boolean = window.outerWidth < 450;
 
   let positioning: string;
   let x: number;

@@ -52,7 +52,7 @@
   window.addEventListener(
     "resize",
     debounce(() => {
-      if (window.innerWidth < 420) {
+      if (window.outerWidth < 450) {
         if (!smallScreen) {
           smallScreen = true;
         }

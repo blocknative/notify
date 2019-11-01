@@ -130,6 +130,7 @@ export function preflightTransaction(
         contractCall,
         txDetails
       } = options
+
       const blocknative = getBlocknative()
 
       //=== if `balance` or `estimateGas` or `gasPrice` is not provided, then sufficient funds check is disabled === //
@@ -139,15 +140,21 @@ export function preflightTransaction(
 
       const [gas, price] = await gasEstimates(estimateGas, gasPrice)
       const id = uuid()
-      const value = new BigNumber(txDetails.value || 0)
+      const value = new BigNumber((txDetails && txDetails.value) || 0)
 
-      const txObject = {
-        ...txDetails,
+      const calculated = {
         value: value.toString(10),
         gas: gas && gas.toString(10),
-        gasPrice: price && price.toString(10),
-        id
+        gasPrice: price && price.toString(10)
       }
+
+      const txObject = txDetails
+        ? {
+            ...txDetails,
+            ...calculated,
+            id
+          }
+        : { ...calculated, id }
 
       // check sufficient balance if required parameters are available
       if (balance && gas && price) {
@@ -247,7 +254,10 @@ export function preflightTransaction(
       const sendTransactionResult = sendTransaction()
 
       // get result and handle errors
-      const hash = await sendTransactionResult.catch(error => {
+      let hash
+      try {
+        hash = await sendTransactionResult
+      } catch (error) {
         const { eventCode, errorMsg } = extractMessageFromError(error)
 
         handlePreFlightEvent({
@@ -260,7 +270,7 @@ export function preflightTransaction(
         })
 
         return reject(errorMsg)
-      })
+      }
 
       if (hash && typeof hash === "string") {
         const serverEmitter = blocknative.transaction(

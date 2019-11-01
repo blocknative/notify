@@ -87,7 +87,7 @@ export interface TransactionOptions {
   balance: string
   contractCall: ContractObject
   txDetails: {
-    to: string
+    to?: string
     value: string
     from?: string
   }
@@ -98,7 +98,7 @@ export interface PreflightEvent {
   contractCall?: ContractObject
   balance: string
   txDetails?: {
-    to: string
+    to?: string
     from?: string
     value: string | number
   }

@@ -140,10 +140,11 @@
     display: flex;
     flex-flow: column nowrap;
     position: fixed;
-    padding: 0 0.75rem;
+    font-size: 16px;
+    padding: 0 0.75em;
     margin: 0;
     list-style-type: none;
-    width: 20rem;
+    width: 20em;
     bottom: 0;
     right: 0;
     font-family: "Helvetica Neue";
@@ -156,7 +157,7 @@
     box-sizing: border-box;
     height: 100vh;
     pointer-events: none;
-    z-index: 9;
+    z-index: 99999999;
   }
 
   @media only screen and (max-width: 450px) {
@@ -183,8 +184,8 @@
   li {
     position: relative;
     display: flex;
-    padding: 0.75rem;
-    font-size: 0.889rem;
+    padding: 0.75em;
+    font-size: 0.889em;
     border-radius: 10px;
     background: #ffffff;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
@@ -199,8 +200,8 @@
   /* .bn-notify-notification-close */
   div {
     position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
+    top: 0.75em;
+    right: 0.75em;
   }
 </style>
 

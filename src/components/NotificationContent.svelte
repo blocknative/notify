@@ -24,15 +24,15 @@
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
-    margin-left: 0.75rem;
+    margin-left: 0.75em;
     max-width: 78%;
   }
 
   /* .bn-notify-notification-info-meta */
   p {
-    margin: 0.5rem 0 0 0;
+    margin: 0.5em 0 0 0;
     opacity: 0.7;
-    font-size: 0.79rem;
+    font-size: 0.889em;
     line-height: 1.15;
     font-family: "Helvetica Neue";
   }

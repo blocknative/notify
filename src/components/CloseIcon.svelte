@@ -9,7 +9,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0.3rem;
+    padding: 0.3em;
     border-radius: 40px;
     transition: background 150ms ease-in-out;
   }

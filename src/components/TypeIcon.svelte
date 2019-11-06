@@ -6,7 +6,7 @@
   /* .bn-notify-notification-status-icon */
   div {
     height: 100%;
-    width: 1.5rem;
+    width: 1.5em;
   }
 </style>
 

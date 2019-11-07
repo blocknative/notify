@@ -212,6 +212,8 @@ export function validateConfig(config: ConfigOptions): void {
     mobilePosition,
     desktopPosition,
     darkMode,
+    notifyMessages,
+    clientLocale,
     txApproveReminderTimeout,
     txStallPendingTimeout,
     txStallConfirmedTimeout
@@ -237,6 +239,41 @@ export function validateConfig(config: ConfigOptions): void {
     name: "darkMode",
     value: darkMode,
     type: "boolean",
+    optional: true
+  })
+
+  validateType({
+    name: "notifyMessages",
+    value: notifyMessages,
+    type: "object",
+    optional: true
+  })
+
+  if (notifyMessages) {
+    Object.keys(notifyMessages).forEach(locale => {
+      validateType({
+        name: locale,
+        value: notifyMessages[locale],
+        type: "object"
+      })
+      const { transaction, watched } = notifyMessages[locale]
+      validateType({
+        name: `notifyMessages.${locale}.transaction`,
+        value: transaction,
+        type: "object"
+      })
+      validateType({
+        name: `notifyMessages.${locale}.watched`,
+        value: watched,
+        type: "object"
+      })
+    })
+  }
+
+  validateType({
+    name: "clientLocale",
+    value: clientLocale,
+    type: "string",
     optional: true
   })
 

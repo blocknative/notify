@@ -1,5 +1,6 @@
 import { writable } from "svelte/store"
 import { replaceOrAdd } from "./utilities"
+import { defaultNotifyMessages } from "./i18n"
 
 import {
   WritableStore,
@@ -19,7 +20,9 @@ export const app: WritableStore = writable({
   darkMode: false,
   txApproveReminderTimeout: 20000,
   txStallPendingTimeout: 20000,
-  txStallConfirmedTimeout: 90000
+  txStallConfirmedTimeout: 90000,
+  clientLocale: "en",
+  notifyMessages: defaultNotifyMessages
 })
 export const accounts: WritableStore = writable([])
 export const contracts: WritableStore = writable([])

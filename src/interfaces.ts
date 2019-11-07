@@ -208,6 +208,6 @@ export interface TransactionStore {
 export interface NotificationStore {
   subscribe: (callback: (store: any) => any) => void
   add: (notification: NotificationObject) => void
-  remove: (id: string) => void
+  remove: (id: string, eventCode: string) => void
   update: (updater: (store: any) => any) => void
 }

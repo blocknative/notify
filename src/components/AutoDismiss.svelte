@@ -5,14 +5,14 @@
     type: string;
     key: string;
     startTime?: number;
-    eventCode?: string;
+    eventCode: string;
     message: string;
     autoDismiss?: number;
-  } = { id: "", type: "", key: "", message: "" };
+  } = { id: "", type: "", key: "", message: "", eventCode: "" };
 
   if (notification.autoDismiss && notification.id) {
     setTimeout(() => {
-      notifications.remove(notification.id);
+      notifications.remove(notification.id, notification.eventCode);
     }, notification.autoDismiss);
   }
 </script>

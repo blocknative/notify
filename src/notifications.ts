@@ -2,6 +2,7 @@ import { _ } from "svelte-i18n"
 import BigNumber from "bignumber.js"
 import { notifications } from "./stores"
 import { eventToType, typeToDismissTimeout } from "./defaults"
+import { defaultNotifyMessages } from "./i18n"
 
 import { CustomNotificationObject, TransactionData } from "./interfaces"
 
@@ -57,13 +58,22 @@ export function createNotification(
         ]
       : [`transaction.${eventCode}`]
 
+  const internationalizedMessage = formatter(...formatterOptions)
+  const noMessageAvailable = internationalizedMessage === formatterOptions[0]
+
+  const message = noMessageAvailable
+    ? defaultNotifyMessages.en[counterparty ? "watched" : "transaction"][
+        eventCode || ""
+      ]
+    : internationalizedMessage
+
   let notificationObject = {
     id: id || hash,
     type,
     key,
     startTime,
     eventCode,
-    message: formatter(...formatterOptions),
+    message,
     autoDismiss: typeToDismissTimeout(
       (typeof customization === "object" && customization.type) || type
     )

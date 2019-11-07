@@ -7,6 +7,7 @@
   p {
     margin: 0;
     font-family: "Helvetica Neue";
+    font-size: inherit;
   }
 </style>
 

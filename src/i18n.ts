@@ -1,4 +1,4 @@
-export const notifyMessages: any = {
+export const defaultNotifyMessages: any = {
   en: {
     transaction: {
       txRequest: "Your transaction is waiting for you to confirm",

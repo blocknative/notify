@@ -1,6 +1,5 @@
 import uuid from "uuid/v4"
-import { locale, dictionary, getClientLocale, _ } from "svelte-i18n"
-import { notifyMessages } from "./i18n"
+import { locale, dictionary, getClientLocale } from "svelte-i18n"
 
 import Notify from "./views/Notify.svelte"
 
@@ -9,6 +8,7 @@ import { handleTransactionEvent, preflightTransaction } from "./transactions"
 import { createNotification } from "./notifications"
 
 import { getBlocknative } from "./services"
+import { LocaleMessages } from "./interfaces"
 
 import {
   InitOptions,
@@ -48,26 +48,31 @@ function init(options: InitOptions): API {
   const blocknative = getBlocknative({ dappId, networkId, transactionHandlers })
 
   // save config to app store
-  app.update((store: AppStore) => ({ ...store, ...options, version }))
+  app.update((store: AppStore) => ({
+    ...store,
+    ...options,
+    version,
+    clientLocale: getClientLocale({
+      fallback: "en",
+      navigator: true
+    })
+  }))
 
   // initialize App
   new Notify({
     target: document.body
   })
 
-  // set the dictionary for i18n
-  dictionary.set(notifyMessages)
+  app.subscribe((store: AppStore) => {
+    const { notifyMessages, clientLocale } = store
 
-  // set the locale for i18n
-  const clientLocale: string = getClientLocale({
-    fallback: "en",
-    navigator: true
+    // set the dictionary for i18n
+    dictionary.set(notifyMessages)
+
+    const availableLocale: LocaleMessages | undefined =
+      notifyMessages[clientLocale] || notifyMessages[clientLocale.slice(0, 2)]
+    locale.set(availableLocale ? clientLocale : "en")
   })
-
-  const availableLocale: string | undefined =
-    notifyMessages[clientLocale] || notifyMessages[clientLocale.slice(0, 2)]
-
-  locale.set(availableLocale ? clientLocale : "en")
 
   return {
     hash,
@@ -129,7 +134,7 @@ function init(options: InitOptions): API {
     const startTime: number = Date.now()
     const { eventCode = `customNotification${key++}` } = notificationObject
 
-    const dismiss = () => notifications.remove(id)
+    const dismiss = () => notifications.remove(id, eventCode)
 
     function update(
       notificationUpdate: CustomNotificationObject
@@ -158,7 +163,18 @@ function init(options: InitOptions): API {
 
   function config(options: ConfigOptions): void {
     validateConfig(options)
-    app.update((store: AppStore) => ({ ...store, ...options }))
+
+    const { notifyMessages, ...otherOptions } = options
+
+    app.update((store: AppStore) => {
+      return {
+        ...store,
+        ...otherOptions,
+        notifyMessages: notifyMessages
+          ? { ...store.notifyMessages, ...notifyMessages }
+          : store.notifyMessages
+      }
+    })
   }
 }
 

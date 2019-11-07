@@ -202,6 +202,7 @@
     position: absolute;
     top: 0.75em;
     right: 0.75em;
+    font-size: inherit;
   }
 </style>
 
@@ -223,7 +224,7 @@
         <NotificationContent {notification} {formattedTime} {currentTime} />
         <div
           class="bn-notify-custom bn-notify-notification-close"
-          on:click={() => notifications.remove(notification.id)}>
+          on:click={() => notifications.remove(notification.id, notification.eventCode)}>
           <CloseIcon />
         </div>
         <AutoDismiss {notification} />

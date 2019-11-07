@@ -78,6 +78,21 @@ export interface AppStore {
   txApproveReminderTimeout: number
   txStallPendingTimeout: number
   txStallConfirmedTimeout: number
+  clientLocale: string
+  notifyMessages: NotifyMessages
+}
+
+export interface NotifyMessages {
+  [key: string]: LocaleMessages
+}
+
+export interface LocaleMessages {
+  transaction: {
+    [key: string]: string
+  }
+  watched: {
+    [key: string]: string
+  }
 }
 
 export interface TransactionOptions {
@@ -120,6 +135,8 @@ export interface ConfigOptions {
   txApproveReminderTimeout?: number
   txStallPendingTimeout?: number
   txStallConfirmedTimeout?: number
+  notifyMessages?: NotifyMessages
+  clientLocale?: string
 }
 
 interface Hash {
@@ -208,6 +225,6 @@ export interface TransactionStore {
 export interface NotificationStore {
   subscribe: (callback: (store: any) => any) => void
   add: (notification: NotificationObject) => void
-  remove: (id: string) => void
+  remove: (id: string, eventCode: string) => void
   update: (updater: (store: any) => any) => void
 }

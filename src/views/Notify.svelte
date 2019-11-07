@@ -202,6 +202,7 @@
     position: absolute;
     top: 0.75em;
     right: 0.75em;
+    font-size: inherit;
   }
 </style>
 

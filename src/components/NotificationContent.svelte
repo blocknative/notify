@@ -24,6 +24,7 @@
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
+    font-size: inherit;
     margin-left: 0.75em;
     max-width: 78%;
   }

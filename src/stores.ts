@@ -70,9 +70,11 @@ function createNotificationStore(initialState: NotificationObject[]) {
     })
   }
 
-  function remove(id: string) {
+  function remove(id: string, eventCode: string) {
     update((store: NotificationObject[]) =>
-      store.filter((n: NotificationObject) => n.id !== id)
+      store.filter(
+        (n: NotificationObject) => n.id !== id || n.eventCode !== eventCode
+      )
     )
   }
 

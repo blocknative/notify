@@ -129,7 +129,7 @@ function init(options: InitOptions): API {
     const startTime: number = Date.now()
     const { eventCode = `customNotification${key++}` } = notificationObject
 
-    const dismiss = () => notifications.remove(id)
+    const dismiss = () => notifications.remove(id, eventCode)
 
     function update(
       notificationUpdate: CustomNotificationObject

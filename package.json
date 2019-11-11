@@ -1,6 +1,6 @@
 {
   "name": "bnc-notify",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Show web3 users realtime transaction notifications",
   "keywords": [
     "ethereum",
@@ -8,8 +8,8 @@
     "blocknative",
     "notifications"
   ],
-  "main": "dist/bnc-notify.js",
-  "module": "dist/bnc-notify.es5.js",
+  "main": "dist/notify.umd.js",
+  "module": "dist/notify.esm.js",
   "typings": "dist/notify.d.ts",
   "files": [
     "dist"
@@ -21,9 +21,13 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
     "@pyoner/svelte-ts-preprocess": "^1.2.1",
     "@types/lodash.debounce": "^4.0.6",
     "@types/uuid": "^3.4.5",
+    "babel-plugin-external-helpers": "^6.18.0",
     "rollup": "^1.12.0",
     "rollup-plugin-commonjs": "^10.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
@@ -41,7 +45,7 @@
     "uuid": "^3.3.3"
   },
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c && babel dist/notify.esm.js --out-file dist/notify.esm.js && babel dist/notify.umd.js --out-file dist/notify.umd.js --minified",
     "test": "echo \"TBD\" && exit 0"
   }
 }

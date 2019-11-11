@@ -25,6 +25,7 @@
     flex-flow: column nowrap;
     justify-content: center;
     font-size: inherit;
+    font-family: inherit;
     margin-left: 0.75em;
     max-width: 78%;
   }

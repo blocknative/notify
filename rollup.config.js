@@ -1,7 +1,6 @@
 import svelte from "rollup-plugin-svelte"
 import resolve from "rollup-plugin-node-resolve"
 import commonjs from "rollup-plugin-commonjs"
-import { terser } from "rollup-plugin-terser"
 import typescript from "rollup-plugin-typescript2"
 
 import {
@@ -24,10 +23,9 @@ export default [
   {
     input: "src/notify.ts",
     output: {
-      sourcemap: true,
       format: "umd",
       name: "notify",
-      file: "dist/bnc-notify.js"
+      file: "dist/notify.umd.js"
     },
     moduleContext: id => {
       const thisAsWindowForModules = [
@@ -49,8 +47,7 @@ export default [
           importee === "svelte" || importee.startsWith("svelte/")
       }),
       commonjs(),
-      typescript(),
-      terser()
+      typescript()
     ]
   },
   {
@@ -58,7 +55,7 @@ export default [
     output: {
       sourcemap: true,
       format: "es",
-      file: "dist/bnc-notify.es5.js"
+      file: "dist/notify.esm.js"
     },
     moduleContext: id => {
       const thisAsWindowForModules = [

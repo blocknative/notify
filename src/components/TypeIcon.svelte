@@ -7,6 +7,7 @@
   div {
     height: 100%;
     font-size: inherit;
+    font-family: inherit;
     width: 1.5em;
   }
 </style>

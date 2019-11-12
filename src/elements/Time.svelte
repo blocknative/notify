@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let time: string;
+  export let time: string
 </script>
 
 <style>

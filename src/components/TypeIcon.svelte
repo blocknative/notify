@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let type: string;
+  export let type: string
 </script>
 
 <style>

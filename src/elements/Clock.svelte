@@ -4,7 +4,7 @@
     width: 15px;
     height: 16px;
     display: inline-block;
-    background-image: url("https://assist.blocknative.com/images/jJu8b0B.png");
+    background-image: url('https://assist.blocknative.com/images/jJu8b0B.png');
     background-position: -66px 0px;
     vertical-align: sub;
   }

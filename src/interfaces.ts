@@ -1,4 +1,4 @@
-export interface InitOptions {
+export interface InitOptions extends ConfigOptions {
   dappId: string
   networkId: number
   transactionHandler?: TransactionHandler

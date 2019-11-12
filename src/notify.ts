@@ -1,14 +1,16 @@
-import uuid from "uuid/v4"
-import { locale, dictionary, getClientLocale } from "svelte-i18n"
+import 'regenerator-runtime/runtime'
 
-import Notify from "./views/Notify.svelte"
+import uuid from 'uuid/v4'
+import { locale, dictionary, getClientLocale } from 'svelte-i18n'
 
-import { app, notifications } from "./stores"
-import { handleTransactionEvent, preflightTransaction } from "./transactions"
-import { createNotification } from "./notifications"
+import Notify from './views/Notify.svelte'
 
-import { getBlocknative } from "./services"
-import { LocaleMessages } from "./interfaces"
+import { app, notifications } from './stores'
+import { handleTransactionEvent, preflightTransaction } from './transactions'
+import { createNotification } from './notifications'
+
+import { getBlocknative } from './services'
+import { LocaleMessages } from './interfaces'
 
 import {
   InitOptions,
@@ -21,18 +23,18 @@ import {
   CustomNotificationObject,
   UpdateNotification,
   ConfigOptions
-} from "./interfaces"
+} from './interfaces'
 
 import {
   validateInit,
   validateTransactionOptions,
   validateNotificationObject,
   validateConfig
-} from "./validation"
+} from './validation'
 
-import { createEmitter } from "./utilities"
+import { createEmitter } from './utilities'
 
-const version: string = "0.0.1"
+const version: string = '0.0.1'
 
 function init(options: InitOptions): API {
   validateInit(options)
@@ -53,7 +55,7 @@ function init(options: InitOptions): API {
     ...options,
     version,
     clientLocale: getClientLocale({
-      fallback: "en",
+      fallback: 'en',
       navigator: true
     })
   }))
@@ -71,7 +73,7 @@ function init(options: InitOptions): API {
 
     const availableLocale: LocaleMessages | undefined =
       notifyMessages[clientLocale] || notifyMessages[clientLocale.slice(0, 2)]
-    locale.set(availableLocale ? clientLocale : "en")
+    locale.set(availableLocale ? clientLocale : 'en')
   })
 
   return {

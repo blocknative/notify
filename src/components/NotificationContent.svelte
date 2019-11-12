@@ -1,21 +1,21 @@
 <script lang="ts">
-  import { timeString } from "../utilities";
-  import NotificationMessage from "../elements/NotificationMessage.svelte";
-  import Clock from "../elements/Clock.svelte";
-  import Time from "../elements/Time.svelte";
-  import Timer from "../elements/Timer.svelte";
+  import { timeString } from '../utilities'
+  import NotificationMessage from '../elements/NotificationMessage.svelte'
+  import Clock from '../elements/Clock.svelte'
+  import Time from '../elements/Time.svelte'
+  import Timer from '../elements/Timer.svelte'
 
   export let notification: {
-    id: string;
-    type: string;
-    key: string;
-    startTime?: number;
-    eventCode?: string;
-    message: string;
-    autoDismiss?: number;
-  };
-  export let formattedTime: string;
-  export let currentTime: number;
+    id: string
+    type: string
+    key: string
+    startTime?: number
+    eventCode?: string
+    message: string
+    autoDismiss?: number
+  }
+  export let formattedTime: string
+  export let currentTime: number
 </script>
 
 <style>
@@ -36,12 +36,12 @@
     opacity: 0.7;
     font-size: 0.889em;
     line-height: 1.15;
-    font-family: "Helvetica Neue";
+    font-family: 'Helvetica Neue';
   }
 
   /* .bn-notify-notification-info-meta-duration */
   span {
-    font-family: "Helvetica Neue";
+    font-family: 'Helvetica Neue';
   }
 </style>
 

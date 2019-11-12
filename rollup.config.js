@@ -79,6 +79,6 @@ export default [
       commonjs(),
       typescript()
     ],
-    external: ["bignumber.js", "bnc-sdk", "lodash.debounce", "uuid/v4"]
+    external: ["bignumber.js", "bnc-sdk", "lodash.debounce", "uuid/v4", "regenerator-runtime/runtime"]
   }
 ]

@@ -5,6 +5,55 @@ import {
   ConfigOptions
 } from "./interfaces"
 
+const validInitKeys = [
+  "dappId",
+  "networkId",
+  "transactionHandler",
+  "mobilePosition",
+  "desktopPosition",
+  "darkMode",
+  "txApproveReminderTimeout",
+  "txStallPendingTimeout",
+  "txStallConfirmedTimeout",
+  "notifyMessages",
+  "clientLocale"
+]
+
+const validNotificationKeys = [
+  "eventCode",
+  "type",
+  "message",
+  "autoDismiss",
+  "onclick"
+]
+
+const validTransactionKeys = [
+  "sendTransaction",
+  "estimateGas",
+  "gasPrice",
+  "balance",
+  "contractCall",
+  "txDetails"
+]
+
+function invalidParams(
+  params: any,
+  validParams: string[],
+  functionName: string
+): void | never {
+  const invalid = Object.keys(params)
+
+  if (invalid.length > 0) {
+    throw new Error(
+      `${
+        invalid[0]
+      } is not a valid parameter for ${functionName}, must be one of the following valid parameters: ${validParams.join(
+        ", "
+      )}`
+    )
+  }
+}
+
 export function validateType({
   name,
   value,
@@ -16,7 +65,7 @@ export function validateType({
   value: any
   type: string
   optional?: boolean
-  customValidation?: (val: any) => boolean
+  customValidation?: (val: any) => void | never
 }): never | void {
   if (!optional && typeof value === "undefined") {
     throw new Error(`"${name}" is required`)
@@ -31,19 +80,15 @@ export function validateType({
     )
   }
 
-  if (
-    typeof value !== "undefined" &&
-    customValidation &&
-    !customValidation(value)
-  ) {
-    throw new Error(`"${value}" is not a valid "${name}"`)
+  if (typeof value !== "undefined" && customValidation) {
+    customValidation(value)
   }
 }
 
 export function validateInit(init: InitOptions): void {
   validateType({ name: "init", value: init, type: "object" })
 
-  const { dappId, networkId, transactionHandler } = init
+  const { dappId, networkId, transactionHandler, ...otherParams } = init
 
   validateType({ name: "dappId", value: dappId, type: "string" })
   validateType({ name: "networkId", value: networkId, type: "number" })
@@ -53,6 +98,8 @@ export function validateInit(init: InitOptions): void {
     type: "function",
     optional: true
   })
+
+  validateConfig(otherParams)
 }
 
 function stringOrNumber(val: string | number): boolean {
@@ -68,8 +115,11 @@ export function validateTransactionOptions(options: TransactionOptions): void {
     gasPrice,
     balance,
     contractCall,
-    txDetails
+    txDetails,
+    ...otherParams
   } = options
+
+  invalidParams(otherParams, validTransactionKeys, "Transaction Options")
 
   validateType({
     name: "sendTransaction",
@@ -107,13 +157,16 @@ export function validateTransactionOptions(options: TransactionOptions): void {
   })
 
   if (contractCall) {
-    const { methodName, params } = contractCall
+    const { methodName, params, ...otherParams } = contractCall
+    invalidParams(otherParams, ["methodName", "params"], "contractCall")
+
     validateType({
       name: "methodName",
       value: methodName,
       type: "string",
       optional: true
     })
+
     validateType({
       name: "params",
       value: params,
@@ -130,7 +183,9 @@ export function validateTransactionOptions(options: TransactionOptions): void {
   })
 
   if (txDetails) {
-    const { to, value, from } = txDetails
+    const { to, value, from, ...otherParams } = txDetails
+
+    invalidParams(otherParams, ["to", "value", "from"], "txDetails")
 
     validateType({
       name: "to",
@@ -167,7 +222,16 @@ export function validateNotificationObject(
 
   if (typeof notification !== "object") return
 
-  const { eventCode, type, message, autoDismiss, onclick } = notification
+  const {
+    eventCode,
+    type,
+    message,
+    autoDismiss,
+    onclick,
+    ...otherParams
+  } = notification
+
+  invalidParams(otherParams, validNotificationKeys, "notification")
 
   validateType({
     name: "eventCode",
@@ -216,8 +280,11 @@ export function validateConfig(config: ConfigOptions): void {
     clientLocale,
     txApproveReminderTimeout,
     txStallPendingTimeout,
-    txStallConfirmedTimeout
+    txStallConfirmedTimeout,
+    ...otherParams
   } = config
+
+  invalidParams(otherParams, validInitKeys, "config / initialize")
 
   validateType({
     name: "mobilePosition",
@@ -256,12 +323,17 @@ export function validateConfig(config: ConfigOptions): void {
         value: notifyMessages[locale],
         type: "object"
       })
-      const { transaction, watched } = notifyMessages[locale]
+
+      const { transaction, watched, ...otherParams } = notifyMessages[locale]
+
+      invalidParams(otherParams, ["transaction", "watched"], locale)
+
       validateType({
         name: `notifyMessages.${locale}.transaction`,
         value: transaction,
         type: "object"
       })
+
       validateType({
         name: `notifyMessages.${locale}.watched`,
         value: watched,
@@ -299,34 +371,48 @@ export function validateConfig(config: ConfigOptions): void {
   })
 }
 
-function validNotificationType(type: string): boolean {
+function validNotificationType(type: string): void | never {
   switch (type) {
     case "hint":
     case "pending":
     case "error":
     case "success":
-      return true
+      return
     default:
-      return false
+      throw new Error(
+        `${type} is not a valid notification type, must be one of: 'hint', 'pending', 'error' or 'success'.`
+      )
   }
 }
 
-function validMobilePosition(position: string): boolean {
-  return position === "top" || position === "bottom"
+function validMobilePosition(position: string): void | never {
+  switch (position) {
+    case "top":
+    case "bottom":
+      return
+    default:
+      throw new Error(
+        `${position} is not a valid mobile notification position, must be one of: 'top' or 'bottom'.`
+      )
+  }
 }
 
-function validDesktopPosition(position: string): boolean {
+function validDesktopPosition(position: string): void | never {
   switch (position) {
     case "bottomLeft":
     case "bottomRight":
     case "topLeft":
     case "topRight":
-      return true
+      return
     default:
-      return false
+      throw new Error(
+        `${position} is not a valid desktop notification position, must be one of: 'bottomLeft', 'bottomRight', 'topLeft' or 'topRight'.`
+      )
   }
 }
 
-function isAddress(address: string): boolean {
-  return /^(0x)?[0-9a-fA-F]{40}$/.test(address)
+function isAddress(address: string): void | never {
+  if (!/^(0x)?[0-9a-fA-F]{40}$/.test(address)) {
+    throw new Error(`${address} is not a valid ethereum address.`)
+  }
 }

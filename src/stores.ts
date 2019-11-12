@@ -1,6 +1,6 @@
-import { writable } from "svelte/store"
-import { replaceOrAdd } from "./utilities"
-import { defaultNotifyMessages } from "./i18n"
+import { writable } from 'svelte/store'
+import { replaceOrAdd } from './utilities'
+import { defaultNotifyMessages } from './i18n'
 
 import {
   WritableStore,
@@ -8,20 +8,20 @@ import {
   TransactionStore,
   NotificationObject,
   NotificationStore
-} from "./interfaces"
+} from './interfaces'
 
 export const app: WritableStore = writable({
-  version: "",
-  dappId: "",
+  version: '',
+  dappId: '',
   networkId: 1,
   nodeSynced: true,
-  mobilePosition: "top",
-  desktopPosition: "bottomRight",
+  mobilePosition: 'top',
+  desktopPosition: 'bottomRight',
   darkMode: false,
   txApproveReminderTimeout: 20000,
   txStallPendingTimeout: 20000,
   txStallConfirmedTimeout: 90000,
-  clientLocale: "en",
+  clientLocale: 'en',
   notifyMessages: defaultNotifyMessages
 })
 export const accounts: WritableStore = writable([])
@@ -61,7 +61,7 @@ function createNotificationStore(initialState: NotificationObject[]) {
       )
 
       // if notification is a hint type or there are no existing notifications with same id, then just add it.
-      if (notification.type === "hint" || !existingNotification) {
+      if (notification.type === 'hint' || !existingNotification) {
         return [...store, notification]
       }
 

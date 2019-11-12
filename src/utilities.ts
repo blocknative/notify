@@ -1,4 +1,4 @@
-import { Emitter, EmitterListener, TransactionData } from "./interfaces"
+import { Emitter, EmitterListener, TransactionData } from './interfaces'
 
 export function argsEqual(args1: any, args2: any): boolean {
   return JSON.stringify(args1) === JSON.stringify(args2)
@@ -14,9 +14,9 @@ export function timeString(time: number): string {
 
 export function formatTime(number: number): string {
   const time = new Date(number)
-  return time.toLocaleString("en-US", {
-    hour: "numeric",
-    minute: "numeric",
+  return time.toLocaleString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
     hour12: true
   })
 }
@@ -46,29 +46,29 @@ export function extractMessageFromError(error: {
 }): { eventCode: string; errorMsg: string } {
   if (!error.stack || !error.message) {
     return {
-      eventCode: "txError",
-      errorMsg: "An unknown error occured"
+      eventCode: 'txError',
+      errorMsg: 'An unknown error occured'
     }
   }
 
   const message = error.stack || error.message
 
-  if (message.includes("User denied transaction signature")) {
+  if (message.includes('User denied transaction signature')) {
     return {
-      eventCode: "txSendFail",
-      errorMsg: "User denied transaction signature"
+      eventCode: 'txSendFail',
+      errorMsg: 'User denied transaction signature'
     }
   }
 
-  if (message.includes("transaction underpriced")) {
+  if (message.includes('transaction underpriced')) {
     return {
-      eventCode: "txUnderpriced",
-      errorMsg: "Transaction is under priced"
+      eventCode: 'txUnderpriced',
+      errorMsg: 'Transaction is under priced'
     }
   }
 
   return {
-    eventCode: "txError",
+    eventCode: 'txError',
     errorMsg: message
   }
 }
@@ -79,21 +79,21 @@ export function createEmitter(): Emitter {
     on: function(eventCode: string, listener: EmitterListener): never | void {
       // check if valid eventCode
       switch (eventCode) {
-        case "txSent":
-        case "txPool":
-        case "txConfirmed":
-        case "txSpeedUp":
-        case "txCancel":
-        case "txFailed":
-        case "txRequest":
-        case "nsfFail":
-        case "txRepeat":
-        case "txAwaitingApproval":
-        case "txConfirmReminder":
-        case "txSendFail":
-        case "txError":
-        case "txUnderPriced":
-        case "all":
+        case 'txSent':
+        case 'txPool':
+        case 'txConfirmed':
+        case 'txSpeedUp':
+        case 'txCancel':
+        case 'txFailed':
+        case 'txRequest':
+        case 'nsfFail':
+        case 'txRepeat':
+        case 'txAwaitingApproval':
+        case 'txConfirmReminder':
+        case 'txSendFail':
+        case 'txError':
+        case 'txUnderPriced':
+        case 'all':
           break
         default:
           throw new Error(
@@ -102,16 +102,16 @@ export function createEmitter(): Emitter {
       }
 
       // check that listener is a function
-      if (typeof listener !== "function") {
-        throw new Error("Listener must be a function")
+      if (typeof listener !== 'function') {
+        throw new Error('Listener must be a function')
       }
 
       // add listener for the eventCode
       this.listeners[eventCode] = listener
     },
     emit: function(state: TransactionData) {
-      if (this.listeners[state.eventCode || ""]) {
-        return this.listeners[state.eventCode || ""](state)
+      if (this.listeners[state.eventCode || '']) {
+        return this.listeners[state.eventCode || ''](state)
       }
 
       if (this.listeners.all) {

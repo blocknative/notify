@@ -1,12 +1,12 @@
-import BigNumber from "bignumber.js"
-import uuid from "uuid/v4"
-import { get } from "svelte/store"
+import BigNumber from 'bignumber.js'
+import uuid from 'uuid/v4'
+import { get } from 'svelte/store'
 
-import { transactions, app } from "./stores"
-import { createNotification } from "./notifications"
-import { argsEqual, extractMessageFromError } from "./utilities"
-import { validateNotificationObject } from "./validation"
-import { getBlocknative } from "./services"
+import { transactions, app } from './stores'
+import { createNotification } from './notifications'
+import { argsEqual, extractMessageFromError } from './utilities'
+import { validateNotificationObject } from './validation'
+import { getBlocknative } from './services'
 import {
   TransactionData,
   PreflightEvent,
@@ -14,7 +14,7 @@ import {
   CustomNotificationObject,
   Emitter,
   TransactionOptions
-} from "./interfaces"
+} from './interfaces'
 
 let transactionQueue: TransactionData[]
 transactions.subscribe((store: TransactionData[]) => (transactionQueue = store))
@@ -32,7 +32,7 @@ export function handlePreFlightEvent(preflightEvent: PreflightEvent) {
   const blocknative = getBlocknative()
 
   blocknative.event({
-    categoryCode: contractCall ? "activeContract" : "activeTransaction",
+    categoryCode: contractCall ? 'activeContract' : 'activeTransaction',
     eventCode,
     transaction: txDetails,
     wallet: { balance },
@@ -82,7 +82,7 @@ export function duplicateTransactionCandidate(
 ) {
   let duplicate: TransactionData | undefined | boolean = transactionQueue.find(
     (tx: TransactionData) => {
-      if (contract && typeof tx.contractCall === "undefined") return false
+      if (contract && typeof tx.contractCall === 'undefined') return false
 
       const sameMethod = contract
         ? contract.methodName ===
@@ -107,7 +107,7 @@ export function duplicateTransactionCandidate(
 
   if (
     duplicate &&
-    (duplicate.status === "confirmed" || duplicate.status === "failed")
+    (duplicate.status === 'confirmed' || duplicate.status === 'failed')
   ) {
     duplicate = false
   }
@@ -162,7 +162,7 @@ export function preflightTransaction(
 
         // if transaction cost is greater than the current balance
         if (transactionCost.gt(new BigNumber(balance))) {
-          const eventCode = "nsfFail"
+          const eventCode = 'nsfFail'
 
           handlePreFlightEvent({
             eventCode,
@@ -172,7 +172,7 @@ export function preflightTransaction(
             emitter
           })
 
-          return reject("User has insufficient funds")
+          return reject('User has insufficient funds')
         }
       }
 
@@ -184,7 +184,7 @@ export function preflightTransaction(
           contractCall
         )
       ) {
-        const eventCode = "txRepeat"
+        const eventCode = 'txRepeat'
 
         handlePreFlightEvent({
           eventCode,
@@ -202,8 +202,8 @@ export function preflightTransaction(
       } = get(app)
 
       // check previous transactions awaiting approval
-      if (transactionQueue.find(tx => tx.status === "awaitingApproval")) {
-        const eventCode = "txAwaitingApproval"
+      if (transactionQueue.find(tx => tx.status === 'awaitingApproval')) {
+        const eventCode = 'txAwaitingApproval'
 
         handlePreFlightEvent({
           eventCode,
@@ -217,11 +217,11 @@ export function preflightTransaction(
       // confirm reminder after timeout
       setTimeout(() => {
         const awaitingApproval = transactionQueue.find(
-          tx => tx.id === id && tx.status === "awaitingApproval"
+          tx => tx.id === id && tx.status === 'awaitingApproval'
         )
 
         if (awaitingApproval) {
-          const eventCode = "txConfirmReminder"
+          const eventCode = 'txConfirmReminder'
 
           handlePreFlightEvent({
             eventCode,
@@ -234,8 +234,8 @@ export function preflightTransaction(
       }, txApproveReminderTimeout)
 
       handlePreFlightEvent({
-        eventCode: "txRequest",
-        status: "awaitingApproval",
+        eventCode: 'txRequest',
+        status: 'awaitingApproval',
         contractCall,
         balance,
         txDetails: txObject,
@@ -262,7 +262,7 @@ export function preflightTransaction(
 
         handlePreFlightEvent({
           eventCode,
-          status: "failed",
+          status: 'failed',
           contractCall,
           balance,
           txDetails: txObject,
@@ -272,14 +272,14 @@ export function preflightTransaction(
         return reject(errorMsg)
       }
 
-      if (hash && typeof hash === "string") {
+      if (hash && typeof hash === 'string') {
         const serverEmitter = blocknative.transaction(
           blocknative.clientIndex,
           hash,
           id
         ).emitter
 
-        serverEmitter.on("all", (transaction: TransactionData) => {
+        serverEmitter.on('all', (transaction: TransactionData) => {
           const result = emitter.emit(transaction)
           return result
         })
@@ -291,11 +291,11 @@ export function preflightTransaction(
           )
           if (
             transaction &&
-            transaction.status === "sent" &&
+            transaction.status === 'sent' &&
             blocknative.status.connected &&
             blocknative.status.nodeSynced
           ) {
-            const eventCode = "txStallPending"
+            const eventCode = 'txStallPending'
 
             handlePreFlightEvent({
               eventCode,
@@ -313,11 +313,11 @@ export function preflightTransaction(
 
           if (
             transaction &&
-            transaction.status === "pending" &&
+            transaction.status === 'pending' &&
             blocknative.status.connected &&
             blocknative.status.nodeSynced
           ) {
-            const eventCode = "txStallConfirmed"
+            const eventCode = 'txStallConfirmed'
 
             handlePreFlightEvent({
               eventCode,
@@ -330,7 +330,7 @@ export function preflightTransaction(
         }, txStallConfirmedTimeout)
       } else {
         throw new Error(
-          "sendTransaction function must resolve to a transaction hash that is of type String."
+          'sendTransaction function must resolve to a transaction hash that is of type String.'
         )
       }
     }, 10)
@@ -347,23 +347,23 @@ function gasEstimates(
 
   const gasProm = gasFunc()
   if (!gasProm.then) {
-    throw new Error("The `estimateGas` function must return a Promise")
+    throw new Error('The `estimateGas` function must return a Promise')
   }
 
   const gasPriceProm = gasPriceFunc()
   if (!gasPriceProm.then) {
-    throw new Error("The `gasPrice` function must return a Promise")
+    throw new Error('The `gasPrice` function must return a Promise')
   }
 
   return Promise.all([gasProm, gasPriceProm])
     .then(([gasResult, gasPriceResult]) => {
-      if (typeof gasResult !== "string") {
+      if (typeof gasResult !== 'string') {
         throw new Error(
           `The Promise returned from calling 'estimateGas' must resolve with a value of type 'string'. Received a value of: ${gasResult} with a type: ${typeof gasResult}`
         )
       }
 
-      if (typeof gasPriceResult !== "string") {
+      if (typeof gasPriceResult !== 'string') {
         throw new Error(
           `The Promise returned from calling 'gasPrice' must resolve with a value of type 'string'. Received a value of: ${gasPriceResult} with a type: ${typeof gasPriceResult}`
         )

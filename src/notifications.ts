@@ -1,10 +1,10 @@
-import { _ } from "svelte-i18n"
-import BigNumber from "bignumber.js"
-import { notifications } from "./stores"
-import { eventToType, typeToDismissTimeout } from "./defaults"
-import { defaultNotifyMessages } from "./i18n"
+import { _ } from 'svelte-i18n'
+import BigNumber from 'bignumber.js'
+import { notifications } from './stores'
+import { eventToType, typeToDismissTimeout } from './defaults'
+import { defaultNotifyMessages } from './i18n'
 
-import { CustomNotificationObject, TransactionData } from "./interfaces"
+import { CustomNotificationObject, TransactionData } from './interfaces'
 
 // subscribe to the formatter store
 let formatter: any
@@ -26,13 +26,13 @@ export function createNotification(
   } = details
 
   const type: string = eventToType(eventCode)
-  const key: string = `${id}-${(typeof customization === "object" &&
+  const key: string = `${id}-${(typeof customization === 'object' &&
     customization.eventCode) ||
     eventCode}`
   const counterpartyShortened: string | undefined =
     counterparty &&
     counterparty.substring(0, 4) +
-      "..." +
+      '...' +
       counterparty.substring(counterparty.length - 4)
 
   const formatterOptions =
@@ -41,17 +41,17 @@ export function createNotification(
           `watched.${eventCode}`,
           {
             verb:
-              eventCode === "txConfirmed"
-                ? direction === "incoming"
-                  ? "received"
-                  : "sent"
-                : direction === "incoming"
-                ? "receiving"
-                : "sending",
+              eventCode === 'txConfirmed'
+                ? direction === 'incoming'
+                  ? 'received'
+                  : 'sent'
+                : direction === 'incoming'
+                ? 'receiving'
+                : 'sending',
             formattedValue: new BigNumber(value)
-              .div(new BigNumber("1000000000000000000"))
+              .div(new BigNumber('1000000000000000000'))
               .toString(10),
-            preposition: direction === "incoming" ? "from" : "to",
+            preposition: direction === 'incoming' ? 'from' : 'to',
             counterpartyShortened,
             asset
           }
@@ -62,8 +62,8 @@ export function createNotification(
   const noMessageAvailable = internationalizedMessage === formatterOptions[0]
 
   const message = noMessageAvailable
-    ? defaultNotifyMessages.en[counterparty ? "watched" : "transaction"][
-        eventCode || ""
+    ? defaultNotifyMessages.en[counterparty ? 'watched' : 'transaction'][
+        eventCode || ''
       ]
     : internationalizedMessage
 
@@ -75,11 +75,11 @@ export function createNotification(
     eventCode,
     message,
     autoDismiss: typeToDismissTimeout(
-      (typeof customization === "object" && customization.type) || type
+      (typeof customization === 'object' && customization.type) || type
     )
   }
 
-  if (typeof customization === "object") {
+  if (typeof customization === 'object') {
     notificationObject = { ...notificationObject, ...customization }
   }
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { app } from "../stores";
-  let hovered: boolean;
+  import { app } from '../stores'
+  let hovered: boolean
 </script>
 
 <style>

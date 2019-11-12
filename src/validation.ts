@@ -3,37 +3,37 @@ import {
   TransactionOptions,
   CustomNotificationObject,
   ConfigOptions
-} from "./interfaces"
+} from './interfaces'
 
 const validInitKeys = [
-  "dappId",
-  "networkId",
-  "transactionHandler",
-  "mobilePosition",
-  "desktopPosition",
-  "darkMode",
-  "txApproveReminderTimeout",
-  "txStallPendingTimeout",
-  "txStallConfirmedTimeout",
-  "notifyMessages",
-  "clientLocale"
+  'dappId',
+  'networkId',
+  'transactionHandler',
+  'mobilePosition',
+  'desktopPosition',
+  'darkMode',
+  'txApproveReminderTimeout',
+  'txStallPendingTimeout',
+  'txStallConfirmedTimeout',
+  'notifyMessages',
+  'clientLocale'
 ]
 
 const validNotificationKeys = [
-  "eventCode",
-  "type",
-  "message",
-  "autoDismiss",
-  "onclick"
+  'eventCode',
+  'type',
+  'message',
+  'autoDismiss',
+  'onclick'
 ]
 
 const validTransactionKeys = [
-  "sendTransaction",
-  "estimateGas",
-  "gasPrice",
-  "balance",
-  "contractCall",
-  "txDetails"
+  'sendTransaction',
+  'estimateGas',
+  'gasPrice',
+  'balance',
+  'contractCall',
+  'txDetails'
 ]
 
 function invalidParams(
@@ -48,7 +48,7 @@ function invalidParams(
       `${
         invalid[0]
       } is not a valid parameter for ${functionName}, must be one of the following valid parameters: ${validParams.join(
-        ", "
+        ', '
       )}`
     )
   }
@@ -67,35 +67,35 @@ export function validateType({
   optional?: boolean
   customValidation?: (val: any) => void | never
 }): never | void {
-  if (!optional && typeof value === "undefined") {
+  if (!optional && typeof value === 'undefined') {
     throw new Error(`"${name}" is required`)
   }
 
   if (
-    typeof value !== "undefined" &&
-    (type === "array" ? Array.isArray(type) : typeof value !== type)
+    typeof value !== 'undefined' &&
+    (type === 'array' ? Array.isArray(type) : typeof value !== type)
   ) {
     throw new Error(
       `"${name}" must be of type: ${type}, received type: ${typeof value} from value: ${value}`
     )
   }
 
-  if (typeof value !== "undefined" && customValidation) {
+  if (typeof value !== 'undefined' && customValidation) {
     customValidation(value)
   }
 }
 
 export function validateInit(init: InitOptions): void {
-  validateType({ name: "init", value: init, type: "object" })
+  validateType({ name: 'init', value: init, type: 'object' })
 
   const { dappId, networkId, transactionHandler, ...otherParams } = init
 
-  validateType({ name: "dappId", value: dappId, type: "string" })
-  validateType({ name: "networkId", value: networkId, type: "number" })
+  validateType({ name: 'dappId', value: dappId, type: 'string' })
+  validateType({ name: 'networkId', value: networkId, type: 'number' })
   validateType({
-    name: "transactionHandler",
+    name: 'transactionHandler',
     value: transactionHandler,
-    type: "function",
+    type: 'function',
     optional: true
   })
 
@@ -103,11 +103,11 @@ export function validateInit(init: InitOptions): void {
 }
 
 function stringOrNumber(val: string | number): boolean {
-  return typeof val === "string" || typeof val === "number"
+  return typeof val === 'string' || typeof val === 'number'
 }
 
 export function validateTransactionOptions(options: TransactionOptions): void {
-  validateType({ name: "transaction options", value: options, type: "object" })
+  validateType({ name: 'transaction options', value: options, type: 'object' })
 
   const {
     sendTransaction,
@@ -119,92 +119,92 @@ export function validateTransactionOptions(options: TransactionOptions): void {
     ...otherParams
   } = options
 
-  invalidParams(otherParams, validTransactionKeys, "Transaction Options")
+  invalidParams(otherParams, validTransactionKeys, 'Transaction Options')
 
   validateType({
-    name: "sendTransaction",
+    name: 'sendTransaction',
     value: sendTransaction,
-    type: "function",
+    type: 'function',
     optional: true
   })
 
   validateType({
-    name: "estimateGas",
+    name: 'estimateGas',
     value: estimateGas,
-    type: "function",
+    type: 'function',
     optional: true
   })
 
   validateType({
-    name: "gasPrice",
+    name: 'gasPrice',
     value: gasPrice,
-    type: "function",
+    type: 'function',
     optional: true
   })
 
   validateType({
-    name: "balance",
+    name: 'balance',
     value: balance,
-    type: "string",
+    type: 'string',
     optional: true
   })
 
   validateType({
-    name: "contractCall",
+    name: 'contractCall',
     value: contractCall,
-    type: "object",
+    type: 'object',
     optional: true
   })
 
   if (contractCall) {
     const { methodName, params, ...otherParams } = contractCall
-    invalidParams(otherParams, ["methodName", "params"], "contractCall")
+    invalidParams(otherParams, ['methodName', 'params'], 'contractCall')
 
     validateType({
-      name: "methodName",
+      name: 'methodName',
       value: methodName,
-      type: "string",
+      type: 'string',
       optional: true
     })
 
     validateType({
-      name: "params",
+      name: 'params',
       value: params,
-      type: "array",
+      type: 'array',
       optional: true
     })
   }
 
   validateType({
-    name: "txDetails",
+    name: 'txDetails',
     value: txDetails,
-    type: "object",
+    type: 'object',
     optional: true
   })
 
   if (txDetails) {
     const { to, value, from, ...otherParams } = txDetails
 
-    invalidParams(otherParams, ["to", "value", "from"], "txDetails")
+    invalidParams(otherParams, ['to', 'value', 'from'], 'txDetails')
 
     validateType({
-      name: "to",
+      name: 'to',
       value: to,
-      type: "string",
+      type: 'string',
       optional: true,
       customValidation: isAddress
     })
 
-    if (typeof value !== "undefined" && !stringOrNumber(value)) {
+    if (typeof value !== 'undefined' && !stringOrNumber(value)) {
       throw new Error(
         `"value" must be of type: string | number, received type: ${typeof value} from value: ${value}`
       )
     }
 
     validateType({
-      name: "from",
+      name: 'from',
       value: from,
-      type: "string",
+      type: 'string',
       optional: true,
       customValidation: isAddress
     })
@@ -215,12 +215,12 @@ export function validateNotificationObject(
   notification: CustomNotificationObject | boolean | undefined
 ): void {
   validateType({
-    name: "notification",
+    name: 'notification',
     value: notification,
-    type: "object"
+    type: 'object'
   })
 
-  if (typeof notification !== "object") return
+  if (typeof notification !== 'object') return
 
   const {
     eventCode,
@@ -231,46 +231,46 @@ export function validateNotificationObject(
     ...otherParams
   } = notification
 
-  invalidParams(otherParams, validNotificationKeys, "notification")
+  invalidParams(otherParams, validNotificationKeys, 'notification')
 
   validateType({
-    name: "eventCode",
+    name: 'eventCode',
     value: eventCode,
-    type: "string",
+    type: 'string',
     optional: true
   })
 
   validateType({
-    name: "type",
+    name: 'type',
     value: type,
-    type: "string",
+    type: 'string',
     optional: true,
     customValidation: validNotificationType
   })
 
   validateType({
-    name: "message",
+    name: 'message',
     value: message,
-    type: "string"
+    type: 'string'
   })
 
   validateType({
-    name: "autoDismiss",
+    name: 'autoDismiss',
     value: autoDismiss,
-    type: "number",
+    type: 'number',
     optional: true
   })
 
   validateType({
-    name: "onclick",
+    name: 'onclick',
     value: onclick,
-    type: "function",
+    type: 'function',
     optional: true
   })
 }
 
 export function validateConfig(config: ConfigOptions): void {
-  validateType({ name: "config", value: config, type: "object" })
+  validateType({ name: 'config', value: config, type: 'object' })
 
   const {
     mobilePosition,
@@ -284,35 +284,35 @@ export function validateConfig(config: ConfigOptions): void {
     ...otherParams
   } = config
 
-  invalidParams(otherParams, validInitKeys, "config / initialize")
+  invalidParams(otherParams, validInitKeys, 'config / initialize')
 
   validateType({
-    name: "mobilePosition",
+    name: 'mobilePosition',
     value: mobilePosition,
-    type: "string",
+    type: 'string',
     optional: true,
     customValidation: validMobilePosition
   })
 
   validateType({
-    name: "desktopPosition",
+    name: 'desktopPosition',
     value: desktopPosition,
-    type: "string",
+    type: 'string',
     optional: true,
     customValidation: validDesktopPosition
   })
 
   validateType({
-    name: "darkMode",
+    name: 'darkMode',
     value: darkMode,
-    type: "boolean",
+    type: 'boolean',
     optional: true
   })
 
   validateType({
-    name: "notifyMessages",
+    name: 'notifyMessages',
     value: notifyMessages,
-    type: "object",
+    type: 'object',
     optional: true
   })
 
@@ -321,62 +321,62 @@ export function validateConfig(config: ConfigOptions): void {
       validateType({
         name: locale,
         value: notifyMessages[locale],
-        type: "object"
+        type: 'object'
       })
 
       const { transaction, watched, ...otherParams } = notifyMessages[locale]
 
-      invalidParams(otherParams, ["transaction", "watched"], locale)
+      invalidParams(otherParams, ['transaction', 'watched'], locale)
 
       validateType({
         name: `notifyMessages.${locale}.transaction`,
         value: transaction,
-        type: "object"
+        type: 'object'
       })
 
       validateType({
         name: `notifyMessages.${locale}.watched`,
         value: watched,
-        type: "object"
+        type: 'object'
       })
     })
   }
 
   validateType({
-    name: "clientLocale",
+    name: 'clientLocale',
     value: clientLocale,
-    type: "string",
+    type: 'string',
     optional: true
   })
 
   validateType({
-    name: "txApproveReminderTimeout",
+    name: 'txApproveReminderTimeout',
     value: txApproveReminderTimeout,
-    type: "number",
+    type: 'number',
     optional: true
   })
 
   validateType({
-    name: "txStallPendingTimeout",
+    name: 'txStallPendingTimeout',
     value: txStallPendingTimeout,
-    type: "number",
+    type: 'number',
     optional: true
   })
 
   validateType({
-    name: "txStallConfirmedTimeout",
+    name: 'txStallConfirmedTimeout',
     value: txStallConfirmedTimeout,
-    type: "number",
+    type: 'number',
     optional: true
   })
 }
 
 function validNotificationType(type: string): void | never {
   switch (type) {
-    case "hint":
-    case "pending":
-    case "error":
-    case "success":
+    case 'hint':
+    case 'pending':
+    case 'error':
+    case 'success':
       return
     default:
       throw new Error(
@@ -387,8 +387,8 @@ function validNotificationType(type: string): void | never {
 
 function validMobilePosition(position: string): void | never {
   switch (position) {
-    case "top":
-    case "bottom":
+    case 'top':
+    case 'bottom':
       return
     default:
       throw new Error(
@@ -399,10 +399,10 @@ function validMobilePosition(position: string): void | never {
 
 function validDesktopPosition(position: string): void | never {
   switch (position) {
-    case "bottomLeft":
-    case "bottomRight":
-    case "topLeft":
-    case "topRight":
+    case 'bottomLeft':
+    case 'bottomRight':
+    case 'topLeft':
+    case 'topRight':
       return
     default:
       throw new Error(

@@ -11,4 +11,6 @@
   }
 </style>
 
-<p class="bn-notify-custom bn-notify-notification-info-message">{message}</p>
+<p class="bn-notify-custom bn-notify-notification-info-message">
+  {@html message}
+</p>

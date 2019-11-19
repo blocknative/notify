@@ -38,7 +38,7 @@ export function createNotification(
   const formatterOptions =
     counterparty && value
       ? [
-          `watched.${eventCode}`,
+          `watched['${eventCode}']`,
           {
             verb:
               eventCode === 'txConfirmed'
@@ -56,7 +56,7 @@ export function createNotification(
             asset
           }
         ]
-      : [`transaction.${eventCode}`]
+      : [`transaction['${eventCode}']`]
 
   const internationalizedMessage = formatter(...formatterOptions)
   const noMessageAvailable = internationalizedMessage === formatterOptions[0]

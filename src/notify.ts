@@ -34,9 +34,16 @@ import {
 
 import { createEmitter } from './utilities'
 
-const version: string = '0.0.1'
+import { version } from '../package.json'
+
+let notify: any
 
 function init(options: InitOptions): API {
+  if (notify) {
+    console.warn('notify has already been initialized')
+    notify.$destroy()
+  }
+
   validateInit(options)
 
   const { dappId, networkId, transactionHandler } = options
@@ -61,7 +68,7 @@ function init(options: InitOptions): API {
   }))
 
   // initialize App
-  new Notify({
+  notify = new Notify({
     target: document.body
   })
 

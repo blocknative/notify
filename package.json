@@ -25,6 +25,7 @@
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@pyoner/svelte-ts-preprocess": "^1.2.1",
+    "@rollup/plugin-json": "^4.0.0",
     "@types/lodash.debounce": "^4.0.6",
     "@types/uuid": "^3.4.5",
     "babel-plugin-external-helpers": "^6.18.0",

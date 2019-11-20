@@ -1,5 +1,6 @@
 import svelte from 'rollup-plugin-svelte'
 import resolve from 'rollup-plugin-node-resolve'
+import json from '@rollup/plugin-json'
 import commonjs from 'rollup-plugin-commonjs'
 import typescript from 'rollup-plugin-typescript2'
 
@@ -38,6 +39,7 @@ export default [
       }
     },
     plugins: [
+      json(),
       svelte({
         preprocess: preprocess(opts)
       }),
@@ -68,6 +70,7 @@ export default [
       }
     },
     plugins: [
+      json(),
       svelte({
         preprocess: preprocess(opts)
       }),

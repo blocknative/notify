@@ -32,6 +32,8 @@
 
   /* .bn-notify-notification-info-meta */
   p {
+    display: flex;
+    align-items: center;
     margin: 0.5em 0 0 0;
     opacity: 0.7;
     font-size: 0.889em;
@@ -42,6 +44,8 @@
   /* .bn-notify-notification-info-meta-duration */
   span {
     font-family: 'Helvetica Neue';
+    display: flex;
+    align-items: center;
   }
 </style>
 

@@ -6,6 +6,7 @@
   span {
     font-size: inherit;
     font-family: inherit;
+    margin-right: 0.5em;
   }
 </style>
 

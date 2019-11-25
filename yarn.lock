@@ -696,9 +696,9 @@
   integrity sha512-ijGqzZt/b7BfzcK9vTrS6MFljQRPn5BFWOx8oE0GYxribu6uV+aA9zZuXI1zc/etK9E8nrgdoF2+LgUw7+9tJQ==
 
 "@types/node@*":
-  version "12.12.12"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.12.tgz#529bc3e73dbb35dd9e90b0a1c83606a9d3264bdb"
-  integrity sha512-MGuvYJrPU0HUwqF7LqvIj50RZUX23Z+m583KBygKYUZLlZ88n6w28XRNJRJgsHukLEnLz6w6SvxZoLgbr5wLqQ==
+  version "12.12.14"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.14.tgz#1c1d6e3c75dba466e0326948d56e8bd72a1903d2"
+  integrity sha512-u/SJDyXwuihpwjXy7hOOghagLEV1KdAST6syfnOk6QZAMzZuWZqXy5aYYZbh8Jdpd4escVFP0MvftHNDb9pruA==
 
 "@types/resolve@0.0.8":
   version "0.0.8"
@@ -847,10 +847,10 @@ binary-extensions@^1.0.0:
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-1.13.1.tgz#598afe54755b2868a5330d2aff9d4ebb53209b65"
   integrity sha512-Un7MIEDdUC5gNpcGDV97op1Ywk748MpHcFTHoYs6qnj1Z3j7I53VG3nwZhKzoBZmbdRNnb6WRdFlwl7tSDuZGw==
 
-bnc-sdk@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/bnc-sdk/-/bnc-sdk-1.0.1.tgz#9df231d04621e69facbc2932491f76c9c915bacd"
-  integrity sha512-oswBnsBqMgcz0d8M9JgERvMqdvCcr8A47jATVQGxIUeg++FwTH3bBiSKalNLRLCNNJ2GEr/DJOCycDd/by0jQg==
+bnc-sdk@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/bnc-sdk/-/bnc-sdk-1.0.2.tgz#c06acb9f514663f218e305d222faef223bfbb650"
+  integrity sha512-MfP99PhZnyDO7ANiryLr6HpHVlUMPV18LmvK1WD24bwbUp4IQF92TRqlEx5x3BNR6uzM7q87qKgyaQ5CYy79sg==
   dependencies:
     sturdy-websocket "^0.1.12"
 

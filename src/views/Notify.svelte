@@ -212,7 +212,7 @@
     style={`${positioning} ${justifyContent}`}>
     {#each $notifications as notification, i (notification.key)}
       <li
-        on:click={notification.onclick}
+        on:click={() => notification.onclick && notification.onclick()}
         style={notificationMargin}
         animate:flip={{ duration: 500 }}
         class:bn-notify-dark-mode={$app.darkMode}

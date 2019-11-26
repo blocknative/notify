@@ -28,16 +28,6 @@ export default [
       name: 'notify',
       file: 'dist/notify.umd.js'
     },
-    moduleContext: id => {
-      const thisAsWindowForModules = [
-        'node_modules/intl-messageformat/lib/core.js',
-        'node_modules/intl-messageformat/lib/compiler.js'
-      ]
-
-      if (thisAsWindowForModules.some(id_ => id.trimRight().endsWith(id_))) {
-        return 'window'
-      }
-    },
     plugins: [
       json(),
       svelte({
@@ -58,16 +48,6 @@ export default [
       sourcemap: true,
       format: 'es',
       file: 'dist/notify.esm.js'
-    },
-    moduleContext: id => {
-      const thisAsWindowForModules = [
-        'node_modules/intl-messageformat/lib/core.js',
-        'node_modules/intl-messageformat/lib/compiler.js'
-      ]
-
-      if (thisAsWindowForModules.some(id_ => id.trimRight().endsWith(id_))) {
-        return 'window'
-      }
     },
     plugins: [
       json(),

@@ -3,6 +3,7 @@
   import { fly } from 'svelte/transition'
   import { quintIn } from 'svelte/easing'
   import { flip } from 'svelte/animate'
+  import debounce from 'lodash.debounce'
 
   import CloseIcon from '../components/CloseIcon.svelte'
   import NotificationContent from '../components/NotificationContent.svelte'
@@ -10,8 +11,6 @@
   import AutoDismiss from '../components/AutoDismiss.svelte'
   import { notifications, app } from '../stores'
   import { formatTime } from '../utilities'
-
-  const debounce = require('lodash.debounce')
 
   let smallScreen: boolean = window.outerWidth < 450
 

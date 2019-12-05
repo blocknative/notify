@@ -35,6 +35,10 @@ export function createNotification(
       '...' +
       counterparty.substring(counterparty.length - 4)
 
+  const formattedValue = new BigNumber(value || 0)
+    .div(new BigNumber('1000000000000000000'))
+    .toString(10)
+
   const formatterOptions =
     counterparty && value
       ? [
@@ -48,15 +52,13 @@ export function createNotification(
                 : direction === 'incoming'
                 ? 'receiving'
                 : 'sending',
-            formattedValue: new BigNumber(value)
-              .div(new BigNumber('1000000000000000000'))
-              .toString(10),
+            formattedValue,
             preposition: direction === 'incoming' ? 'from' : 'to',
             counterpartyShortened,
             asset
           }
         ]
-      : [`transaction['${eventCode}']`]
+      : [`transaction['${eventCode}']`, { formattedValue, asset }]
 
   const internationalizedMessage = formatter(...formatterOptions)
   const noMessageAvailable = internationalizedMessage === formatterOptions[0]

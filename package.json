@@ -14,7 +14,7 @@
   "files": [
     "dist"
   ],
-  "author": "Aaron Barnard <abarnard@protonmail.com>",
+  "author": "Aaron Barnard <aaron@blocknative.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/blocknative/notify"
@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "bignumber.js": "^9.0.0",
-    "bnc-sdk": "1.0.2",
+    "bnc-sdk": "1.0.3",
     "lodash.debounce": "^4.0.8",
     "regenerator-runtime": "^0.13.3",
     "uuid": "^3.3.3"

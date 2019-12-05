@@ -38,12 +38,12 @@
     opacity: 0.7;
     font-size: 0.889em;
     line-height: 1.15;
-    font-family: 'Helvetica Neue';
+    font-family: inherit;
   }
 
   /* .bn-notify-notification-info-meta-duration */
   span {
-    font-family: 'Helvetica Neue';
+    font-family: inherit;
     display: flex;
     align-items: center;
   }

@@ -6,7 +6,7 @@
   /* .bn-notify-notification-info-message */
   p {
     margin: 0;
-    font-family: 'Helvetica Neue';
+    font-family: inherit;
     font-size: inherit;
   }
 </style>

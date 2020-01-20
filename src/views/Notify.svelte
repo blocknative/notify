@@ -186,6 +186,7 @@
     display: flex;
     padding: 0.75em;
     font-size: 0.889em;
+    font-family: inherit;
     border-radius: 10px;
     background: #ffffff;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
@@ -203,6 +204,7 @@
     top: 0.75em;
     right: 0.75em;
     font-size: inherit;
+    font-family: inherit;
   }
 </style>
 

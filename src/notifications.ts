@@ -41,9 +41,9 @@ export function createNotification(
 
   const formatterOptions =
     counterparty && value
-      ? [
-          `watched['${eventCode}']`,
-          {
+      ? {
+          messageId: `watched['${eventCode}']`,
+          values: {
             verb:
               eventCode === 'txConfirmed'
                 ? direction === 'incoming'
@@ -57,11 +57,18 @@ export function createNotification(
             counterpartyShortened,
             asset
           }
-        ]
-      : [`transaction['${eventCode}']`, { formattedValue, asset }]
+        }
+      : {
+          messageId: `transaction['${eventCode}']`,
+          values: { formattedValue, asset }
+        }
 
-  const internationalizedMessage = formatter(...formatterOptions)
-  const noMessageAvailable = internationalizedMessage === formatterOptions[0]
+  const internationalizedMessage = formatter(formatterOptions.messageId, {
+    values: formatterOptions.values
+  })
+
+  const noMessageAvailable =
+    internationalizedMessage === formatterOptions.messageId
 
   const message = noMessageAvailable
     ? defaultNotifyMessages.en[counterparty ? 'watched' : 'transaction'][

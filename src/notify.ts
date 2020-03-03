@@ -87,6 +87,7 @@ function init(options: InitOptions): API {
     hash,
     transaction,
     account,
+    unsubscribe,
     notification,
     config
   }
@@ -127,6 +128,10 @@ function init(options: InitOptions): API {
       emitter,
       result
     }
+  }
+
+  function unsubscribe(addressOrHash: string) {
+    blocknative.unsubscribe(blocknative.clientIndex, addressOrHash)
   }
 
   function notification(

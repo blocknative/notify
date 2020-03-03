@@ -153,6 +153,10 @@ interface Account {
   (address: string): never | { details: { address: string }; emitter: Emitter }
 }
 
+interface Unsubscribe {
+  (addressOrHash: string): void
+}
+
 interface Notification {
   (notificationObject: CustomNotificationObject): {
     dismiss: () => void
@@ -168,6 +172,7 @@ export interface API {
   hash: Hash
   transaction: Transaction
   account: Account
+  unsubscribe: Unsubscribe
   notification: Notification
   config: Config
 }

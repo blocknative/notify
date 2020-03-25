@@ -1,4 +1,4 @@
-import blocknativeSdk from 'bnc-sdk'
+import BlocknativeSdk from 'bnc-sdk'
 
 import { TransactionHandler } from './interfaces'
 
@@ -8,9 +8,10 @@ export function getBlocknative(options?: {
   dappId: string
   networkId: number
   transactionHandlers: TransactionHandler[]
+  name: string
 }): any {
   if (!blocknative && options) {
-    blocknative = blocknativeSdk(options)
+    blocknative = new BlocknativeSdk(options)
   }
 
   return blocknative

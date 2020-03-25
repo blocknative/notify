@@ -273,11 +273,7 @@ export function preflightTransaction(
       }
 
       if (hash && typeof hash === 'string') {
-        const serverEmitter = blocknative.transaction(
-          blocknative.clientIndex,
-          hash,
-          id
-        ).emitter
+        const serverEmitter = blocknative.transaction(hash, id).emitter
 
         serverEmitter.on('all', (transaction: TransactionData) => {
           const result = emitter.emit(transaction)

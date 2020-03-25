@@ -54,7 +54,12 @@ function init(options: InitOptions): API {
     transactionHandlers.push(transactionHandler)
   }
 
-  const blocknative = getBlocknative({ dappId, networkId, transactionHandlers })
+  const blocknative = getBlocknative({
+    dappId,
+    networkId,
+    transactionHandlers,
+    name: 'Notify'
+  })
 
   // save config to app store
   app.update((store: AppStore) => ({
@@ -96,7 +101,7 @@ function init(options: InitOptions): API {
     address: string
   ): { details: { address: string }; emitter: Emitter } | never {
     try {
-      const result = blocknative.account(blocknative.clientIndex, address)
+      const result = blocknative.account(address)
       return result
     } catch (error) {
       throw new Error(error)
@@ -108,7 +113,7 @@ function init(options: InitOptions): API {
     id?: string
   ): never | { details: TransactionLog; emitter: Emitter } {
     try {
-      const result = blocknative.transaction(blocknative.clientIndex, hash, id)
+      const result = blocknative.transaction(hash, id)
       return result
     } catch (error) {
       throw new Error(error)
@@ -131,7 +136,7 @@ function init(options: InitOptions): API {
   }
 
   function unsubscribe(addressOrHash: string) {
-    blocknative.unsubscribe(blocknative.clientIndex, addressOrHash)
+    blocknative.unsubscribe(addressOrHash)
   }
 
   function notification(

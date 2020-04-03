@@ -1,5 +1,6 @@
 <script lang="ts">
   import { timeString } from '../utilities'
+  import { app } from '../stores'
   import NotificationMessage from '../elements/NotificationMessage.svelte'
   import Clock from '../elements/Clock.svelte'
   import Time from '../elements/Time.svelte'
@@ -49,12 +50,15 @@
   }
 </style>
 
-<div class="bn-notify-custom bn-notify-notification-info">
+<div
+  class="bn-notify-custom bn-notify-notification-info {$app.name ? `bn-notify-${$app.name}` : ''}">
   <NotificationMessage message={notification.message} />
-  <p class="bn-notify-custom bn-notify-notification-info-meta">
+  <p
+    class="bn-notify-custom bn-notify-notification-info-meta {$app.name ? `bn-notify-${$app.name}` : ''}">
     <Time time={formattedTime} />
     {#if notification.type === 'pending' && notification.startTime}
-      <span class="bn-notify-custom bn-notify-notification-info-meta-duration">
+      <span
+        class="bn-notify-custom bn-notify-notification-info-meta-duration {$app.name ? `bn-notify-${$app.name}` : ''}">
         -
         <Clock />
         <Timer value={timeString(currentTime - notification.startTime)} />

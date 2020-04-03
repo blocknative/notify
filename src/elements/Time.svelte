@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { app } from '../stores'
   export let time: string
 </script>
 
@@ -10,6 +11,7 @@
   }
 </style>
 
-<span class="bn-notify-custom bn-notify-notification-info-meta-timestamp">
+<span
+  class="bn-notify-custom bn-notify-notification-info-meta-timestamp {$app.name ? `bn-notify-${$app.name}` : ''}">
   {time}
 </span>

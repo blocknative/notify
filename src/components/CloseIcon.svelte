@@ -27,7 +27,7 @@
 </style>
 
 <div
-  class="bn-notify-custom bn-notify-notification-close-icon"
+  class="bn-notify-custom bn-notify-notification-close-icon {$app.name ? `bn-notify-${$app.name}` : ''}"
   class:bn-notify-dark-mode-close-background={$app.darkMode}
   on:mouseenter={() => (hovered = true)}
   on:mouseleave={() => (hovered = false)}>

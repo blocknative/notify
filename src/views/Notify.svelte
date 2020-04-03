@@ -210,7 +210,7 @@
 
 {#if $notifications.length > 0}
   <ul
-    class="bn-notify-custom bn-notify-notifications"
+    class="bn-notify-custom bn-notify-notifications {$app.name ? `bn-notify-${$app.name}` : ''}"
     style={`${positioning} ${justifyContent}`}>
     {#each $notifications as notification, i (notification.key)}
       <li
@@ -219,13 +219,13 @@
         animate:flip={{ duration: 500 }}
         class:bn-notify-dark-mode={$app.darkMode}
         class:bn-notify-clickable={notification.onclick}
-        class="bn-notify-custom bn-notify-notification"
+        class="bn-notify-custom bn-notify-notification {$app.name ? `bn-notify-${$app.name}` : ''}"
         in:fly={{ duration: 1200, delay: 300, x, y, easing: elasticOut }}
         out:fly={{ duration: 400, x, y, easing: quintIn }}>
         <TypeIcon type={notification.type} />
         <NotificationContent {notification} {formattedTime} {currentTime} />
         <div
-          class="bn-notify-custom bn-notify-notification-close"
+          class="bn-notify-custom bn-notify-notification-close {$app.name ? `bn-notify-${$app.name}` : ''}"
           on:click={() => notifications.remove(notification.id, notification.eventCode)}>
           <CloseIcon />
         </div>

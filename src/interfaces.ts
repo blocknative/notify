@@ -3,6 +3,7 @@ export interface InitOptions extends ConfigOptions {
   networkId: number
   transactionHandler?: TransactionHandler
   name?: string
+  apiUrl?: string
 }
 
 export interface TransactionHandler {

@@ -9,6 +9,7 @@ export function getBlocknative(options?: {
   networkId: number
   transactionHandlers: TransactionHandler[]
   name: string
+  apiUrl?: string
 }): any {
   if (!blocknative && options) {
     blocknative = new BlocknativeSdk(options)

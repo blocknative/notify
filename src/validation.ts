@@ -2,7 +2,7 @@ import {
   InitOptions,
   TransactionOptions,
   CustomNotificationObject,
-  ConfigOptions
+  ConfigOptions,
 } from './interfaces'
 
 const validInitKeys = [
@@ -17,7 +17,7 @@ const validInitKeys = [
   'txStallPendingTimeout',
   'txStallConfirmedTimeout',
   'notifyMessages',
-  'clientLocale'
+  'clientLocale',
 ]
 
 const validNotificationKeys = [
@@ -25,7 +25,7 @@ const validNotificationKeys = [
   'type',
   'message',
   'autoDismiss',
-  'onclick'
+  'onclick',
 ]
 
 const validTransactionKeys = [
@@ -34,7 +34,7 @@ const validTransactionKeys = [
   'gasPrice',
   'balance',
   'contractCall',
-  'txDetails'
+  'txDetails',
 ]
 
 function invalidParams(
@@ -60,7 +60,7 @@ export function validateType({
   value,
   type,
   optional,
-  customValidation
+  customValidation,
 }: {
   name: string
   value: any
@@ -89,16 +89,29 @@ export function validateType({
 export function validateInit(init: InitOptions): void {
   validateType({ name: 'init', value: init, type: 'object' })
 
-  const { dappId, networkId, transactionHandler, name, ...otherParams } = init
+  const {
+    dappId,
+    networkId,
+    transactionHandler,
+    name,
+    apiUrl,
+    ...otherParams
+  } = init
 
   validateType({ name: 'dappId', value: dappId, type: 'string' })
   validateType({ name: 'networkId', value: networkId, type: 'number' })
   validateType({ name: 'name', value: name, type: 'string', optional: true })
   validateType({
+    name: 'apiUrl',
+    value: apiUrl,
+    type: 'string',
+    optional: true,
+  })
+  validateType({
     name: 'transactionHandler',
     value: transactionHandler,
     type: 'function',
-    optional: true
+    optional: true,
   })
 
   validateConfig(otherParams)
@@ -127,35 +140,35 @@ export function validateTransactionOptions(options: TransactionOptions): void {
     name: 'sendTransaction',
     value: sendTransaction,
     type: 'function',
-    optional: true
+    optional: true,
   })
 
   validateType({
     name: 'estimateGas',
     value: estimateGas,
     type: 'function',
-    optional: true
+    optional: true,
   })
 
   validateType({
     name: 'gasPrice',
     value: gasPrice,
     type: 'function',
-    optional: true
+    optional: true,
   })
 
   validateType({
     name: 'balance',
     value: balance,
     type: 'string',
-    optional: true
+    optional: true,
   })
 
   validateType({
     name: 'contractCall',
     value: contractCall,
     type: 'object',
-    optional: true
+    optional: true,
   })
 
   if (contractCall) {
@@ -166,14 +179,14 @@ export function validateTransactionOptions(options: TransactionOptions): void {
       name: 'methodName',
       value: methodName,
       type: 'string',
-      optional: true
+      optional: true,
     })
 
     validateType({
       name: 'params',
       value: params,
       type: 'array',
-      optional: true
+      optional: true,
     })
   }
 
@@ -181,7 +194,7 @@ export function validateTransactionOptions(options: TransactionOptions): void {
     name: 'txDetails',
     value: txDetails,
     type: 'object',
-    optional: true
+    optional: true,
   })
 
   if (txDetails) {
@@ -194,7 +207,7 @@ export function validateTransactionOptions(options: TransactionOptions): void {
       value: to,
       type: 'string',
       optional: true,
-      customValidation: isAddress
+      customValidation: isAddress,
     })
 
     if (typeof value !== 'undefined' && !stringOrNumber(value)) {
@@ -208,7 +221,7 @@ export function validateTransactionOptions(options: TransactionOptions): void {
       value: from,
       type: 'string',
       optional: true,
-      customValidation: isAddress
+      customValidation: isAddress,
     })
   }
 }
@@ -219,7 +232,7 @@ export function validateNotificationObject(
   validateType({
     name: 'notification',
     value: notification,
-    type: 'object'
+    type: 'object',
   })
 
   if (typeof notification !== 'object') return
@@ -239,7 +252,7 @@ export function validateNotificationObject(
     name: 'eventCode',
     value: eventCode,
     type: 'string',
-    optional: true
+    optional: true,
   })
 
   validateType({
@@ -247,27 +260,27 @@ export function validateNotificationObject(
     value: type,
     type: 'string',
     optional: true,
-    customValidation: validNotificationType
+    customValidation: validNotificationType,
   })
 
   validateType({
     name: 'message',
     value: message,
-    type: 'string'
+    type: 'string',
   })
 
   validateType({
     name: 'autoDismiss',
     value: autoDismiss,
     type: 'number',
-    optional: true
+    optional: true,
   })
 
   validateType({
     name: 'onclick',
     value: onclick,
     type: 'function',
-    optional: true
+    optional: true,
   })
 }
 
@@ -293,7 +306,7 @@ export function validateConfig(config: ConfigOptions): void {
     value: mobilePosition,
     type: 'string',
     optional: true,
-    customValidation: validMobilePosition
+    customValidation: validMobilePosition,
   })
 
   validateType({
@@ -301,29 +314,29 @@ export function validateConfig(config: ConfigOptions): void {
     value: desktopPosition,
     type: 'string',
     optional: true,
-    customValidation: validDesktopPosition
+    customValidation: validDesktopPosition,
   })
 
   validateType({
     name: 'darkMode',
     value: darkMode,
     type: 'boolean',
-    optional: true
+    optional: true,
   })
 
   validateType({
     name: 'notifyMessages',
     value: notifyMessages,
     type: 'object',
-    optional: true
+    optional: true,
   })
 
   if (notifyMessages) {
-    Object.keys(notifyMessages).forEach(locale => {
+    Object.keys(notifyMessages).forEach((locale) => {
       validateType({
         name: locale,
         value: notifyMessages[locale],
-        type: 'object'
+        type: 'object',
       })
 
       const { transaction, watched, ...otherParams } = notifyMessages[locale]
@@ -333,13 +346,13 @@ export function validateConfig(config: ConfigOptions): void {
       validateType({
         name: `notifyMessages.${locale}.transaction`,
         value: transaction,
-        type: 'object'
+        type: 'object',
       })
 
       validateType({
         name: `notifyMessages.${locale}.watched`,
         value: watched,
-        type: 'object'
+        type: 'object',
       })
     })
   }
@@ -348,28 +361,28 @@ export function validateConfig(config: ConfigOptions): void {
     name: 'clientLocale',
     value: clientLocale,
     type: 'string',
-    optional: true
+    optional: true,
   })
 
   validateType({
     name: 'txApproveReminderTimeout',
     value: txApproveReminderTimeout,
     type: 'number',
-    optional: true
+    optional: true,
   })
 
   validateType({
     name: 'txStallPendingTimeout',
     value: txStallPendingTimeout,
     type: 'number',
-    optional: true
+    optional: true,
   })
 
   validateType({
     name: 'txStallConfirmedTimeout',
     value: txStallConfirmedTimeout,
     type: 'number',
-    optional: true
+    optional: true,
   })
 }
 

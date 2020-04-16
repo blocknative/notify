@@ -47,6 +47,7 @@
   },
   "scripts": {
     "build": "rollup -c && babel dist/notify.esm.js --out-file dist/notify.esm.js && babel dist/notify.umd.js --out-file dist/notify.umd.js --minified",
-    "test": "echo \"TBD\" && exit 0"
+    "test": "echo \"TBD\" && exit 0",
+    "prepare": "npm run build"
   }
 }

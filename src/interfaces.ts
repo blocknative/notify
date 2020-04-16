@@ -2,6 +2,8 @@ export interface InitOptions extends ConfigOptions {
   dappId: string
   networkId: number
   transactionHandler?: TransactionHandler
+  name?: string
+  apiUrl?: string
 }
 
 export interface TransactionHandler {
@@ -70,6 +72,7 @@ export interface ContractObject {
 export interface AppStore {
   version: string
   dappId: string
+  name?: string
   networkId: number
   nodeSynced: boolean
   mobilePosition: string

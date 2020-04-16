@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { app } from '../stores'
   export let type: string
 </script>
 
@@ -12,7 +13,8 @@
   }
 </style>
 
-<div class="bn-notify-custom bn-notify-notification-status-icon">
+<div
+  class="bn-notify-custom bn-notify-notification-status-icon {$app.name ? `bn-notify-${$app.name}` : ''}">
   {#if type === 'hint'}
     <svg
       viewBox="0 0 190 190"

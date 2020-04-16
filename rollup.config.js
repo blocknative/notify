@@ -7,7 +7,7 @@ import typescript from 'rollup-plugin-typescript2'
 import {
   preprocess,
   createEnv,
-  readConfigFile
+  readConfigFile,
 } from '@pyoner/svelte-ts-preprocess'
 
 const env = createEnv()
@@ -16,8 +16,8 @@ const opts = {
   env,
   compilerOptions: {
     ...compilerOptions,
-    allowNonTsExtensions: true
-  }
+    allowNonTsExtensions: true,
+  },
 }
 
 export default [
@@ -26,48 +26,62 @@ export default [
     output: {
       format: 'umd',
       name: 'notify',
-      file: 'dist/notify.umd.js'
+      file: 'dist/notify.umd.js',
+    },
+    onwarn: (warning, warn) => {
+      if (warning.code === 'THIS_IS_UNDEFINED') {
+        return
+      }
+
+      warn(warning)
     },
     plugins: [
       json(),
       svelte({
-        preprocess: preprocess(opts)
+        preprocess: preprocess(opts),
       }),
       resolve({
         browser: true,
-        dedupe: importee =>
-          importee === 'svelte' || importee.startsWith('svelte/')
+        dedupe: (importee) =>
+          importee === 'svelte' || importee.startsWith('svelte/'),
       }),
       commonjs(),
-      typescript()
-    ]
+      typescript(),
+    ],
   },
   {
     input: 'src/notify.ts',
     output: {
       sourcemap: true,
       format: 'es',
-      file: 'dist/notify.esm.js'
+      file: 'dist/notify.esm.js',
+    },
+    onwarn: (warning, warn) => {
+      if (warning.code === 'THIS_IS_UNDEFINED') {
+        return
+      }
+
+      warn(warning)
     },
     plugins: [
       json(),
       svelte({
-        preprocess: preprocess(opts)
+        preprocess: preprocess(opts),
       }),
       resolve({
         browser: true,
-        dedupe: importee =>
-          importee === 'svelte' || importee.startsWith('svelte/')
+        dedupe: (importee) =>
+          importee === 'svelte' || importee.startsWith('svelte/'),
       }),
       commonjs(),
-      typescript()
+      typescript(),
     ],
     external: [
       'bignumber.js',
       'bnc-sdk',
       'lodash.debounce',
       'uuid/v4',
-      'regenerator-runtime/runtime'
-    ]
-  }
+      'regenerator-runtime/runtime',
+    ],
+  },
 ]

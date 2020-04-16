@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { app } from '../stores'
   export let message: string
 </script>
 
@@ -11,6 +12,7 @@
   }
 </style>
 
-<p class="bn-notify-custom bn-notify-notification-info-message">
+<p
+  class="bn-notify-custom bn-notify-notification-info-message {$app.name ? `bn-notify-${$app.name}` : ''}">
   {@html message}
 </p>

@@ -1,6 +1,6 @@
 {
   "name": "bnc-notify",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Show web3 users realtime transaction notifications",
   "keywords": [
     "ethereum",

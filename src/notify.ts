@@ -12,6 +12,8 @@ import { createNotification } from './notifications'
 import { getBlocknative } from './services'
 import { LocaleMessages } from './interfaces'
 
+console.log('DEVELOP NOTIFY')
+
 import {
   InitOptions,
   TransactionHandler,

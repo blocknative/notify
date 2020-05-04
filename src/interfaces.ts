@@ -75,8 +75,8 @@ export interface AppStore {
   name?: string
   networkId: number
   nodeSynced: boolean
-  mobilePosition: string
-  desktopPosition: string
+  mobilePosition: 'bottom' | 'top'
+  desktopPosition: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight'
   darkMode: boolean
   txApproveReminderTimeout: number
   txStallPendingTimeout: number
@@ -132,8 +132,8 @@ export interface UpdateNotification {
 }
 
 export interface ConfigOptions {
-  mobilePosition?: string
-  desktopPosition?: string
+  mobilePosition?: 'bottom' | 'top'
+  desktopPosition?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight'
   darkMode?: boolean
   txApproveReminderTimeout?: number
   txStallPendingTimeout?: number

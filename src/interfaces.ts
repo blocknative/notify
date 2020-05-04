@@ -45,7 +45,7 @@ export interface TransactionData {
 }
 
 export interface CustomNotificationObject {
-  type?: string
+  type?: 'pending' | 'success' | 'error' | 'hint'
   message?: string
   autoDismiss?: number
   onclick?: (event: any) => void

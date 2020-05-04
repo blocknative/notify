@@ -10,7 +10,7 @@
   ],
   "main": "dist/notify.umd.js",
   "module": "dist/notify.esm.js",
-  "typings": "dist/notify.d.ts",
+  "typings": "dist/src/notify.d.ts",
   "files": [
     "dist"
   ],

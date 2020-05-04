@@ -60,7 +60,7 @@ export function handlePreFlightEvent(preflightEvent: PreflightEvent) {
 
 export function handleTransactionEvent(event: {
   transaction: TransactionData
-  emitterResult: boolean | undefined | CustomNotificationObject
+  emitterResult: boolean | void | CustomNotificationObject
 }) {
   const { transaction, emitterResult } = event
   transactions.updateQueue(transaction)

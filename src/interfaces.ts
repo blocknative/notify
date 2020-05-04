@@ -11,7 +11,7 @@ export interface TransactionHandler {
 }
 
 export interface TransactionEvent {
-  emitterResult: undefined | boolean | CustomNotificationObject
+  emitterResult: void | boolean | CustomNotificationObject
   transaction: TransactionData
 }
 
@@ -54,7 +54,7 @@ export interface CustomNotificationObject {
 
 export interface NotificationObject {
   id?: string
-  type: string
+  type: 'pending' | 'success' | 'error' | 'hint'
   key: string
   startTime?: number
   eventCode?: string

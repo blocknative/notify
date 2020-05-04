@@ -10,7 +10,7 @@
   ],
   "main": "dist/notify.umd.js",
   "module": "dist/notify.esm.js",
-  "typings": "dist/notify.d.ts",
+  "typings": "dist/src/notify.d.ts",
   "files": [
     "dist"
   ],
@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "bignumber.js": "^9.0.0",
-    "bnc-sdk": "2.0.0",
+    "bnc-sdk": "2.1.1",
     "lodash.debounce": "^4.0.8",
     "regenerator-runtime": "^0.13.3",
     "uuid": "^3.3.3"

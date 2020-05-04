@@ -12,7 +12,7 @@ _.subscribe((store: any) => (formatter = store))
 
 export function createNotification(
   details: TransactionData,
-  customization: CustomNotificationObject | boolean | undefined = {}
+  customization: CustomNotificationObject | boolean | void = {}
 ): void {
   const {
     id,
@@ -25,7 +25,7 @@ export function createNotification(
     asset
   } = details
 
-  const type: string = eventToType(eventCode)
+  const type: 'pending' | 'success' | 'error' | 'hint' = eventToType(eventCode)
   const key: string = `${id}-${(typeof customization === 'object' &&
     customization.eventCode) ||
     eventCode}`

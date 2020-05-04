@@ -26,9 +26,9 @@ export function createNotification(
   } = details
 
   const type: 'pending' | 'success' | 'error' | 'hint' = eventToType(eventCode)
-  const key: string = `${id}-${(typeof customization === 'object' &&
-    customization.eventCode) ||
-    eventCode}`
+  const key = `${id}-${
+    (typeof customization === 'object' && customization.eventCode) || eventCode
+  }`
   const counterpartyShortened: string | undefined =
     counterparty &&
     counterparty.substring(0, 4) +

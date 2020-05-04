@@ -76,7 +76,7 @@ export function extractMessageFromError(error: {
 export function createEmitter(): Emitter {
   return {
     listeners: {},
-    on: function(eventCode: string, listener: EmitterListener): never | void {
+    on: function (eventCode: string, listener: EmitterListener): never | void {
       // check if valid eventCode
       switch (eventCode) {
         case 'txSent':
@@ -109,7 +109,7 @@ export function createEmitter(): Emitter {
       // add listener for the eventCode
       this.listeners[eventCode] = listener
     },
-    emit: function(state: TransactionData) {
+    emit: function (state: TransactionData) {
       if (this.listeners[state.eventCode || '']) {
         return this.listeners[state.eventCode || ''](state)
       }

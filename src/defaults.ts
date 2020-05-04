@@ -1,4 +1,6 @@
-export function eventToType(eventCode: string | undefined): 'pending' | 'success' | 'error' | 'hint' {
+export function eventToType(
+  eventCode: string | undefined
+): 'pending' | 'success' | 'error' | 'hint' {
   switch (eventCode) {
     case 'txSent':
     case 'txPool':

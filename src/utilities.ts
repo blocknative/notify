@@ -1,4 +1,9 @@
-import { Emitter, EmitterListener, TransactionData } from './interfaces'
+import {
+  Emitter,
+  EmitterListener,
+  TransactionData,
+  TransactionEventCode
+} from './interfaces'
 
 export function argsEqual(args1: any, args2: any): boolean {
   return JSON.stringify(args1) === JSON.stringify(args2)
@@ -76,7 +81,10 @@ export function extractMessageFromError(error: {
 export function createEmitter(): Emitter {
   return {
     listeners: {},
-    on: function (eventCode: string, listener: EmitterListener): never | void {
+    on: function (
+      eventCode: TransactionEventCode,
+      listener: EmitterListener
+    ): never | void {
       // check if valid eventCode
       switch (eventCode) {
         case 'txSent':

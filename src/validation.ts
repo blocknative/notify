@@ -8,6 +8,7 @@ import {
 const validInitKeys = [
   'dappId',
   'networkId',
+  'system',
   'transactionHandler',
   'name',
   'mobilePosition',
@@ -91,6 +92,7 @@ export function validateInit(init: InitOptions): void {
 
   const {
     dappId,
+    system,
     networkId,
     transactionHandler,
     name,
@@ -99,14 +101,24 @@ export function validateInit(init: InitOptions): void {
   } = init
 
   validateType({ name: 'dappId', value: dappId, type: 'string' })
+
+  validateType({
+    name: 'system',
+    value: system,
+    type: 'string',
+    optional: true
+  })
+
   validateType({ name: 'networkId', value: networkId, type: 'number' })
   validateType({ name: 'name', value: name, type: 'string', optional: true })
+
   validateType({
     name: 'apiUrl',
     value: apiUrl,
     type: 'string',
     optional: true
   })
+
   validateType({
     name: 'transactionHandler',
     value: transactionHandler,

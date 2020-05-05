@@ -1,4 +1,6 @@
-export function eventToType(eventCode: string | undefined): string {
+import { NotificationType } from './interfaces'
+
+export function eventToType(eventCode: string | undefined): NotificationType {
   switch (eventCode) {
     case 'txSent':
     case 'txPool':

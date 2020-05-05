@@ -4,6 +4,7 @@ export interface InitOptions extends ConfigOptions {
   transactionHandler?: TransactionHandler
   name?: string
   apiUrl?: string
+  system?: System
 }
 
 export interface TransactionHandler {
@@ -11,9 +12,28 @@ export interface TransactionHandler {
 }
 
 export interface TransactionEvent {
-  emitterResult: undefined | boolean | CustomNotificationObject
+  emitterResult: void | boolean | CustomNotificationObject
   transaction: TransactionData
 }
+
+export type System = 'bitcoin' | 'ethereum'
+
+export type TransactionEventCode =
+  | 'txSent'
+  | 'txPool'
+  | 'txConfirmed'
+  | 'txSpeedUp'
+  | 'txCancel'
+  | 'txFailed'
+  | 'txRequest'
+  | 'nsfFail'
+  | 'txRepeat'
+  | 'txAwaitingApproval'
+  | 'txConfirmReminder'
+  | 'txSendFail'
+  | 'txError'
+  | 'txUnderPriced'
+  | 'all'
 
 export interface TransactionData {
   asset?: string
@@ -26,6 +46,7 @@ export interface TransactionData {
   gas?: string
   gasPrice?: string
   hash?: string
+  txid?: string
   id?: string
   input?: string
   monitorId?: string
@@ -42,19 +63,29 @@ export interface TransactionData {
   watchedAddress?: string
   originalHash?: string
   direction?: string
+  system?: string
+  inputs?: BitcoinInputOutput[]
+  outputs?: BitcoinInputOutput[]
 }
 
+export type NotificationType = 'pending' | 'success' | 'error' | 'hint'
+
 export interface CustomNotificationObject {
-  type?: string
+  type?: NotificationType
   message?: string
   autoDismiss?: number
   onclick?: (event: any) => void
   eventCode?: string
 }
 
+export interface BitcoinInputOutput {
+  address: string
+  value: string
+}
+
 export interface NotificationObject {
   id?: string
-  type: string
+  type: NotificationType
   key: string
   startTime?: number
   eventCode?: string
@@ -75,8 +106,8 @@ export interface AppStore {
   name?: string
   networkId: number
   nodeSynced: boolean
-  mobilePosition: string
-  desktopPosition: string
+  mobilePosition: 'bottom' | 'top'
+  desktopPosition: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight'
   darkMode: boolean
   txApproveReminderTimeout: number
   txStallPendingTimeout: number
@@ -132,8 +163,8 @@ export interface UpdateNotification {
 }
 
 export interface ConfigOptions {
-  mobilePosition?: string
-  desktopPosition?: string
+  mobilePosition?: 'bottom' | 'top'
+  desktopPosition?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight'
   darkMode?: boolean
   txApproveReminderTimeout?: number
   txStallPendingTimeout?: number
@@ -194,17 +225,15 @@ export interface TransactionLog {
 }
 
 export interface EmitterListener {
-  (state: TransactionData): boolean | undefined | CustomNotificationObject
+  (state: TransactionData): boolean | void | CustomNotificationObject
 }
 
 export interface Emitter {
   listeners: {
     [key: string]: EmitterListener
   }
-  on: (eventCode: string, listener: EmitterListener) => void
-  emit: (
-    state: TransactionData
-  ) => boolean | undefined | CustomNotificationObject
+  on: (eventCode: TransactionEventCode, listener: EmitterListener) => void
+  emit: (state: TransactionData) => boolean | void | CustomNotificationObject
 }
 
 export interface NotificationDetails {

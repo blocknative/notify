@@ -22,14 +22,14 @@ import {
   TransactionOptions,
   CustomNotificationObject,
   UpdateNotification,
-  ConfigOptions,
+  ConfigOptions
 } from './interfaces'
 
 import {
   validateInit,
   validateTransactionOptions,
   validateNotificationObject,
-  validateConfig,
+  validateConfig
 } from './validation'
 
 import { createEmitter } from './utilities'
@@ -46,7 +46,14 @@ function init(options: InitOptions): API {
 
   validateInit(options)
 
-  const { dappId, networkId, transactionHandler, name, apiUrl } = options
+  const {
+    dappId,
+    system,
+    networkId,
+    transactionHandler,
+    name,
+    apiUrl
+  } = options
 
   const transactionHandlers: TransactionHandler[] = [handleTransactionEvent]
 
@@ -60,6 +67,7 @@ function init(options: InitOptions): API {
     transactionHandlers,
     name: name || 'Notify',
     apiUrl,
+    system
   })
 
   // save config to app store
@@ -69,13 +77,13 @@ function init(options: InitOptions): API {
     version,
     clientLocale: getClientLocale({
       fallback: 'en',
-      navigator: true,
-    }),
+      navigator: true
+    })
   }))
 
   // initialize App
   notify = new Notify({
-    target: document.body,
+    target: document.body
   })
 
   app.subscribe((store: AppStore) => {
@@ -95,7 +103,7 @@ function init(options: InitOptions): API {
     account,
     unsubscribe,
     notification,
-    config,
+    config
   }
 
   function account(
@@ -132,7 +140,7 @@ function init(options: InitOptions): API {
 
     return {
       emitter,
-      result,
+      result
     }
   }
 
@@ -169,7 +177,7 @@ function init(options: InitOptions): API {
 
       return {
         dismiss,
-        update,
+        update
       }
     }
 
@@ -177,7 +185,7 @@ function init(options: InitOptions): API {
 
     return {
       dismiss,
-      update,
+      update
     }
   }
 
@@ -192,7 +200,7 @@ function init(options: InitOptions): API {
         ...otherOptions,
         notifyMessages: notifyMessages
           ? { ...store.notifyMessages, ...notifyMessages }
-          : store.notifyMessages,
+          : store.notifyMessages
       }
     })
   }

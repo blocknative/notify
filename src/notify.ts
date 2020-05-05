@@ -46,7 +46,14 @@ function init(options: InitOptions): API {
 
   validateInit(options)
 
-  const { dappId, networkId, transactionHandler, name, apiUrl } = options
+  const {
+    dappId,
+    system,
+    networkId,
+    transactionHandler,
+    name,
+    apiUrl
+  } = options
 
   const transactionHandlers: TransactionHandler[] = [handleTransactionEvent]
 
@@ -59,7 +66,8 @@ function init(options: InitOptions): API {
     networkId,
     transactionHandlers,
     name: name || 'Notify',
-    apiUrl
+    apiUrl,
+    system
   })
 
   // save config to app store

@@ -128,3 +128,17 @@ export function createEmitter(): Emitter {
     }
   }
 }
+
+export function localNetwork(networkId: number) {
+  switch (networkId) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 42:
+      return false
+    default:
+      return true
+  }
+}

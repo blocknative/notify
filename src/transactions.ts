@@ -4,7 +4,7 @@ import { get } from 'svelte/store'
 
 import { transactions, app } from './stores'
 import { createNotification } from './notifications'
-import { argsEqual, extractMessageFromError } from './utilities'
+import { argsEqual, extractMessageFromError, localNetwork } from './utilities'
 import { validateNotificationObject } from './validation'
 import { getBlocknative } from './services'
 import {
@@ -65,8 +65,8 @@ export function handleTransactionEvent(event: {
   const { transaction, emitterResult } = event
   transactions.updateQueue(transaction)
 
-  // create notification if dev hasn't opted out
-  if (emitterResult !== false) {
+  // create notification if dev hasn't opted out and not connected to a local network
+  if (emitterResult !== false && !localNetwork(get(app).networkId)) {
     const transactionObj = transactionQueue.find(
       (tx: TransactionData) => tx.id === transaction.id
     )

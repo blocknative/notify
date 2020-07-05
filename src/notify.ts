@@ -136,7 +136,7 @@ function init(options: InitOptions): API {
 
     const emitter = createEmitter()
 
-    const result = preflightTransaction(options, emitter)
+    const result = preflightTransaction(options, emitter).catch(err => err)
 
     return {
       emitter,

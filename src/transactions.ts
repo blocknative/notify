@@ -242,21 +242,16 @@ export function preflightTransaction(
         emitter
       })
 
-      resolve(id)
-
       // if not provided with sendTransaction function, resolve with id so dev can initiate transaction
       // dev will need to call notify.hash(txHash, id) with this id to link up the preflight with the postflight notifications
       if (!sendTransaction) {
-        return
+        return resolve(id)
       }
-
-      // initiate transaction
-      const sendTransactionResult = sendTransaction()
 
       // get result and handle errors
       let hash
       try {
-        hash = await sendTransactionResult
+        hash = await sendTransaction()
       } catch (error) {
         const { eventCode, errorMsg } = extractMessageFromError(error)
 
@@ -324,8 +319,10 @@ export function preflightTransaction(
             })
           }
         }, txStallConfirmedTimeout)
+
+        resolve(id)
       } else {
-        throw new Error(
+        reject(
           'sendTransaction function must resolve to a transaction hash that is of type String.'
         )
       }

@@ -283,8 +283,7 @@ export function preflightTransaction(
           if (
             transaction &&
             transaction.status === 'sent' &&
-            blocknative.status.connected &&
-            blocknative.status.nodeSynced
+            blocknative._connected
           ) {
             const eventCode = 'txStallPending'
 
@@ -305,8 +304,7 @@ export function preflightTransaction(
           if (
             transaction &&
             transaction.status === 'pending' &&
-            blocknative.status.connected &&
-            blocknative.status.nodeSynced
+            blocknative._connected
           ) {
             const eventCode = 'txStallConfirmed'
 

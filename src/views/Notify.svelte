@@ -10,7 +10,6 @@
   import TypeIcon from '../components/TypeIcon.svelte'
   import AutoDismiss from '../components/AutoDismiss.svelte'
   import { notifications, app } from '../stores'
-  import { formatTime } from '../utilities'
 
   let smallScreen: boolean = window.outerWidth < 450
 
@@ -64,18 +63,7 @@
     }, 300)
   )
 
-  let currentTime: number = Date.now()
-
-  const intervalId: any = setInterval(() => {
-    currentTime = Date.now()
-  }, 1000)
-
-  onDestroy(() => {
-    clearInterval(intervalId)
-    unsubscribe()
-  })
-
-  const formattedTime: string = formatTime(currentTime)
+  onDestroy(unsubscribe)
 
   function elasticOut(t: number): number {
     return (
@@ -223,7 +211,7 @@
         in:fly={{ duration: 1200, delay: 300, x, y, easing: elasticOut }}
         out:fly={{ duration: 400, x, y, easing: quintIn }}>
         <TypeIcon type={notification.type} />
-        <NotificationContent {notification} {formattedTime} {currentTime} />
+        <NotificationContent {notification} />
         <div
           class="bn-notify-custom bn-notify-notification-close {$app.name ? `bn-notify-${$app.name}` : ''}"
           on:click={() => notifications.remove(notification.id, notification.eventCode)}>

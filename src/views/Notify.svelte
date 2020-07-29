@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte'
   import { fly } from 'svelte/transition'
   import { quintIn } from 'svelte/easing'
   import { flip } from 'svelte/animate'
@@ -19,34 +18,6 @@
   let notificationMargin: string
   let justifyContent: string
 
-  interface AppStore {
-    version: string
-    dappId: string
-    networkId: number
-    nodeSynced: boolean
-    mobilePosition: string
-    desktopPosition: string
-    darkMode: boolean
-    txApproveReminderTimeout: number
-    txStallPendingTimeout: number
-    txStallConfirmedTimeout: number
-  }
-
-  let appState: AppStore = {
-    version: '',
-    dappId: '',
-    networkId: 1,
-    nodeSynced: true,
-    mobilePosition: 'top',
-    desktopPosition: 'bottomRight',
-    darkMode: false,
-    txApproveReminderTimeout: 20000,
-    txStallPendingTimeout: 20000,
-    txStallConfirmedTimeout: 90000
-  }
-
-  const unsubscribe = app.subscribe((store: AppStore) => (appState = store))
-
   // listen for screen resize events
   window.addEventListener(
     'resize',
@@ -63,8 +34,6 @@
     }, 300)
   )
 
-  onDestroy(unsubscribe)
-
   function elasticOut(t: number): number {
     return (
       Math.sin((-13.0 * (t + 1.0) * Math.PI) / 2) * Math.pow(2.0, -35.0 * t) +
@@ -72,20 +41,20 @@
     )
   }
 
-  $: if (appState.desktopPosition && !smallScreen) {
+  $: if ($app.desktopPosition && !smallScreen) {
     positioning =
-      appState.desktopPosition === 'bottomRight'
+      $app.desktopPosition === 'bottomRight'
         ? 'bottom: 0; right: 0;'
-        : appState.desktopPosition === 'bottomLeft'
+        : $app.desktopPosition === 'bottomLeft'
         ? 'left: 0; right: unset;'
-        : appState.desktopPosition === 'topRight'
+        : $app.desktopPosition === 'topRight'
         ? 'top: 0;'
         : 'top: 0; bottom: unset; left: 0; right: unset;'
 
     x = positioning && positioning.includes('left') ? -321 : 321
     y = 0
 
-    if (appState.desktopPosition.includes('top')) {
+    if ($app.desktopPosition.includes('top')) {
       justifyContent = 'justify-content: unset;'
       notificationMargin = 'margin: 0.75rem 0 0 0;'
     } else {
@@ -94,15 +63,15 @@
     }
   }
 
-  $: if (appState.mobilePosition && smallScreen) {
+  $: if ($app.mobilePosition && smallScreen) {
     positioning =
-      appState.mobilePosition === 'top'
+      $app.mobilePosition === 'top'
         ? 'top: 0; bottom: unset;'
         : 'bottom: 0; top: unset;'
 
     x = 0
 
-    if (appState.mobilePosition === 'top') {
+    if ($app.mobilePosition === 'top') {
       y = -50
       justifyContent = 'justify-content: unset;'
       notificationMargin = 'margin: 0.75rem 0 0 0;'
@@ -113,7 +82,7 @@
     }
   }
 
-  $: if (!appState.desktopPosition && !appState.mobilePosition) {
+  $: if (!$app.desktopPosition && !$app.mobilePosition) {
     x = smallScreen ? 0 : 321
     y = smallScreen ? 50 : 0
     notificationMargin = 'margin: 0 0 0.75rem 0;'
@@ -200,7 +169,7 @@
   <ul
     class="bn-notify-custom bn-notify-notifications {$app.name ? `bn-notify-${$app.name}` : ''}"
     style={`${positioning} ${justifyContent}`}>
-    {#each $notifications as notification, i (notification.key)}
+    {#each $notifications as notification (notification.key)}
       <li
         on:click={() => notification.onclick && notification.onclick()}
         style={notificationMargin}

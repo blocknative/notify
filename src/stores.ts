@@ -2,7 +2,7 @@ import { writable } from 'svelte/store'
 import { replaceOrAdd } from './utilities'
 import { defaultNotifyMessages } from './i18n'
 
-import {
+import type {
   WritableStore,
   TransactionData,
   TransactionStore,

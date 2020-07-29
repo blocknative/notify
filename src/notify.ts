@@ -10,9 +10,9 @@ import { handleTransactionEvent, preflightTransaction } from './transactions'
 import { createNotification } from './notifications'
 
 import { getBlocknative } from './services'
-import { LocaleMessages } from './interfaces'
+import type { LocaleMessages } from './interfaces'
 
-import {
+import type {
   InitOptions,
   TransactionHandler,
   AppStore,

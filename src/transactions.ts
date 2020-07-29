@@ -7,7 +7,7 @@ import { createNotification } from './notifications'
 import { argsEqual, extractMessageFromError, localNetwork } from './utilities'
 import { validateNotificationObject } from './validation'
 import { getBlocknative } from './services'
-import {
+import type {
   TransactionData,
   PreflightEvent,
   ContractObject,

@@ -1,4 +1,4 @@
-import { NotificationType } from './interfaces'
+import type { NotificationType } from './interfaces'
 
 export function eventToType(eventCode: string | undefined): NotificationType {
   switch (eventCode) {

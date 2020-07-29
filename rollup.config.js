@@ -1,24 +1,9 @@
 import svelte from 'rollup-plugin-svelte'
-import resolve from 'rollup-plugin-node-resolve'
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+import sveltePreprocess from 'svelte-preprocess'
+import typescript from '@rollup/plugin-typescript'
 import json from '@rollup/plugin-json'
-import commonjs from 'rollup-plugin-commonjs'
-import typescript from 'rollup-plugin-typescript2'
-
-import {
-  preprocess,
-  createEnv,
-  readConfigFile,
-} from '@pyoner/svelte-ts-preprocess'
-
-const env = createEnv()
-const compilerOptions = readConfigFile(env)
-const opts = {
-  env,
-  compilerOptions: {
-    ...compilerOptions,
-    allowNonTsExtensions: true,
-  },
-}
 
 export default [
   {
@@ -26,7 +11,7 @@ export default [
     output: {
       format: 'umd',
       name: 'notify',
-      file: 'dist/notify.umd.js',
+      file: 'dist/notify.umd.js'
     },
     onwarn: (warning, warn) => {
       if (warning.code === 'THIS_IS_UNDEFINED') {
@@ -38,23 +23,21 @@ export default [
     plugins: [
       json(),
       svelte({
-        preprocess: preprocess(opts),
+        preprocess: sveltePreprocess()
       }),
       resolve({
         browser: true,
-        dedupe: (importee) =>
-          importee === 'svelte' || importee.startsWith('svelte/'),
+        dedupe: ['svelte']
       }),
       commonjs(),
-      typescript(),
-    ],
+      typescript({ sourceMap: false })
+    ]
   },
   {
     input: 'src/notify.ts',
     output: {
-      sourcemap: true,
       format: 'es',
-      file: 'dist/notify.esm.js',
+      file: 'dist/notify.esm.js'
     },
     onwarn: (warning, warn) => {
       if (warning.code === 'THIS_IS_UNDEFINED') {
@@ -66,22 +49,21 @@ export default [
     plugins: [
       json(),
       svelte({
-        preprocess: preprocess(opts),
+        preprocess: sveltePreprocess()
       }),
       resolve({
         browser: true,
-        dedupe: (importee) =>
-          importee === 'svelte' || importee.startsWith('svelte/'),
+        dedupe: ['svelte']
       }),
       commonjs(),
-      typescript(),
+      typescript({ sourceMap: false })
     ],
     external: [
       'bignumber.js',
       'bnc-sdk',
       'lodash.debounce',
       'uuid/v4',
-      'regenerator-runtime/runtime',
-    ],
-  },
+      'regenerator-runtime/runtime'
+    ]
+  }
 ]

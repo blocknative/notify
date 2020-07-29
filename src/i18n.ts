@@ -34,6 +34,10 @@ export const defaultNotifyMessages: any = {
         'Your account successfully {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}',
       txFailed:
         'Your account failed to {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}'
+    },
+    time: {
+      minutes: 'min',
+      seconds: 'sec'
     }
   },
   es: {
@@ -71,6 +75,10 @@ export const defaultNotifyMessages: any = {
         'su cuenta {verb, select, received {recibió} sent {ha enviado}} con éxito {formattedValue} {asset} {preposition, select, from {de} to {a}} {counterpartyShortened}',
       txFailed:
         'su cuenta fallado {verb, select, received {recibió} sent {ha enviado}} con éxito {formattedValue} {asset} {preposition, select, from {de} to {a}} {counterpartyShortened}'
+    },
+    time: {
+      minutes: 'min',
+      seconds: 'sec'
     }
   }
 }

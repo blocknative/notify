@@ -4,7 +4,7 @@ import { notifications } from './stores'
 import { eventToType, typeToDismissTimeout } from './defaults'
 import { defaultNotifyMessages } from './i18n'
 
-import {
+import type {
   CustomNotificationObject,
   TransactionData,
   NotificationType,

@@ -1,6 +1,6 @@
 import BlocknativeSdk from 'bnc-sdk'
 
-import { TransactionHandler, System } from './interfaces'
+import type { TransactionHandler, System } from './interfaces'
 
 let blocknative: any
 

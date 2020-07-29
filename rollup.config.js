@@ -11,7 +11,8 @@ export default [
     output: {
       format: 'umd',
       name: 'notify',
-      file: 'dist/notify.umd.js'
+      file: 'dist/notify.umd.js',
+      sourcemap: 'inline'
     },
     onwarn: (warning, warn) => {
       if (warning.code === 'THIS_IS_UNDEFINED') {
@@ -30,14 +31,15 @@ export default [
         dedupe: ['svelte']
       }),
       commonjs(),
-      typescript({ sourceMap: false })
+      typescript()
     ]
   },
   {
     input: 'src/notify.ts',
     output: {
       format: 'es',
-      file: 'dist/notify.esm.js'
+      file: 'dist/notify.esm.js',
+      sourcemap: 'inline'
     },
     onwarn: (warning, warn) => {
       if (warning.code === 'THIS_IS_UNDEFINED') {
@@ -56,7 +58,7 @@ export default [
         dedupe: ['svelte']
       }),
       commonjs(),
-      typescript({ sourceMap: false })
+      typescript()
     ],
     external: [
       'bignumber.js',

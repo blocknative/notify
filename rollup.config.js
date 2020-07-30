@@ -2,7 +2,7 @@ import svelte from 'rollup-plugin-svelte'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import sveltePreprocess from 'svelte-preprocess'
-import typescript from '@rollup/plugin-typescript'
+import typescript from '@wessberg/rollup-plugin-ts'
 import json from '@rollup/plugin-json'
 
 export default [
@@ -31,14 +31,16 @@ export default [
         dedupe: ['svelte']
       }),
       commonjs(),
-      typescript()
+      typescript({
+        tsconfig: resolvedConfig => ({ ...resolvedConfig, declaration: false })
+      })
     ]
   },
   {
     input: 'src/notify.ts',
     output: {
       format: 'es',
-      file: 'dist/notify.esm.js',
+      file: 'dist/notify.js',
       sourcemap: 'inline'
     },
     onwarn: (warning, warn) => {

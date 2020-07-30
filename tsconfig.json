@@ -1,6 +1,12 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
-  "compilerOptions": { "esModuleInterop": true, "resolveJsonModule": true, "target": "ESNEXT" },
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "target": "ESNEXT",
+    "declaration": true,
+    "declarationDir": "dist/types"
+  },
   "include": ["src/**/*"],
-  "exclude": ["node_modules/*", "__sapper__/*", "public/*"]
+  "exclude": ["node_modules/*", "dist/*"]
 }

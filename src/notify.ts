@@ -10,7 +10,6 @@ import { handleTransactionEvent, preflightTransaction } from './transactions'
 import { createNotification } from './notifications'
 
 import { getBlocknative } from './services'
-import type { LocaleMessages } from './interfaces'
 
 import type {
   InitOptions,
@@ -22,7 +21,43 @@ import type {
   TransactionOptions,
   CustomNotificationObject,
   UpdateNotification,
-  ConfigOptions
+  ConfigOptions,
+  LocaleMessages
+} from './interfaces'
+
+export type {
+  InitOptions,
+  TransactionHandler,
+  TransactionEvent,
+  System,
+  TransactionEventCode,
+  TransactionData,
+  NotificationType,
+  CustomNotificationObject,
+  BitcoinInputOutput,
+  NotificationObject,
+  ContractObject,
+  AppStore,
+  NotifyMessages,
+  LocaleMessages,
+  TransactionOptions,
+  PreflightEvent,
+  UpdateNotification,
+  ConfigOptions,
+  Hash,
+  Transaction,
+  Account,
+  Unsubscribe,
+  Notification,
+  Config,
+  API,
+  TransactionLog,
+  EmitterListener,
+  Emitter,
+  NotificationDetails,
+  WritableStore,
+  TransactionStore,
+  NotificationStore
 } from './interfaces'
 
 import {

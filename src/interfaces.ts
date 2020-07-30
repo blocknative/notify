@@ -127,6 +127,9 @@ export interface LocaleMessages {
   watched: {
     [key: string]: string
   }
+  time: {
+    [key: string]: string
+  }
 }
 
 export interface TransactionOptions {

@@ -176,32 +176,32 @@ export interface ConfigOptions {
   clientLocale?: string
 }
 
-interface Hash {
+export interface Hash {
   (hash: string, id?: string):
     | never
     | { details: TransactionLog; emitter: Emitter }
 }
 
-interface Transaction {
+export interface Transaction {
   (options: TransactionOptions): { result: Promise<string>; emitter: Emitter }
 }
 
-interface Account {
+export interface Account {
   (address: string): never | { details: { address: string }; emitter: Emitter }
 }
 
-interface Unsubscribe {
+export interface Unsubscribe {
   (addressOrHash: string): void
 }
 
-interface Notification {
+export interface Notification {
   (notificationObject: CustomNotificationObject): {
     dismiss: () => void
     update: UpdateNotification
   }
 }
 
-interface Config {
+export interface Config {
   (options: ConfigOptions): void
 }
 

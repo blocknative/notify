@@ -9,8 +9,8 @@
     "notifications"
   ],
   "main": "dist/notify.umd.js",
-  "module": "dist/notify.esm.js",
-  "typings": "dist/src/notify.d.ts",
+  "module": "dist/notify.js",
+  "typings": "dist/types/notify.d.ts",
   "files": [
     "dist"
   ],
@@ -28,12 +28,12 @@
     "@rollup/plugin-commonjs": "^12.0.0",
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^8.0.0",
-    "@rollup/plugin-typescript": "^5.0.2",
     "@tsconfig/svelte": "^1.0.4",
     "@types/lodash.debounce": "^4.0.6",
     "@types/uuid": "^3.4.5",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
+    "@wessberg/rollup-plugin-ts": "^1.2.34",
     "babel-plugin-external-helpers": "^6.18.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.11.0",

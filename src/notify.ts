@@ -10,9 +10,8 @@ import { handleTransactionEvent, preflightTransaction } from './transactions'
 import { createNotification } from './notifications'
 
 import { getBlocknative } from './services'
-import { LocaleMessages } from './interfaces'
 
-import {
+import type {
   InitOptions,
   TransactionHandler,
   AppStore,
@@ -22,7 +21,43 @@ import {
   TransactionOptions,
   CustomNotificationObject,
   UpdateNotification,
-  ConfigOptions
+  ConfigOptions,
+  LocaleMessages
+} from './interfaces'
+
+export type {
+  InitOptions,
+  TransactionHandler,
+  TransactionEvent,
+  System,
+  TransactionEventCode,
+  TransactionData,
+  NotificationType,
+  CustomNotificationObject,
+  BitcoinInputOutput,
+  NotificationObject,
+  ContractObject,
+  AppStore,
+  NotifyMessages,
+  LocaleMessages,
+  TransactionOptions,
+  PreflightEvent,
+  UpdateNotification,
+  ConfigOptions,
+  Hash,
+  Transaction,
+  Account,
+  Unsubscribe,
+  Notification,
+  Config,
+  API,
+  TransactionLog,
+  EmitterListener,
+  Emitter,
+  NotificationDetails,
+  WritableStore,
+  TransactionStore,
+  NotificationStore
 } from './interfaces'
 
 import {
@@ -52,7 +87,8 @@ function init(options: InitOptions): API {
     networkId,
     transactionHandler,
     name,
-    apiUrl
+    apiUrl,
+    clientLocale
   } = options
 
   const transactionHandlers: TransactionHandler[] = [handleTransactionEvent]
@@ -75,10 +111,12 @@ function init(options: InitOptions): API {
     ...store,
     ...options,
     version,
-    clientLocale: getClientLocale({
-      fallback: 'en',
-      navigator: true
-    })
+    clientLocale:
+      clientLocale ||
+      getClientLocale({
+        fallback: 'en',
+        navigator: true
+      })
   }))
 
   // initialize App

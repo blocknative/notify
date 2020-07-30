@@ -1,4 +1,4 @@
-import {
+import type {
   Emitter,
   EmitterListener,
   TransactionData,
@@ -7,23 +7,6 @@ import {
 
 export function argsEqual(args1: any, args2: any): boolean {
   return JSON.stringify(args1) === JSON.stringify(args2)
-}
-
-export function timeString(time: number): string {
-  const seconds = Math.floor(time / 1000)
-  const formattedSeconds = seconds < 0 ? 0 : seconds
-  return formattedSeconds >= 60
-    ? `${Math.floor(formattedSeconds / 60)} min`
-    : `${formattedSeconds} sec`
-}
-
-export function formatTime(number: number): string {
-  const time = new Date(number)
-  return time.toLocaleString('en-US', {
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true
-  })
 }
 
 // will update object(merge new data) in list if it passes predicate, otherwise adds new object

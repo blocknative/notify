@@ -1,4 +1,4 @@
-import {
+import type {
   InitOptions,
   TransactionOptions,
   CustomNotificationObject,
@@ -351,20 +351,31 @@ export function validateConfig(config: ConfigOptions): void {
         type: 'object'
       })
 
-      const { transaction, watched, ...otherParams } = notifyMessages[locale]
+      const { transaction, watched, time, ...otherParams } = notifyMessages[
+        locale
+      ]
 
-      invalidParams(otherParams, ['transaction', 'watched'], locale)
+      invalidParams(otherParams, ['transaction', 'watched', 'time'], locale)
 
       validateType({
         name: `notifyMessages.${locale}.transaction`,
         value: transaction,
-        type: 'object'
+        type: 'object',
+        optional: true
       })
 
       validateType({
         name: `notifyMessages.${locale}.watched`,
         value: watched,
-        type: 'object'
+        type: 'object',
+        optional: true
+      })
+
+      validateType({
+        name: `notifyMessages.${locale}.time`,
+        value: time,
+        type: 'object',
+        optional: true
       })
     })
   }

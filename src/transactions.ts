@@ -6,7 +6,7 @@ import { transactions, app } from './stores'
 import { createNotification } from './notifications'
 import { argsEqual, extractMessageFromError, localNetwork } from './utilities'
 import { validateNotificationObject } from './validation'
-import { getBlocknative } from './services'
+
 import type {
   TransactionData,
   PreflightEvent,
@@ -19,7 +19,10 @@ import type {
 let transactionQueue: TransactionData[]
 transactions.subscribe((store: TransactionData[]) => (transactionQueue = store))
 
-export function handlePreFlightEvent(preflightEvent: PreflightEvent) {
+export function handlePreFlightEvent(
+  blocknative,
+  preflightEvent: PreflightEvent
+) {
   const {
     eventCode,
     contractCall,
@@ -28,8 +31,6 @@ export function handlePreFlightEvent(preflightEvent: PreflightEvent) {
     emitter,
     status
   } = preflightEvent
-
-  const blocknative = getBlocknative()
 
   blocknative.event({
     categoryCode: contractCall ? 'activeContract' : 'activeTransaction',
@@ -116,6 +117,7 @@ export function duplicateTransactionCandidate(
 }
 
 export function preflightTransaction(
+  blocknative,
   options: TransactionOptions,
   emitter: Emitter
 ): Promise<string> {
@@ -130,8 +132,6 @@ export function preflightTransaction(
         contractCall,
         txDetails
       } = options
-
-      const blocknative = getBlocknative()
 
       //=== if `balance` or `estimateGas` or `gasPrice` is not provided, then sufficient funds check is disabled === //
       //=== if `txDetails` is not provided, then duplicate transaction check is disabled === //
@@ -164,7 +164,7 @@ export function preflightTransaction(
         if (transactionCost.gt(new BigNumber(balance))) {
           const eventCode = 'nsfFail'
 
-          handlePreFlightEvent({
+          handlePreFlightEvent(blocknative, {
             eventCode,
             contractCall,
             balance,
@@ -186,7 +186,7 @@ export function preflightTransaction(
       ) {
         const eventCode = 'txRepeat'
 
-        handlePreFlightEvent({
+        handlePreFlightEvent(blocknative, {
           eventCode,
           contractCall,
           balance,
@@ -205,7 +205,7 @@ export function preflightTransaction(
       if (transactionQueue.find(tx => tx.status === 'awaitingApproval')) {
         const eventCode = 'txAwaitingApproval'
 
-        handlePreFlightEvent({
+        handlePreFlightEvent(blocknative, {
           eventCode,
           contractCall,
           balance,
@@ -223,7 +223,7 @@ export function preflightTransaction(
         if (awaitingApproval) {
           const eventCode = 'txConfirmReminder'
 
-          handlePreFlightEvent({
+          handlePreFlightEvent(blocknative, {
             eventCode,
             contractCall,
             balance,
@@ -233,7 +233,7 @@ export function preflightTransaction(
         }
       }, txApproveReminderTimeout)
 
-      handlePreFlightEvent({
+      handlePreFlightEvent(blocknative, {
         eventCode: 'txRequest',
         status: 'awaitingApproval',
         contractCall,
@@ -255,7 +255,7 @@ export function preflightTransaction(
       } catch (error) {
         const { eventCode, errorMsg } = extractMessageFromError(error)
 
-        handlePreFlightEvent({
+        handlePreFlightEvent(blocknative, {
           eventCode,
           status: 'failed',
           contractCall,
@@ -287,7 +287,7 @@ export function preflightTransaction(
           ) {
             const eventCode = 'txStallPending'
 
-            handlePreFlightEvent({
+            handlePreFlightEvent(blocknative, {
               eventCode,
               contractCall,
               balance,
@@ -308,7 +308,7 @@ export function preflightTransaction(
           ) {
             const eventCode = 'txStallConfirmed'
 
-            handlePreFlightEvent({
+            handlePreFlightEvent(blocknative, {
               eventCode,
               contractCall,
               balance,

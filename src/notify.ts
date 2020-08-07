@@ -24,7 +24,7 @@ import type {
   LocaleMessages
 } from './interfaces'
 
-export type {
+export {
   InitOptions,
   TransactionHandler,
   TransactionEvent,

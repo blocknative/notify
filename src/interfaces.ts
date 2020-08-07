@@ -1,10 +1,14 @@
+import type {
+  BitcoinTransactionLog,
+  EthereumTransactionLog
+} from 'bnc-sdk/dist/types/src/interfaces'
+
 export interface InitOptions extends ConfigOptions {
   dappId: string
   networkId: number
   transactionHandler?: TransactionHandler
   name?: string
   apiUrl?: string
-  system?: System
 }
 
 export interface TransactionHandler {
@@ -166,6 +170,8 @@ export interface UpdateNotification {
 }
 
 export interface ConfigOptions {
+  system?: System
+  networkId?: number
   mobilePosition?: 'bottom' | 'top'
   desktopPosition?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight'
   darkMode?: boolean
@@ -179,7 +185,10 @@ export interface ConfigOptions {
 export interface Hash {
   (hash: string, id?: string):
     | never
-    | { details: TransactionLog; emitter: Emitter }
+    | {
+        details: BitcoinTransactionLog | EthereumTransactionLog
+        emitter: Emitter
+      }
 }
 
 export interface Transaction {
@@ -212,19 +221,6 @@ export interface API {
   unsubscribe: Unsubscribe
   notification: Notification
   config: Config
-}
-
-export interface TransactionLog {
-  hash: string
-  id: string
-  startTime: number
-  status: string
-  from?: string
-  to?: string
-  value?: number | string
-  gas?: string
-  gasPrice?: string
-  nonce?: number
 }
 
 export interface EmitterListener {

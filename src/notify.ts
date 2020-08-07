@@ -1,4 +1,6 @@
 import 'regenerator-runtime/runtime'
+import BlocknativeSdk from 'bnc-sdk'
+import { get } from 'svelte/store'
 
 import uuid from 'uuid/v4'
 import { locale, dictionary, getClientLocale } from 'svelte-i18n'
@@ -9,14 +11,11 @@ import { app, notifications } from './stores'
 import { handleTransactionEvent, preflightTransaction } from './transactions'
 import { createNotification } from './notifications'
 
-import { getBlocknative } from './services'
-
 import type {
   InitOptions,
   TransactionHandler,
   AppStore,
   API,
-  TransactionLog,
   Emitter,
   TransactionOptions,
   CustomNotificationObject,
@@ -51,7 +50,6 @@ export type {
   Notification,
   Config,
   API,
-  TransactionLog,
   EmitterListener,
   Emitter,
   NotificationDetails,
@@ -97,7 +95,7 @@ function init(options: InitOptions): API {
     transactionHandlers.push(transactionHandler)
   }
 
-  const blocknative = getBlocknative({
+  let blocknative = new BlocknativeSdk({
     dappId,
     networkId,
     transactionHandlers,
@@ -155,10 +153,7 @@ function init(options: InitOptions): API {
     }
   }
 
-  function hash(
-    hash: string,
-    id?: string
-  ): never | { details: TransactionLog; emitter: Emitter } {
+  function hash(hash: string, id?: string) {
     try {
       const result = blocknative.transaction(hash, id)
       return result
@@ -174,7 +169,9 @@ function init(options: InitOptions): API {
 
     const emitter = createEmitter()
 
-    const result = preflightTransaction(options, emitter).catch(err => err)
+    const result = preflightTransaction(blocknative, options, emitter).catch(
+      err => err
+    )
 
     return {
       emitter,
@@ -230,11 +227,43 @@ function init(options: InitOptions): API {
   function config(options: ConfigOptions): void {
     validateConfig(options)
 
-    const { notifyMessages, ...otherOptions } = options
+    const {
+      notifyMessages,
+      networkId: newNetworkId,
+      system: newSystem,
+      ...otherOptions
+    } = options
+
+    const { networkId, system, dappId, transactionHandler, name, apiUrl } = get(
+      app
+    )
+
+    // networkId or system has changed
+    if (
+      (newNetworkId && newNetworkId !== networkId) ||
+      (newSystem && newSystem !== system)
+    ) {
+      // close existing SDK connection
+      blocknative.destroy()
+
+      // create new connection with new values
+      blocknative = new BlocknativeSdk({
+        dappId,
+        networkId: newNetworkId || networkId,
+        transactionHandlers: transactionHandler
+          ? [handleTransactionEvent, transactionHandler]
+          : [handleTransactionEvent],
+        name: name || 'Notify',
+        apiUrl,
+        system: newSystem || system
+      })
+    }
 
     app.update((store: AppStore) => {
       return {
         ...store,
+        networkId: newNetworkId || networkId,
+        system: newSystem || system,
         ...otherOptions,
         notifyMessages: notifyMessages
           ? { ...store.notifyMessages, ...notifyMessages }

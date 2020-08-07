@@ -300,6 +300,8 @@ export function validateConfig(config: ConfigOptions): void {
   validateType({ name: 'config', value: config, type: 'object' })
 
   const {
+    networkId,
+    system,
     mobilePosition,
     desktopPosition,
     darkMode,
@@ -312,6 +314,20 @@ export function validateConfig(config: ConfigOptions): void {
   } = config
 
   invalidParams(otherParams, validInitKeys, 'config / initialize')
+
+  validateType({
+    name: 'networkId',
+    value: networkId,
+    type: 'number',
+    optional: true
+  })
+
+  validateType({
+    name: 'system',
+    value: system,
+    type: 'string',
+    optional: true
+  })
 
   validateType({
     name: 'mobilePosition',

@@ -36,7 +36,6 @@ export {
   BitcoinInputOutput,
   NotificationObject,
   ContractObject,
-  AppStore,
   NotifyMessages,
   LocaleMessages,
   TransactionOptions,
@@ -52,10 +51,7 @@ export {
   API,
   EmitterListener,
   Emitter,
-  NotificationDetails,
-  WritableStore,
-  TransactionStore,
-  NotificationStore
+  NotificationDetails
 } from './interfaces'
 
 import {
@@ -72,6 +68,7 @@ import { version } from '../package.json'
 let notify: any
 
 function init(options: InitOptions): API {
+  console.log('LOCALLLLL')
   if (notify) {
     console.warn('notify has already been initialized')
     notify.$destroy()
@@ -79,15 +76,8 @@ function init(options: InitOptions): API {
 
   validateInit(options)
 
-  const {
-    dappId,
-    system,
-    networkId,
-    transactionHandler,
-    name,
-    apiUrl,
-    clientLocale
-  } = options
+  const { system, transactionHandler, apiUrl, ...appOptions } = options
+  const { dappId, networkId, name, clientLocale } = appOptions
 
   const transactionHandlers: TransactionHandler[] = [handleTransactionEvent]
 
@@ -107,7 +97,7 @@ function init(options: InitOptions): API {
   // save config to app store
   app.update((store: AppStore) => ({
     ...store,
-    ...options,
+    ...appOptions,
     version,
     clientLocale:
       clientLocale ||

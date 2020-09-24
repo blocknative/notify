@@ -5,10 +5,11 @@ import { defaultNotifyMessages } from './i18n'
 import type {
   TransactionData,
   NotificationObject,
-  CustomNotificationObject
+  CustomNotificationObject,
+  AppStore
 } from './interfaces'
 
-export const app = writable({
+export const app = writable<AppStore>({
   version: '',
   name: '',
   dappId: '',

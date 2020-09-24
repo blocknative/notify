@@ -104,6 +104,22 @@ export interface ContractObject {
   params: object
 }
 
+export interface AppStore {
+  version: string
+  dappId: string
+  name?: string
+  networkId: number
+  nodeSynced: boolean
+  mobilePosition: 'bottom' | 'top'
+  desktopPosition: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight'
+  darkMode: boolean
+  txApproveReminderTimeout: number
+  txStallPendingTimeout: number
+  txStallConfirmedTimeout: number
+  clientLocale: string
+  notifyMessages: NotifyMessages
+}
+
 export interface NotifyMessages {
   [key: string]: LocaleMessages
 }

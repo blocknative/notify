@@ -176,7 +176,7 @@
         animate:flip={{ duration: 500 }}
         class:bn-notify-dark-mode={$app.darkMode}
         class:bn-notify-clickable={notification.onclick}
-        class="bn-notify-custom bn-notify-notification {$app.name ? `bn-notify-${$app.name}` : ''}"
+        class="bn-notify-custom bn-notify-notification {`bn-notify-notification-${notification.type}`} {$app.name ? `bn-notify-${$app.name}` : ''}"
         in:fly={{ duration: 1200, delay: 300, x, y, easing: elasticOut }}
         out:fly={{ duration: 400, x, y, easing: quintIn }}>
         <TypeIcon type={notification.type} />

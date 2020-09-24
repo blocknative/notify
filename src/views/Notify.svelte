@@ -104,7 +104,7 @@
     width: 20em;
     bottom: 0;
     right: 0;
-    font-family: 'Helvetica Neue';
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
     max-height: 100vh;
     overflow-y: scroll;
     overflow-x: hidden;

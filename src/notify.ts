@@ -68,7 +68,6 @@ import { version } from '../package.json'
 let notify: any
 
 function init(options: InitOptions): API {
-  console.log('LOCALLLLL')
   if (notify) {
     console.warn('notify has already been initialized')
     notify.$destroy()

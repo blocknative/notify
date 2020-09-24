@@ -21,9 +21,11 @@ export function replaceOrAdd(
   if (index !== -1) {
     const { startTime, contractCall } = clone[index]
     const { startTime: serverStartTime } = data
+    const contractCallMerge = contractCall ? { ...contractCall } : {}
+
     clone[index] = {
       ...data,
-      contractCall,
+      ...contractCallMerge,
       startTime: startTime || serverStartTime
     }
     return clone

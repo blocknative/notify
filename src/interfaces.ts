@@ -88,7 +88,7 @@ export interface BitcoinInputOutput {
 }
 
 export interface NotificationObject {
-  id?: string
+  id: string
   type: NotificationType
   key: string
   startTime?: number
@@ -102,22 +102,6 @@ export interface ContractObject {
   contractType?: string
   methodName: string
   params: object
-}
-
-export interface AppStore {
-  version: string
-  dappId: string
-  name?: string
-  networkId: number
-  nodeSynced: boolean
-  mobilePosition: 'bottom' | 'top'
-  desktopPosition: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight'
-  darkMode: boolean
-  txApproveReminderTimeout: number
-  txStallPendingTimeout: number
-  txStallConfirmedTimeout: number
-  clientLocale: string
-  notifyMessages: NotifyMessages
 }
 
 export interface NotifyMessages {
@@ -244,23 +228,4 @@ export interface NotificationDetails {
   counterparty?: string
   value?: string
   asset?: string
-}
-
-export interface WritableStore {
-  set: (newValue: any) => void
-  update: (newValue: any) => void
-  subscribe: (callback: (store: any) => any) => () => void
-}
-
-export interface TransactionStore {
-  subscribe: (callback: (store: any) => any) => void
-  updateQueue: (transaction: TransactionData) => void
-  add: (transaction: TransactionData) => void
-}
-
-export interface NotificationStore {
-  subscribe: (callback: (store: any) => any) => void
-  add: (notification: NotificationObject) => void
-  remove: (id: string, eventCode: string) => void
-  update: (updater: (store: any) => any) => void
 }

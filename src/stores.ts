@@ -3,15 +3,14 @@ import { replaceOrAdd } from './utilities'
 import { defaultNotifyMessages } from './i18n'
 
 import type {
-  WritableStore,
   TransactionData,
-  TransactionStore,
   NotificationObject,
-  NotificationStore
+  CustomNotificationObject
 } from './interfaces'
 
-export const app: WritableStore = writable({
+export const app = writable({
   version: '',
+  name: '',
   dappId: '',
   networkId: 1,
   nodeSynced: true,
@@ -24,10 +23,10 @@ export const app: WritableStore = writable({
   clientLocale: 'en',
   notifyMessages: defaultNotifyMessages
 })
-export const accounts: WritableStore = writable([])
-export const contracts: WritableStore = writable([])
-export const transactions: TransactionStore = createTransactionStore([])
-export const notifications: NotificationStore = createNotificationStore([])
+export const accounts = writable([])
+export const contracts = writable([])
+export const transactions = createTransactionStore([])
+export const notifications = createNotificationStore([])
 
 function createTransactionStore(initialState: TransactionData[]) {
   const { subscribe, update } = writable(initialState)
@@ -51,13 +50,16 @@ function createTransactionStore(initialState: TransactionData[]) {
   }
 }
 
-function createNotificationStore(initialState: NotificationObject[]) {
+function createNotificationStore(
+  initialState: (NotificationObject & CustomNotificationObject)[]
+) {
   const { subscribe, update } = writable(initialState)
 
-  function add(notification: NotificationObject) {
-    update((store: NotificationObject[]) => {
+  function add(notification: NotificationObject & CustomNotificationObject) {
+    update((store: (NotificationObject & CustomNotificationObject)[]) => {
       const existingNotification = store.find(
-        (n: NotificationObject) => n.id === notification.id
+        (n: NotificationObject & CustomNotificationObject) =>
+          n.id === notification.id
       )
 
       // if notification is a hint type or there are no existing notifications with same id, then just add it.
@@ -67,16 +69,20 @@ function createNotificationStore(initialState: NotificationObject[]) {
 
       // otherwise filter out all notifications with the same id and then add the new notification
       return [
-        ...store.filter((n: NotificationObject) => n.id !== notification.id),
+        ...store.filter(
+          (n: NotificationObject & CustomNotificationObject) =>
+            n.id !== notification.id
+        ),
         notification
       ]
     })
   }
 
   function remove(id: string, eventCode: string) {
-    update((store: NotificationObject[]) =>
+    update((store: (NotificationObject & CustomNotificationObject)[]) =>
       store.filter(
-        (n: NotificationObject) => n.id !== id || n.eventCode !== eventCode
+        (n: NotificationObject & CustomNotificationObject) =>
+          n.id !== id || n.eventCode !== eventCode
       )
     )
   }

@@ -19,9 +19,13 @@ export function replaceOrAdd(
   const index = clone.findIndex(predicate)
 
   if (index !== -1) {
-    const { startTime } = clone[index]
+    const { startTime, contractCall } = clone[index]
     const { startTime: serverStartTime } = data
-    clone[index] = { ...data, startTime: startTime || serverStartTime }
+    clone[index] = {
+      ...data,
+      contractCall,
+      startTime: startTime || serverStartTime
+    }
     return clone
   }
 

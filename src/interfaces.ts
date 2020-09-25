@@ -88,7 +88,7 @@ export interface BitcoinInputOutput {
 }
 
 export interface NotificationObject {
-  id?: string
+  id: string
   type: NotificationType
   key: string
   startTime?: number
@@ -137,15 +137,15 @@ export interface LocaleMessages {
 }
 
 export interface TransactionOptions {
-  sendTransaction: () => Promise<string>
-  estimateGas: () => Promise<string>
-  gasPrice: () => Promise<string>
-  balance: string
-  contractCall: ContractObject
-  txDetails: {
+  sendTransaction?: () => Promise<string>
+  estimateGas?: () => Promise<string>
+  gasPrice?: () => Promise<string>
+  balance?: string
+  contractCall?: ContractObject
+  txDetails?: {
     to?: string
-    value: string
     from?: string
+    value: string
   }
 }
 
@@ -244,23 +244,4 @@ export interface NotificationDetails {
   counterparty?: string
   value?: string
   asset?: string
-}
-
-export interface WritableStore {
-  set: (newValue: any) => void
-  update: (newValue: any) => void
-  subscribe: (callback: (store: any) => any) => () => void
-}
-
-export interface TransactionStore {
-  subscribe: (callback: (store: any) => any) => void
-  updateQueue: (transaction: TransactionData) => void
-  add: (transaction: TransactionData) => void
-}
-
-export interface NotificationStore {
-  subscribe: (callback: (store: any) => any) => void
-  add: (notification: NotificationObject) => void
-  remove: (id: string, eventCode: string) => void
-  update: (updater: (store: any) => any) => void
 }

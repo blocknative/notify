@@ -1,14 +1,11 @@
 <script lang="ts">
+  import type {
+    CustomNotificationObject,
+    NotificationObject
+  } from '../interfaces'
+
   import { notifications } from '../stores'
-  export let notification: {
-    id: string
-    type: string
-    key: string
-    startTime?: number
-    eventCode: string
-    message: string
-    autoDismiss?: number
-  } = { id: '', type: '', key: '', message: '', eventCode: '' }
+  export let notification: NotificationObject & CustomNotificationObject
 
   if (notification.autoDismiss && notification.id) {
     setTimeout(() => {

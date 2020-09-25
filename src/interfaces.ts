@@ -4,8 +4,7 @@ import type {
 } from 'bnc-sdk/dist/types/src/interfaces'
 
 export interface InitOptions extends ConfigOptions {
-  dappId: string
-  networkId: number
+  dappId?: string
   transactionHandler?: TransactionHandler
   name?: string
   apiUrl?: string
@@ -106,9 +105,9 @@ export interface ContractObject {
 
 export interface AppStore {
   version: string
-  dappId: string
+  dappId?: string
   name?: string
-  networkId: number
+  networkId?: number
   nodeSynced: boolean
   mobilePosition: 'bottom' | 'top'
   desktopPosition: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight'

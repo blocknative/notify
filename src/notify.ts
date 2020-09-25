@@ -84,14 +84,18 @@ function init(options: InitOptions): API {
     transactionHandlers.push(transactionHandler)
   }
 
-  let blocknative = new BlocknativeSdk({
-    dappId,
-    networkId,
-    transactionHandlers,
-    name: name || 'Notify',
-    apiUrl,
-    system
-  })
+  let blocknative
+
+  if (dappId) {
+    blocknative = new BlocknativeSdk({
+      dappId,
+      networkId,
+      transactionHandlers,
+      name: name || 'Notify',
+      apiUrl,
+      system
+    })
+  }
 
   // save config to app store
   app.update((store: AppStore) => ({
@@ -134,6 +138,12 @@ function init(options: InitOptions): API {
   function account(
     address: string
   ): { details: { address: string }; emitter: Emitter } | never {
+    if (!blocknative) {
+      throw new Error(
+        'A dappId needs to be passed in when intializing Notify to use the account function'
+      )
+    }
+
     try {
       const result = blocknative.account(address)
       return result
@@ -143,6 +153,12 @@ function init(options: InitOptions): API {
   }
 
   function hash(hash: string, id?: string) {
+    if (!blocknative) {
+      throw new Error(
+        'A dappId needs to be passed in when intializing Notify to use the hash function'
+      )
+    }
+
     try {
       const result = blocknative.transaction(hash, id)
       return result
@@ -154,6 +170,12 @@ function init(options: InitOptions): API {
   function transaction(
     options: TransactionOptions
   ): { result: Promise<string>; emitter: Emitter } {
+    if (!blocknative) {
+      throw new Error(
+        'A dappId needs to be passed in when intializing Notify to use the transaction function'
+      )
+    }
+
     validateTransactionOptions(options)
 
     const emitter = createEmitter()
@@ -169,6 +191,12 @@ function init(options: InitOptions): API {
   }
 
   function unsubscribe(addressOrHash: string) {
+    if (!blocknative) {
+      throw new Error(
+        'A dappId needs to be passed in when intializing Notify to use the unsubscribe function'
+      )
+    }
+
     blocknative.unsubscribe(addressOrHash)
   }
 
@@ -232,6 +260,12 @@ function init(options: InitOptions): API {
       (newNetworkId && newNetworkId !== networkId) ||
       (newSystem && newSystem !== system)
     ) {
+      if (!blocknative) {
+        throw new Error(
+          'A dappId needs to be passed in when intializing Notify to be able to connect to a system and network'
+        )
+      }
+
       // close existing SDK connection
       blocknative.destroy()
 

@@ -5,8 +5,6 @@ import type {
 
 export interface InitOptions extends ConfigOptions {
   dappId?: string
-  system?: System
-  networkId?: number
   transactionHandler?: TransactionHandler
   name?: string
   apiUrl?: string

@@ -144,6 +144,7 @@ export interface TransactionOptions {
   contractCall?: ContractObject
   txDetails?: {
     to?: string
+    from?: string
     value: string
   }
 }

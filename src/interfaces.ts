@@ -137,15 +137,14 @@ export interface LocaleMessages {
 }
 
 export interface TransactionOptions {
-  sendTransaction: () => Promise<string>
-  estimateGas: () => Promise<string>
-  gasPrice: () => Promise<string>
-  balance: string
-  contractCall: ContractObject
-  txDetails: {
+  sendTransaction?: () => Promise<string>
+  estimateGas?: () => Promise<string>
+  gasPrice?: () => Promise<string>
+  balance?: string
+  contractCall?: ContractObject
+  txDetails?: {
     to?: string
     value: string
-    from?: string
   }
 }
 

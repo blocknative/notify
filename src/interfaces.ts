@@ -42,7 +42,7 @@ export interface TransactionData {
   asset?: string
   blockHash?: string
   blockNumber?: number
-  contractCall?: ContractObject
+  contractCall?: ContractCall | DecodedContractCall
   counterparty?: string
   eventCode?: string
   from?: string
@@ -96,11 +96,16 @@ export interface NotificationObject {
   autoDismiss?: number
 }
 
-export interface ContractObject {
+export interface ContractCall {
+  methodName: string
+  params: string[]
+}
+
+export interface DecodedContractCall {
   contractAddress?: string
   contractType?: string
-  methodName: string
   params: object
+  methodName: string
 }
 
 export interface AppStore {
@@ -140,7 +145,7 @@ export interface TransactionOptions {
   estimateGas?: () => Promise<string>
   gasPrice?: () => Promise<string>
   balance?: string
-  contractCall?: ContractObject
+  contractCall?: ContractCall
   txDetails?: {
     to?: string
     from?: string
@@ -150,7 +155,7 @@ export interface TransactionOptions {
 
 export interface PreflightEvent {
   eventCode: string
-  contractCall?: ContractObject
+  contractCall?: ContractCall
   balance: string
   txDetails?: {
     to?: string

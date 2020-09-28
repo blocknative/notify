@@ -10,7 +10,7 @@ import { validateNotificationObject } from './validation'
 import type {
   TransactionData,
   PreflightEvent,
-  ContractObject,
+  ContractCall,
   CustomNotificationObject,
   Emitter,
   TransactionOptions
@@ -84,7 +84,7 @@ export function handleTransactionEvent(event: {
 
 export function duplicateTransactionCandidate(
   transaction: TransactionData,
-  contract: ContractObject
+  contract: ContractCall
 ) {
   const duplicate:
     | TransactionData

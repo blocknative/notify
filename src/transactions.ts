@@ -10,7 +10,7 @@ import { validateNotificationObject } from './validation'
 import type {
   TransactionData,
   PreflightEvent,
-  ContractObject,
+  ContractCall,
   CustomNotificationObject,
   Emitter,
   TransactionOptions
@@ -32,12 +32,17 @@ export function handlePreFlightEvent(
     status
   } = preflightEvent
 
+  const contract = {
+    methodName: contractCall.methodName,
+    parameters: contractCall.params
+  }
+
   blocknative.event({
     categoryCode: contractCall ? 'activeContract' : 'activeTransaction',
     eventCode,
     transaction: txDetails,
     wallet: { balance },
-    contract: contractCall
+    contract
   })
 
   const transaction = {
@@ -79,39 +84,33 @@ export function handleTransactionEvent(event: {
 
 export function duplicateTransactionCandidate(
   transaction: TransactionData,
-  contract: ContractObject
+  contract: ContractCall
 ) {
-  let duplicate: TransactionData | undefined | boolean = transactionQueue.find(
-    (tx: TransactionData) => {
-      if (contract && typeof tx.contractCall === 'undefined') return false
+  const duplicate:
+    | TransactionData
+    | undefined
+    | boolean = transactionQueue.find((tx: TransactionData) => {
+    if (contract && typeof tx.contractCall === 'undefined') return false
+    if (tx.status === 'confirmed' || tx.status === 'failed') return
 
-      const sameMethod = contract
-        ? contract.methodName ===
-          (tx.contractCall && tx.contractCall.methodName)
-        : true
+    const sameMethod = contract
+      ? contract.methodName === (tx.contractCall && tx.contractCall.methodName)
+      : true
 
-      const sameParams = contract
-        ? argsEqual(contract.params, tx.contractCall && tx.contractCall.params)
-        : true
+    const sameParams = contract
+      ? argsEqual(contract.params, tx.contractCall && tx.contractCall.params)
+      : true
 
-      const sameVal = tx.value == transaction.value
+    const sameVal = tx.value == transaction.value
 
-      const sameTo = contract
-        ? sameMethod
-        : tx.to &&
-          tx.to.toLowerCase() === transaction.to &&
-          transaction.to.toLowerCase()
+    const sameTo = contract
+      ? sameMethod
+      : tx.to &&
+        tx.to.toLowerCase() === transaction.to &&
+        transaction.to.toLowerCase()
 
-      return sameMethod && sameParams && sameVal && sameTo
-    }
-  )
-
-  if (
-    duplicate &&
-    (duplicate.status === 'confirmed' || duplicate.status === 'failed')
-  ) {
-    duplicate = false
-  }
+    return sameMethod && sameParams && sameVal && sameTo
+  })
 
   return duplicate
 }
@@ -177,13 +176,7 @@ export function preflightTransaction(
       }
 
       // check if it is a duplicate transaction
-      if (
-        txDetails &&
-        duplicateTransactionCandidate(
-          { to: txDetails.to, value: txDetails.value },
-          contractCall
-        )
-      ) {
+      if (txDetails && duplicateTransactionCandidate(txDetails, contractCall)) {
         const eventCode = 'txRepeat'
 
         handlePreFlightEvent(blocknative, {

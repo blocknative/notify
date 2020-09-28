@@ -100,16 +100,29 @@ export function validateInit(init: InitOptions): void {
     ...otherParams
   } = init
 
-  validateType({ name: 'dappId', value: dappId, type: 'string' })
+  validateType({
+    name: 'dappId',
+    value: dappId,
+    type: 'string',
+    optional: true
+  })
 
   validateType({
     name: 'system',
     value: system,
     type: 'string',
+    // defaults to ethereum so optional
     optional: true
   })
 
-  validateType({ name: 'networkId', value: networkId, type: 'number' })
+  // if no dappId provided then optional, otherwise required
+  validateType({
+    name: 'networkId (if dappId provided)',
+    value: networkId,
+    type: 'number',
+    optional: !dappId
+  })
+
   validateType({ name: 'name', value: name, type: 'string', optional: true })
 
   validateType({

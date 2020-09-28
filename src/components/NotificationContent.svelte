@@ -6,6 +6,10 @@
   import Clock from '../elements/Clock.svelte'
   import Time from '../elements/Time.svelte'
   import Timer from '../elements/Timer.svelte'
+  import type {
+    CustomNotificationObject,
+    NotificationObject
+  } from '../interfaces'
 
   function timeString(time: number): string {
     const seconds = Math.floor(time / 1000)
@@ -28,15 +32,7 @@
     })
   }
 
-  export let notification: {
-    id: string
-    type: string
-    key: string
-    startTime?: number
-    eventCode?: string
-    message: string
-    autoDismiss?: number
-  }
+  export let notification: NotificationObject & CustomNotificationObject
 
   let currentTime = Date.now()
 

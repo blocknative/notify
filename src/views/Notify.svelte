@@ -104,7 +104,7 @@
     width: 20em;
     bottom: 0;
     right: 0;
-    font-family: 'Helvetica Neue';
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
     max-height: 100vh;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -171,12 +171,12 @@
     style={`${positioning} ${justifyContent}`}>
     {#each $notifications as notification (notification.key)}
       <li
-        on:click={() => notification.onclick && notification.onclick()}
+        on:click={e => notification.onclick && notification.onclick(e)}
         style={notificationMargin}
         animate:flip={{ duration: 500 }}
         class:bn-notify-dark-mode={$app.darkMode}
         class:bn-notify-clickable={notification.onclick}
-        class="bn-notify-custom bn-notify-notification {$app.name ? `bn-notify-${$app.name}` : ''}"
+        class="bn-notify-custom bn-notify-notification {`bn-notify-notification-${notification.type}`} {$app.name ? `bn-notify-${$app.name}` : ''}"
         in:fly={{ duration: 1200, delay: 300, x, y, easing: elasticOut }}
         out:fly={{ duration: 400, x, y, easing: quintIn }}>
         <TypeIcon type={notification.type} />

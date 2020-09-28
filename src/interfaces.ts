@@ -4,8 +4,7 @@ import type {
 } from 'bnc-sdk/dist/types/src/interfaces'
 
 export interface InitOptions extends ConfigOptions {
-  dappId: string
-  networkId: number
+  dappId?: string
   transactionHandler?: TransactionHandler
   name?: string
   apiUrl?: string
@@ -43,7 +42,7 @@ export interface TransactionData {
   asset?: string
   blockHash?: string
   blockNumber?: number
-  contractCall?: ContractObject
+  contractCall?: ContractCall | DecodedContractCall
   counterparty?: string
   eventCode?: string
   from?: string
@@ -88,7 +87,7 @@ export interface BitcoinInputOutput {
 }
 
 export interface NotificationObject {
-  id?: string
+  id: string
   type: NotificationType
   key: string
   startTime?: number
@@ -97,18 +96,23 @@ export interface NotificationObject {
   autoDismiss?: number
 }
 
-export interface ContractObject {
+export interface ContractCall {
+  methodName: string
+  params: string[]
+}
+
+export interface DecodedContractCall {
   contractAddress?: string
   contractType?: string
-  methodName: string
   params: object
+  methodName: string
 }
 
 export interface AppStore {
   version: string
-  dappId: string
+  dappId?: string
   name?: string
-  networkId: number
+  networkId?: number
   nodeSynced: boolean
   mobilePosition: 'bottom' | 'top'
   desktopPosition: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight'
@@ -137,21 +141,21 @@ export interface LocaleMessages {
 }
 
 export interface TransactionOptions {
-  sendTransaction: () => Promise<string>
-  estimateGas: () => Promise<string>
-  gasPrice: () => Promise<string>
-  balance: string
-  contractCall: ContractObject
-  txDetails: {
+  sendTransaction?: () => Promise<string>
+  estimateGas?: () => Promise<string>
+  gasPrice?: () => Promise<string>
+  balance?: string
+  contractCall?: ContractCall
+  txDetails?: {
     to?: string
-    value: string
     from?: string
+    value: string
   }
 }
 
 export interface PreflightEvent {
   eventCode: string
-  contractCall?: ContractObject
+  contractCall?: ContractCall
   balance: string
   txDetails?: {
     to?: string
@@ -244,23 +248,4 @@ export interface NotificationDetails {
   counterparty?: string
   value?: string
   asset?: string
-}
-
-export interface WritableStore {
-  set: (newValue: any) => void
-  update: (newValue: any) => void
-  subscribe: (callback: (store: any) => any) => () => void
-}
-
-export interface TransactionStore {
-  subscribe: (callback: (store: any) => any) => void
-  updateQueue: (transaction: TransactionData) => void
-  add: (transaction: TransactionData) => void
-}
-
-export interface NotificationStore {
-  subscribe: (callback: (store: any) => any) => void
-  add: (notification: NotificationObject) => void
-  remove: (id: string, eventCode: string) => void
-  update: (updater: (store: any) => any) => void
 }

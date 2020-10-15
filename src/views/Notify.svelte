@@ -10,8 +10,6 @@
   import AutoDismiss from '../components/AutoDismiss.svelte'
   import { notifications, app } from '../stores'
 
-  console.log('LOCAL')
-
   let smallScreen: boolean = window.outerWidth < 450
 
   let positioning: string

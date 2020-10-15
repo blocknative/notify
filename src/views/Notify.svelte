@@ -101,7 +101,7 @@
     padding: 0 0.75em;
     margin: 0;
     list-style-type: none;
-    width: 20em;
+    width: 18rem;
     bottom: 0;
     right: 0;
     font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
@@ -163,6 +163,12 @@
     font-size: inherit;
     font-family: inherit;
   }
+
+  a {
+    display: flex;
+    text-decoration: none;
+    color: inherit;
+  }
 </style>
 
 {#if $notifications.length > 0}
@@ -180,8 +186,19 @@
         {$app.name ? `bn-notify-${$app.name}` : ''}"
         in:fly={{ duration: 1200, delay: 300, x, y, easing: elasticOut }}
         out:fly={{ duration: 400, x, y, easing: quintIn }}>
-        <TypeIcon type={notification.type} />
-        <NotificationContent {notification} />
+        {#if notification.link}
+          <a
+            class="bn-notify-notification-link"
+            href={notification.link}
+            target="_blank"
+            rel="noreferrer noopener">
+            <TypeIcon type={notification.type} />
+            <NotificationContent {notification} />
+          </a>
+        {:else}
+          <TypeIcon type={notification.type} />
+          <NotificationContent {notification} />
+        {/if}
         <div
           class="bn-notify-custom bn-notify-notification-close {$app.name ? `bn-notify-${$app.name}` : ''}"
           on:click|stopPropagation={() => notifications.remove(notification.id, notification.eventCode)}>

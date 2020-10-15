@@ -79,6 +79,7 @@ export interface CustomNotificationObject {
   autoDismiss?: number
   onclick?: (event: any) => void
   eventCode?: string
+  link?: string
 }
 
 export interface BitcoinInputOutput {

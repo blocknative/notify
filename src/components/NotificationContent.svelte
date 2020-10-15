@@ -53,8 +53,7 @@
     justify-content: center;
     font-size: inherit;
     font-family: inherit;
-    margin-left: 0.75em;
-    max-width: 78%;
+    margin: 0 1.5rem 0 0.75rem;
   }
 
   /* .bn-notify-notification-info-meta */

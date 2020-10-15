@@ -10,6 +10,8 @@
   import AutoDismiss from '../components/AutoDismiss.svelte'
   import { notifications, app } from '../stores'
 
+  console.log('LOCAL')
+
   let smallScreen: boolean = window.outerWidth < 450
 
   let positioning: string
@@ -176,14 +178,15 @@
         animate:flip={{ duration: 500 }}
         class:bn-notify-dark-mode={$app.darkMode}
         class:bn-notify-clickable={notification.onclick}
-        class="bn-notify-custom bn-notify-notification {`bn-notify-notification-${notification.type}`} {$app.name ? `bn-notify-${$app.name}` : ''}"
+        class="bn-notify-custom bn-notify-notification {`bn-notify-notification-${notification.type}`}
+        {$app.name ? `bn-notify-${$app.name}` : ''}"
         in:fly={{ duration: 1200, delay: 300, x, y, easing: elasticOut }}
         out:fly={{ duration: 400, x, y, easing: quintIn }}>
         <TypeIcon type={notification.type} />
         <NotificationContent {notification} />
         <div
           class="bn-notify-custom bn-notify-notification-close {$app.name ? `bn-notify-${$app.name}` : ''}"
-          on:click={() => notifications.remove(notification.id, notification.eventCode)}>
+          on:click|stopPropagation={() => notifications.remove(notification.id, notification.eventCode)}>
           <CloseIcon />
         </div>
         <AutoDismiss {notification} />

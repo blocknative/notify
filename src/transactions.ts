@@ -34,7 +34,7 @@ export function handlePreFlightEvent(
 
   let contract
 
-  if (contractCall != undefined) {
+  if (contractCall) {
     contract = {
       methodName: contractCall.methodName,
       parameters: contractCall.params

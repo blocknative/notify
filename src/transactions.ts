@@ -32,9 +32,13 @@ export function handlePreFlightEvent(
     status
   } = preflightEvent
 
-  const contract = {
-    methodName: contractCall.methodName,
-    parameters: contractCall.params
+  let contract
+
+  if (contractCall != undefined) {
+    contract = {
+      methodName: contractCall.methodName,
+      parameters: contractCall.params
+    }
   }
 
   blocknative.event({
@@ -42,14 +46,14 @@ export function handlePreFlightEvent(
     eventCode,
     transaction: txDetails,
     wallet: { balance },
-    contract
+    contract: contractCall ? contract : undefined
   })
 
   const transaction = {
     ...txDetails,
     eventCode,
     status,
-    contractCall
+    contractCall: contract ? contractCall : undefined
   }
 
   const emitterResult = emitter.emit(transaction)

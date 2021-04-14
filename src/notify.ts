@@ -96,6 +96,12 @@ function init(options: InitOptions): API {
       apiUrl,
       system
     })
+
+    // filter out pending simulation events
+    blocknative.configuration({
+      scope: 'global',
+      filters: [{ status: 'pending-simulation', _not: true }]
+    })
   }
 
   // save config to app store

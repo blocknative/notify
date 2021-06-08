@@ -1,6 +1,7 @@
 import type {
   BitcoinTransactionLog,
-  EthereumTransactionLog
+  EthereumTransactionLog,
+  SDKError
 } from 'bnc-sdk/dist/types/src/interfaces'
 
 export interface InitOptions extends ConfigOptions {
@@ -11,7 +12,7 @@ export interface InitOptions extends ConfigOptions {
   onerror?: ErrorHandler
 }
 
-export type ErrorHandler = (error: { message: string }) => void
+export type ErrorHandler = (error: SDKError) => void
 
 export interface TransactionHandler {
   (transaction: TransactionEvent): void

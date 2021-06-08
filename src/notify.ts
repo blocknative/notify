@@ -91,6 +91,7 @@ function init(options: InitOptions): API {
     blocknative = new BlocknativeSdk({
       dappId,
       networkId,
+      onerror: appOptions.onerror,
       transactionHandlers,
       name: name || 'Notify',
       apiUrl,
@@ -151,12 +152,8 @@ function init(options: InitOptions): API {
       )
     }
 
-    try {
-      const result = blocknative.account(address)
-      return result
-    } catch (error) {
-      throw new Error(error)
-    }
+    const result = blocknative.account(address)
+    return result
   }
 
   function hash(hash: string, id?: string) {
@@ -166,12 +163,8 @@ function init(options: InitOptions): API {
       )
     }
 
-    try {
-      const result = blocknative.transaction(hash, id)
-      return result
-    } catch (error) {
-      throw new Error(error)
-    }
+    const result = blocknative.transaction(hash, id)
+    return result
   }
 
   function transaction(
@@ -188,7 +181,11 @@ function init(options: InitOptions): API {
     const emitter = createEmitter()
 
     const result = preflightTransaction(blocknative, options, emitter).catch(
-      err => err
+      err => {
+        const { onerror } = get(app)
+        onerror && onerror(err)
+        return err
+      }
     )
 
     return {

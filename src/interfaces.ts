@@ -8,7 +8,10 @@ export interface InitOptions extends ConfigOptions {
   transactionHandler?: TransactionHandler
   name?: string
   apiUrl?: string
+  onerror?: ErrorHandler
 }
+
+export type ErrorHandler = (error: { message: string }) => void
 
 export interface TransactionHandler {
   (transaction: TransactionEvent): void
@@ -115,6 +118,7 @@ export interface AppStore {
   name?: string
   networkId?: number
   nodeSynced: boolean
+  onerror?: ErrorHandler
   mobilePosition: 'bottom' | 'top'
   desktopPosition: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight'
   darkMode: boolean

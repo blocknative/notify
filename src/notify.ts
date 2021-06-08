@@ -99,10 +99,14 @@ function init(options: InitOptions): API {
     })
 
     // filter out pending simulation events
-    blocknative.configuration({
-      scope: 'global',
-      filters: [{ status: 'pending-simulation', _not: true }]
-    })
+    blocknative
+      .configuration({
+        scope: 'global',
+        filters: [{ status: 'pending-simulation', _not: true }]
+      })
+      .catch(() => {
+        // swallow server timeout response error as we are not waiting on it
+      })
   }
 
   // save config to app store

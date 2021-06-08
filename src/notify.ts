@@ -77,7 +77,7 @@ function init(options: InitOptions): API {
   validateInit(options)
 
   const { system, transactionHandler, apiUrl, ...appOptions } = options
-  const { dappId, networkId, name, clientLocale } = appOptions
+  const { dappId, networkId, name, clientLocale, onerror } = appOptions
 
   const transactionHandlers: TransactionHandler[] = [handleTransactionEvent]
 
@@ -91,7 +91,7 @@ function init(options: InitOptions): API {
     blocknative = new BlocknativeSdk({
       dappId,
       networkId,
-      onerror: appOptions.onerror,
+      onerror,
       transactionHandlers,
       name: name || 'Notify',
       apiUrl,

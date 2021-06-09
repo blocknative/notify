@@ -77,7 +77,7 @@ function init(options: InitOptions): API {
   validateInit(options)
 
   const { system, transactionHandler, apiUrl, ...appOptions } = options
-  const { dappId, networkId, name, clientLocale } = appOptions
+  const { dappId, networkId, name, clientLocale, onerror } = appOptions
 
   const transactionHandlers: TransactionHandler[] = [handleTransactionEvent]
 
@@ -91,6 +91,7 @@ function init(options: InitOptions): API {
     blocknative = new BlocknativeSdk({
       dappId,
       networkId,
+      onerror,
       transactionHandlers,
       name: name || 'Notify',
       apiUrl,
@@ -98,10 +99,14 @@ function init(options: InitOptions): API {
     })
 
     // filter out pending simulation events
-    blocknative.configuration({
-      scope: 'global',
-      filters: [{ status: 'pending-simulation', _not: true }]
-    })
+    blocknative
+      .configuration({
+        scope: 'global',
+        filters: [{ status: 'pending-simulation', _not: true }]
+      })
+      .catch(() => {
+        // swallow server timeout response error as we are not waiting on it
+      })
   }
 
   // save config to app store
@@ -151,12 +156,8 @@ function init(options: InitOptions): API {
       )
     }
 
-    try {
-      const result = blocknative.account(address)
-      return result
-    } catch (error) {
-      throw new Error(error)
-    }
+    const result = blocknative.account(address)
+    return result
   }
 
   function hash(hash: string, id?: string) {
@@ -166,12 +167,8 @@ function init(options: InitOptions): API {
       )
     }
 
-    try {
-      const result = blocknative.transaction(hash, id)
-      return result
-    } catch (error) {
-      throw new Error(error)
-    }
+    const result = blocknative.transaction(hash, id)
+    return result
   }
 
   function transaction(
@@ -188,7 +185,11 @@ function init(options: InitOptions): API {
     const emitter = createEmitter()
 
     const result = preflightTransaction(blocknative, options, emitter).catch(
-      err => err
+      err => {
+        const { onerror } = get(app)
+        onerror && onerror(err)
+        return err
+      }
     )
 
     return {

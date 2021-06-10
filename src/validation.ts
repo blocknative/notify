@@ -11,6 +11,7 @@ const validInitKeys = [
   'system',
   'transactionHandler',
   'name',
+  'onerror',
   'mobilePosition',
   'desktopPosition',
   'darkMode',
@@ -97,6 +98,7 @@ export function validateInit(init: InitOptions): void {
     transactionHandler,
     name,
     apiUrl,
+    onerror,
     ...otherParams
   } = init
 
@@ -135,6 +137,13 @@ export function validateInit(init: InitOptions): void {
   validateType({
     name: 'transactionHandler',
     value: transactionHandler,
+    type: 'function',
+    optional: true
+  })
+
+  validateType({
+    name: 'onerror',
+    value: onerror,
     type: 'function',
     optional: true
   })

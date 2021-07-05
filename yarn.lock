@@ -1274,10 +1274,10 @@ bindings@^1.5.0:
   dependencies:
     file-uri-to-path "1.0.0"
 
-bnc-sdk@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/bnc-sdk/-/bnc-sdk-3.3.0.tgz#a690abe7570a43745936a308006fa52c1d806017"
-  integrity sha512-5MaL1uhKQn3dY3uBfW5HujXCS988/vMX0MY7LtkDjmA396a3DSbGcGySsHVsJZCBVopUupl0geI5w28+p8PG9g==
+bnc-sdk@^3.3.4:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/bnc-sdk/-/bnc-sdk-3.4.0.tgz#402874a4a794ccf5dd8ba8fba6925e24b38f772e"
+  integrity sha512-JVDDyIYucFQyq+ZfHSBVZG+R2Ophhdi+HIK5zj1gE2MYSCK/Ax8Budqys9/LyZkGdewWHZ5EWi2TUehxAbx0Rw==
   dependencies:
     crypto-es "^1.2.2"
     rxjs "^6.6.3"

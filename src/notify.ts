@@ -67,11 +67,13 @@ import { createEmitter } from './utilities'
 import { version } from '../package.json'
 
 let notify: any
+let blocknative
 
 function init(options: InitOptions): API {
   if (notify) {
     console.warn('notify has already been initialized')
     notify.$destroy()
+    blocknative && blocknative.destroy()
   }
 
   validateInit(options)
@@ -84,8 +86,6 @@ function init(options: InitOptions): API {
   if (transactionHandler) {
     transactionHandlers.push(transactionHandler)
   }
-
-  let blocknative
 
   if (dappId) {
     blocknative = new BlocknativeSdk({

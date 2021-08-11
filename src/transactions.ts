@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import uuid from 'uuid/v4'
 import { get } from 'svelte/store'
 
-import { transactions, app } from './stores'
+import { transactions, app, notifications } from './stores'
 import { createNotification } from './notifications'
 import { argsEqual, extractMessageFromError, localNetwork } from './utilities'
 import { validateNotificationObject } from './validation'
@@ -73,13 +73,26 @@ export function handleTransactionEvent(event: {
   emitterResult: boolean | void | CustomNotificationObject
 }) {
   const { transaction, emitterResult } = event
-  transactions.updateQueue(transaction)
+  if (!transaction.id) {
+    transaction.id = transaction.hash || transaction.txid
+  }
+
+  const predicate = (tx: TransactionData) =>
+    transaction.replaceHash
+      ? tx.id === transaction.replaceHash
+      : tx.id === transaction.id
+
+  transactions.updateQueue(transaction, predicate)
+
+  // update notification id if replaced
+  if (transaction.replaceHash) {
+    notifications.updateId(transaction.replaceHash, transaction.hash)
+  }
 
   // create notification if dev hasn't opted out and not connected to a local network
   if (emitterResult !== false && !localNetwork(get(app).networkId)) {
-    const transactionObj = transactionQueue.find(
-      (tx: TransactionData) => tx.id === transaction.id
-    )
+    const transactionObj = transactionQueue.find(predicate)
+
     if (transactionObj) {
       createNotification(transactionObj, emitterResult)
     }

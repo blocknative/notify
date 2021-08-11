@@ -14,6 +14,7 @@ export const defaultNotifyMessages: any = {
       txSent: 'Your transaction has been sent to the network',
       txStallPending:
         'Your transaction has stalled and has not entered the transaction pool',
+      txStuck: 'Your transaction is stuck due to a nonce gap',
       txPool: 'Your transaction has started',
       txStallConfirmed:
         "Your transaction has stalled and hasn't been confirmed",
@@ -27,9 +28,9 @@ export const defaultNotifyMessages: any = {
       txPool:
         'Your account is {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}',
       txSpeedUp:
-        'Your account is {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}',
+        'Transaction for {formattedValue} {asset} {preposition} {counterpartyShortened} has been sped up',
       txCancel:
-        'Your account is {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}',
+        'Transaction for {formattedValue} {asset} {preposition} {counterpartyShortened} has been canceled',
       txConfirmed:
         'Your account successfully {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}',
       txFailed:
@@ -55,6 +56,7 @@ export const defaultNotifyMessages: any = {
       txSent: 'Su transacción ha sido enviada a la red.',
       txStallPending:
         'Su transacción se ha estancado y no ha ingresado al grupo de transacciones',
+      txStuck: 'Su transacción está atascada debido a una brecha de nonce',
       txPool: 'Su transacción ha comenzado',
       txStallConfirmed:
         'Su transacción se ha estancado y no ha sido confirmada.',

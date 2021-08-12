@@ -32,9 +32,10 @@ export const notifications = createNotificationStore([])
 function createTransactionStore(initialState: TransactionData[]) {
   const { subscribe, update } = writable(initialState)
 
-  function updateQueue(transaction: TransactionData) {
-    const predicate = (tx: TransactionData) => tx.id === transaction.id
-
+  function updateQueue(
+    transaction: TransactionData,
+    predicate: (tx: TransactionData) => boolean
+  ) {
     update((store: TransactionData[]) => {
       return replaceOrAdd(store, predicate, transaction)
     })
@@ -88,10 +89,19 @@ function createNotificationStore(
     )
   }
 
+  function updateId(oldId: string, newId: string) {
+    update((store: (NotificationObject & CustomNotificationObject)[]) =>
+      store.map((n: NotificationObject & CustomNotificationObject) =>
+        n.id === oldId ? { ...n, id: newId } : n
+      )
+    )
+  }
+
   return {
     subscribe,
     add,
     remove,
-    update
+    update,
+    updateId
   }
 }

@@ -13,6 +13,7 @@ export function eventToType(eventCode: string | undefined): NotificationType {
     case 'txConfirmReminder':
     case 'txStallPending':
     case 'txStallConfirmed':
+    case 'txStuck':
       return 'hint'
     case 'txError':
     case 'txSendFail':

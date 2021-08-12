@@ -59,6 +59,7 @@ export interface TransactionData {
   monitorId?: string
   monitorVersion?: string
   nonce?: number
+  replaceHash?: string
   r?: string
   s?: string
   status?: string

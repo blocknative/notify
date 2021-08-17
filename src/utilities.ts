@@ -137,6 +137,7 @@ export function localNetwork(networkId: number) {
     case 42:
     case 56:
     case 100:
+    case 137:
       return false
     default:
       return true

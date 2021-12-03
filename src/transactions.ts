@@ -68,19 +68,18 @@ export function handlePreFlightEvent(
   })
 }
 
-export function handleTransactionEvent(event: {
-  transaction: TransactionData
-  emitterResult: boolean | void | CustomNotificationObject
-}) {
+export function handleTransactionEvent(event) {
   const { transaction, emitterResult } = event
+
   if (!transaction.id) {
     transaction.id = transaction.hash || transaction.txid
   }
 
-  const predicate = (tx: TransactionData) =>
-    transaction.replaceHash
-      ? tx.id === transaction.replaceHash
-      : tx.id === transaction.id
+  const predicate = (tx: TransactionData) => {
+    return transaction.replaceHash
+      ? tx.id === transaction.replaceHash || tx.hash === transaction.replaceHash
+      : tx.id === transaction.id || tx.hash === transaction.hash
+  }
 
   transactions.updateQueue(transaction, predicate)
 

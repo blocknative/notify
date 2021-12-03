@@ -19,7 +19,7 @@ export function replaceOrAdd(
   const index = clone.findIndex(predicate)
 
   if (index !== -1) {
-    const { startTime, contractCall, status } = clone[index]
+    const { startTime, contractCall, status, id } = clone[index]
 
     // if current transaction is a speedup or cancel and new status is pending, ignore update
     if (
@@ -35,7 +35,8 @@ export function replaceOrAdd(
     clone[index] = {
       ...data,
       ...contractCallMerge,
-      startTime: startTime || serverStartTime
+      startTime: startTime || serverStartTime,
+      id
     }
     return clone
   }

@@ -70,22 +70,35 @@ export function handlePreFlightEvent(
 
 export function handleTransactionEvent(event) {
   const { transaction, emitterResult } = event
+  const currentId = transaction.id
+  const transactionId = transaction.hash || transaction.txid
 
-  if (!transaction.id) {
-    transaction.id = transaction.hash || transaction.txid
+  // returns a boolean indicating whether this transaction state is a new state
+  // for an existing transaction or is a new transaction
+  const predicate = (txInState: TransactionData) => {
+    return (
+      (txInState.id && txInState.id === currentId) ||
+      txInState.hash === transaction.hash ||
+      txInState.replaceHash === transaction.hash
+    )
   }
 
-  const predicate = (tx: TransactionData) => {
-    return transaction.replaceHash
-      ? tx.id === transaction.replaceHash || tx.hash === transaction.replaceHash
-      : tx.id === transaction.id || tx.hash === transaction.hash
+  // replace UUID used for pre-hash identitification with hash or txid(bitcoin)
+  if (
+    (transactionId &&
+      transactionId !== currentId &&
+      transaction.eventCode === 'txSent') ||
+    !currentId
+  ) {
+    transaction.id = transactionId
   }
 
   transactions.updateQueue(transaction, predicate)
 
-  // update notification id if replaced
   if (transaction.replaceHash) {
-    notifications.updateId(transaction.replaceHash, transaction.hash)
+    // remove pending notification for replaceHash if exists,
+    // this happens is pending comes before speedup event
+    notifications.remove(transaction.replaceHash, 'txPool')
   }
 
   // create notification if dev hasn't opted out and not connected to a local network

@@ -41,7 +41,7 @@ function createBitcoinNotificationObject(
     outputs
   } = transactionDetails
   const type: NotificationType = eventToType(eventCode)
-  const key = `${id}-${
+  const key = `${id || txid}-${
     (typeof customization === 'object' && customization.eventCode) || eventCode
   }`
 
@@ -121,7 +121,7 @@ function createEthereumNotificationObject(
   } = transactionDetails
 
   const type: NotificationType = eventToType(eventCode)
-  const key = `${id}-${
+  const key = `${id || hash}-${
     (typeof customization === 'object' && customization.eventCode) || eventCode
   }`
   const counterpartyShortened: string | undefined =

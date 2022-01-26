@@ -69,7 +69,6 @@ let notify: any
 let blocknative
 
 function init(options: InitOptions): API {
-  console.log('local')
   if (notify) {
     console.warn('notify has already been initialized')
     notify.$destroy()

@@ -71,6 +71,10 @@ export interface TransactionData {
   system?: string
   inputs?: BitcoinInputOutput[]
   outputs?: BitcoinInputOutput[]
+  baseFeePerGasGwei?: number
+  maxPriorityFeePerGasGwei?: number
+  maxFeePerGasGwei?: number
+  gasPriceGwei?: number
 }
 
 export type NotificationType = 'pending' | 'success' | 'error' | 'hint'

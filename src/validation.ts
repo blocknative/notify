@@ -27,7 +27,8 @@ const validNotificationKeys = [
   'type',
   'message',
   'autoDismiss',
-  'onclick'
+  'onclick',
+  'link'
 ]
 
 const validTransactionKeys = [
@@ -277,6 +278,7 @@ export function validateNotificationObject(
     message,
     autoDismiss,
     onclick,
+    link,
     ...otherParams
   } = notification
 
@@ -314,6 +316,13 @@ export function validateNotificationObject(
     name: 'onclick',
     value: onclick,
     type: 'function',
+    optional: true
+  })
+
+  validateType({
+    name: 'link',
+    value: link,
+    type: 'string',
     optional: true
   })
 }

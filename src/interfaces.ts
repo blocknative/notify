@@ -25,6 +25,7 @@ export type System = 'bitcoin' | 'ethereum'
 export type TransactionEventCode =
   | 'txSent'
   | 'txPool'
+  | 'txStuck'
   | 'txConfirmed'
   | 'txSpeedUp'
   | 'txCancel'

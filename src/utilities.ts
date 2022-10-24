@@ -98,6 +98,7 @@ export function createEmitter(): Emitter {
         case 'txAwaitingApproval':
         case 'txConfirmReminder':
         case 'txSendFail':
+        case 'txStuck':
         case 'txError':
         case 'txUnderPriced':
         case 'all':

@@ -44,6 +44,7 @@ web3.eth
     emitter.on('txSpeedUp', console.log)
     emitter.on('txCancel', console.log)
     emitter.on('txFailed', console.log)
+    emitter.on('txStuck', console.log)
     emitter.on('all', console.log)
   })
 ```

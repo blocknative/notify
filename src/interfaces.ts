@@ -2,8 +2,9 @@ import type {
   BitcoinTransactionLog,
   EthereumTransactionLog,
   SDKError,
-  TransactionHandler
-} from 'bnc-sdk/dist/types/src/interfaces'
+  TransactionHandler,
+  System
+} from 'bnc-sdk'
 
 export interface InitOptions extends ConfigOptions {
   dappId?: string
@@ -19,8 +20,6 @@ export interface TransactionEvent {
   emitterResult: void | boolean | CustomNotificationObject
   transaction: TransactionData
 }
-
-export type System = 'bitcoin' | 'ethereum'
 
 export type TransactionEventCode =
   | 'txSent'

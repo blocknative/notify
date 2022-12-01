@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime'
 import BlocknativeSdk from 'bnc-sdk'
-import type { TransactionHandler } from 'bnc-sdk/dist/types/src/interfaces'
+import type { TransactionHandler } from 'bnc-sdk'
 import { get } from 'svelte/store'
 
 import uuid from 'uuid/v4'
@@ -27,7 +27,6 @@ import type {
 export {
   InitOptions,
   TransactionEvent,
-  System,
   TransactionEventCode,
   TransactionData,
   NotificationType,

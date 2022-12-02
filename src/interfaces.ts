@@ -119,8 +119,11 @@ export interface AppStore {
   version: string
   dappId?: string
   name?: string
+  system?: System
   networkId?: number
+  apiUrl?: string
   nodeSynced: boolean
+  transactionHandler?: TransactionHandler
   onerror?: ErrorHandler
   mobilePosition: 'bottom' | 'top'
   desktopPosition: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight'

@@ -1,6 +1,6 @@
 {
   "name": "bnc-notify",
-  "version": "1.9.7",
+  "version": "1.9.8",
   "description": "Show web3 users realtime transaction notifications",
   "keywords": [
     "ethereum",
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "bignumber.js": "^9.0.0",
-    "bnc-sdk": "4.6.3",
+    "bnc-sdk": "^4.6.4",
     "lodash.debounce": "^4.0.8",
     "regenerator-runtime": "^0.13.3",
     "uuid": "^3.3.3"
